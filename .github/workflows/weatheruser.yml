@@ -24,12 +24,15 @@ jobs:
 
       - name : permission for gradlew    #빌드 전 권한 부여
         run : chmod +x gradlew
+        working-directory: ./user 
 
       - name: Build with Gradle          #프로젝트 빌드
         run : ./gradlew clean build --exclude-task test
+        working-directory: ./user 
 
       - name : 도커 이미지 빌드
         run : docker build -t wlfkrdl2/weatheruser .     #도커허브아이디/서비스명으로 정의
+        working-directory: ./user 
 
       - name : 도커 허브 로그인
         uses : docker/login-action@v2
