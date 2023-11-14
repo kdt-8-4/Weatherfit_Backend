@@ -37,8 +37,8 @@ jobs:
       - name : 도커 허브 로그인
         uses : docker/login-action@v2
         with :
-          username : ${{ secrets.WEATHER_USER_DOCKERHUB_USERNAME }}      #레포지토리 시크릿 키값에 도커허브 아이디
-          password : ${{ secrets.WEATHER_USER_DOCKERHUB_TOKEN }}         #이전에 발급한 토큰값
+          username : ${{ WEATHER_USER_DOCKERHUB_USERNAME }}      #레포지토리 시크릿 키값에 도커허브 아이디
+          password : ${{ WEATHER_USER_DOCKERHUB_TOKEN }}         #이전에 발급한 토큰값
 
       - name : 도커 퍼블리싱
         run : docker push wlfkrdl2/weatheruser       #빌드한 이미지 도커허브에 push
