@@ -4,7 +4,7 @@ FROM openjdk:17-jdk
 WORKDIR /app
 
 # 현재 디렉토리의 build/libs 디렉토리에 있는 .jar 파일을 컨테이너에 복사합니다.
-COPY user/build/libs/*.jar app.jar
+COPY build/libs/*.jar app.jar
 
 # 컨테이너가 시작될 때 실행될 명령어를 설정합니다.
 ENTRYPOINT ["java","-jar","app.jar"]
