@@ -1,0 +1,58 @@
+name: Java CI with Gradle   #수행할 Action명
+#수행결과 확인할때 헷갈리지 않게 서비스명 적읍시다
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]     #예시엔 main으로 되어있지만, 각각 서비스에 해당하는 브랜치로 정의
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name : permission for gradlew    #빌드 전 권한 부여
+        run : chmod +x gradlew
+
+      - name: Build with Gradle          #프로젝트 빌드
+        run : ./gradlew clean build --exclude-task test
+
+      - name : 도커 이미지 빌드
+        run : docker build -t wlfkrdl2/weatheruser .     #도커허브아이디/서비스명으로 정의
+
+      - name : 도커 허브 로그인
+        uses : docker/login-action@v2
+        with :
+          username : ${{ secrets.WEATHER_USER_DOCKERHUB_USERNAME }}      #레포지토리 시크릿 키값에 도커허브 아이디
+          password : ${{ secrets.WEATHER_USER_DOCKERHUB_TOKEN }}         #이전에 발급한 토큰값
+
+      - name : 도커 퍼블리싱
+        run : docker push wlfkrdl2/weatheruser       #빌드한 이미지 도커허브에 push
+
+      - name : ec2 접속 및 애플리케이션 실행
+        uses : appleboy/ssh-action@v0.1.6
+        with :
+          host : ${{ secrets.EC2_HOST }}           #배포할 인스턴스 ip
+          username : ubuntu                        #인스턴스 기본 username(ubuntu), 혹시 다른걸로 지정하셨으면 그걸로 쓰시면됩니다
+          key : ${{ secrets.EC2_PEMKEY }}          #인스턴스 생성 시 발급받은 키페어(아래에 pem파일로 변환하는 방법 링크)
+          port : 22
+          script : |                                     # 서버 셸스크립트 명령어 실행
+            sudo docker stop $(sudo docker ps -a -q)
+            sudo docker rm $(sudo docker ps -a -q)
+            sudo docker pull wlfkrdl2/weatheruser
+            sudo docker run -d -p 8080:8080 wlfkrdl2/weatheruser
+          # 실행중인 컨테이너 중지
+          # 삭제
+          # 도커허브에서 이미지 최신버전 가져오기
+          #이미지 사용해 컨테이너 실행(포트번호 주의)
