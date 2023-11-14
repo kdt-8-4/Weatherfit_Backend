@@ -31,7 +31,7 @@ jobs:
 
 
       - name : 도커 이미지 빌드
-        run : docker build -t hyunik/weatherfit_Board .     #도커허브아이디/서비스명으로 정의
+        run : docker build -t hyunik/weatherfit_board .     #도커허브아이디/서비스명으로 정의
 
 
       - name : 도커 허브 로그인
@@ -41,7 +41,7 @@ jobs:
           password : ${{ secrets.BOARD_SERVICE_DOCKERHUB_TOKEN }}         #이전에 발급한 토큰값
 
       - name : 도커 퍼블리싱
-        run : docker push hyunik/weatherfit_Board      #빌드한 이미지 도커허브에 push
+        run : docker push hyunik/weatherfit_board      #빌드한 이미지 도커허브에 push
 
       - name : ec2 접속 및 애플리케이션 실행
         uses : appleboy/ssh-action@v0.1.6
@@ -53,5 +53,5 @@ jobs:
           script : |                                     #서버 셸스크립트 명령어 실행
             sudo docker stop $(sudo docker ps -a -q)     
             sudo docker rm $(sudo docker ps -a -q)       
-            sudo docker pull hyunik/weatherfit_Board      
-            sudo docker run -d -p 8080:8080 hyunik/weatherfit_Board
+            sudo docker pull hyunik/weatherfit_board      
+            sudo docker run -d -p 8080:8080 hyunik/weatherfit_board
