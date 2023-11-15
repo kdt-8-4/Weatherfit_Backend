@@ -28,7 +28,7 @@ jobs:
       - name: ec2 접속 및 애플리케이션 실행
         uses : appleboy/ssh-action@v0.1.6
         with :
-          host : ${{{ secrets.EC2_HOST }}
+          host : ${{ secrets.EC2_HOST }}
           username : ubuntu
           key : ${{ secrets.EC2_PEMKEY }}
           port : 22
