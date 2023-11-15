@@ -32,10 +32,10 @@ const client = new Eureka({
         hostName: process.env.INSTANCE_HOSTNAME,
         ipAddr: process.env.INSTANCE_IPADDRESS,  // 서비스의 IP 주소
         port: {
-            '$': `${process.env.PORT}`,  // 서비스의 포트
+            '$': process.env.PORT,  // 서비스의 포트
             '@enabled': 'true',
         },
-        vipAddress: 'nodejs-service',  // 서비스의 VIP 주소
+        vipAddress: 'category-service',  // 서비스의 VIP 주소
         statusPageUrl: `http://${process.env.INSTANCE_IPADDRESS}:${process.env.PORT}`,  // 서비스의 상태 페이지 URL
         healthCheckUrl: `http://${process.env.INSTANCE_IPADDRESS}:${process.env.PORT}/health`,  // 서비스의 상태 페이지 URL
         dataCenterInfo: {
