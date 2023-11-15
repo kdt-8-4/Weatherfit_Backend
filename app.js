@@ -54,5 +54,6 @@ app.get('/nodetest', (req, res)=> {
 client.start();  // Eureka 서버에 서비스를 등록
 app.listen(process.env.PORT, ()=> {
     console.log(`localhost:${process.env.PORT}`);
+    console.log(`instance_ipaddress = ${process.env.INSTANCE_IPADDRESS}`)
 });
 module.exports = app;
