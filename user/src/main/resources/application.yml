@@ -1,18 +1,21 @@
 spring:
-application:
-  name: user    #애플리케이션 이름, 해당 이름으로 eureka 서버에 등록됨
-
+  application:
+    name: user-service
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://hs-spring-db.cjhazvr1oeo5.ap-northeast-2.rds.amazonaws.com:3306/weatherfit
+    username: wlfkrdl2
+    password: gmltjd36!
 eureka:
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${server.port}}
     prefer-ip-address: true
-    ip-address: 3.35.59.210      #자신의 프로젝트가 배포된 인스턴스 ip
-
+    ip-address: 3.35.59.210
   client:
     fetch-registry: true
     register-with-eureka: true
     service-url:
-      defaultZone : http://13.124.197.227:8761/eureka       #등록할 eureka 서버
-
+      defaultZone : http://13.124.197.227:8761/eureka
 server:
-  port: 8080          #포트번호
+  port: 8080
+

@@ -5,9 +5,9 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-application.yml
-application.properties
-application-oauth.properties
+!**/src/main/resource/application.yml
+!**/src/main/resource/application.properties
+!**/src/main/resource/application-oauth.properties
 
 ### STS ###
 .apt_generated
