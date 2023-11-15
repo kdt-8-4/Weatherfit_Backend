@@ -24,3 +24,15 @@ jobs:
           context: .
           push: true
           tags: jerneithe/category_service
+
+      - name: ec2 접속 및 애플리케이션 실행
+        uses : appleboy/ssh-action@v0.1.6
+        with :
+          host : ${{{ secrets.EC2_HOST }}
+          username : ubuntu
+          key : ${{ secrets.EC2_PEMKEY }}
+          port : 22
+          script : |
+            sudo docker stop $(sudo docker ps -a -q)     
+            sudo docker rm $(sudo docker ps -a -q)      
+            sudo docker pull jerneithe/comment_service  
