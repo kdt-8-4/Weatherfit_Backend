@@ -27,12 +27,12 @@ const client = new Eureka({
         servicePath: '/eureka/apps/'
     },
     instance: {
-        instanceId : 'nodejs-service',
-        app: 'nodejs-service',  // 서비스의 이름
+        instanceId : 'category-service',
+        app: 'category-service',  // 서비스의 이름
         hostName: process.env.INSTANCE_HOSTNAME,
         ipAddr: process.env.INSTANCE_IPADDRESS,  // 서비스의 IP 주소
         port: {
-            '$': process.env.PORT,  // 서비스의 포트
+            '$': `${process.env.PORT}`,  // 서비스의 포트
             '@enabled': 'true',
         },
         vipAddress: 'nodejs-service',  // 서비스의 VIP 주소
