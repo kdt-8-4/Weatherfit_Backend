@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class WeatherController {
     @GetMapping("/test")
     public String test() {
-        return "test";
+        return "test!!";
     }
 }
