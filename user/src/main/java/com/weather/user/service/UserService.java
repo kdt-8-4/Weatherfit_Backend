@@ -4,12 +4,21 @@ package com.weather.user.service;
 import com.weather.user.dto.UserDTO;
 import com.weather.user.entity.User;
 
+import java.util.Optional;
+
+
 public interface UserService {
-    Long register(UserDTO userDTO);
+
+    void signup(UserDTO userDTO);
+
+    Optional<UserDTO> signin(String email, String password, boolean fromSocial);
+
+    UserDTO profile(String email);
+
+    void remove(String email);
 
     default User dtoToEntity(UserDTO userDTO) {
         User user = User.builder()
-                .id(userDTO.getId())
                 .email(userDTO.getEmail())
                 .name(userDTO.getName())
                 .nickname(userDTO.getNickname())
@@ -20,5 +29,20 @@ public interface UserService {
                 .status(userDTO.isStatus()).build();
 
         return user;
+    }
+
+    default UserDTO entityToDTO(User user) {
+        UserDTO userDTO = UserDTO.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .name(user.getName())
+                .nickname(user.getNickname())
+                .password(user.getPassword())
+                .phone(user.getPhone())
+                .image(user.getImage())
+                .fromSocial(user.isFromSocial())
+                .status(user.isStatus()).build();
+
+        return  userDTO;
     }
 }

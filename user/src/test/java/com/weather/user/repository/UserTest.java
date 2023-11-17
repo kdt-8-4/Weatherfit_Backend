@@ -17,9 +17,11 @@ public class UserTest {
         System.out.println(userRepository.getClass().getName());
         IntStream.rangeClosed(1, 100).forEach(i -> {
             User user = User.builder()
-                    .email("user" + i + "@testmail.com")
+                    .email("user" + i + "@test.com")
                     .password("1234")
                     .name("USER" + i)
+                    .nickname("테스터")
+                    .fromSocial(false)
                     .build();
 
             userRepository.save(user);

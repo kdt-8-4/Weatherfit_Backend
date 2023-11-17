@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Builder
@@ -14,9 +15,32 @@ import lombok.NoArgsConstructor;
 public class User extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    int id;
 
-    String email, name, nickname, phone, image, password;
+    @Column(unique = true)
+    String email;
+
+    String name, nickname, phone, image, password;
 
     boolean fromSocial, status;
+
+    public void changeNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void changeImage(String image) {
+        this.image = image;
+    }
+
+    public void changePassword(String password) {
+        this.password = password;
+    }
+
+    public void changeStatus() {
+        if(this.status) {
+            this.status = false;
+        } else {
+            this.status = true;
+        }
+    }
 }
