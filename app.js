@@ -6,7 +6,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var app = express();
 require('dotenv').config({ path: '/app/env' });
-
+const db = require('./models');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -27,7 +27,7 @@ const client = new Eureka({
         servicePath: '/eureka/apps/'
     },
     instance: {
-        instanceId : 'category-service:' + process.env.PORT,
+        instanceId : 'category-service',
         app: 'category-service',  // 서비스의 이름
         hostName: `${process.env.INSTANCE_HOSTNAME}`,
         ipAddr: `${process.env.INSTANCE_IPADDRESS}`,  // 서비스의 IP 주소
@@ -44,6 +44,7 @@ const client = new Eureka({
         },
     },
 });
+client.start();  // Eureka 서버에 서비스를 등록
 app.get('/health', (req, res) => {
     res.json({status: 'UP'});
 });
@@ -51,9 +52,10 @@ app.get('/health', (req, res) => {
 app.get('/nodetest', (req, res)=> {
     res.json({ check : 'check' });
 })
-client.start();  // Eureka 서버에 서비스를 등록
-app.listen(process.env.PORT, ()=> {
-    console.log(`localhost:${process.env.PORT}`);
-    console.log(`instance_ipaddress = ${process.env.INSTANCE_IPADDRESS}`)
+
+db.sequelize.sync({ force: false }).then(() => {
+    app.listen(process.env.PORT, () => {
+        console.log(`http://localhost:${process.env.PORT}`);
+    });
 });
 module.exports = app;
