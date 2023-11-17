@@ -1,5 +1,5 @@
-require('dotenv').config();
-// require('dotenv').config({ path: '/app/env' });
+// require('dotenv').config();
+require('dotenv').config({ path: '/app/env' });
 const env = process.env;
 
 
