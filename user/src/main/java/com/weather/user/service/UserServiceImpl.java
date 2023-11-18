@@ -29,6 +29,7 @@ public class UserServiceImpl implements UserService {
         }
 
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        userDTO.setStatus(true);
         User user = dtoToEntity(userDTO);
         userRepository.save(user);
     }
@@ -63,12 +64,34 @@ public class UserServiceImpl implements UserService {
         }
         User user = optionalUser.get();
 
-        if(user.isStatus()) {
+        if(!user.isStatus()) {
             throw new Error("탈퇴 대기중인 유저입니다.");
         }
 
         UserDTO result = entityToDTO(user);
         return result;
+    }
+
+    @Override
+    public UserDTO modify(UserDTO userDTO) {
+        Optional<User> optionalUser = userRepository.findByEmail(userDTO.getEmail());
+        log.info("optionalUser: " + optionalUser);
+
+        if(optionalUser.isEmpty()) {
+            throw new Error("존재하지 않는 유저입니다.");
+        }
+        User user = optionalUser.get();
+
+        if(user.isStatus()) {
+            user.changeNickname(userDTO.getNickname());
+            user.changeImage(userDTO.getImage());
+            userRepository.save(user);
+
+            UserDTO result = entityToDTO(user);
+            return result;
+        } else {
+            throw new Error("잘못 된 접근입니다.");
+        }
     }
 
     @Override
@@ -83,6 +106,7 @@ public class UserServiceImpl implements UserService {
 
         if(user.isStatus()) {
             user.changeStatus();
+            userRepository.save(user);
         } else {
             throw new Error("잘못 된 접근입니다.");
         }

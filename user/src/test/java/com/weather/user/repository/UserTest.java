@@ -22,6 +22,7 @@ public class UserTest {
                     .name("USER" + i)
                     .nickname("테스터")
                     .fromSocial(false)
+                    .status(true)
                     .build();
 
             userRepository.save(user);

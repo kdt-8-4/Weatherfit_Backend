@@ -15,6 +15,8 @@ public interface UserService {
 
     UserDTO profile(String email);
 
+    UserDTO modify(UserDTO userDTO);
+
     void remove(String email);
 
     default User dtoToEntity(UserDTO userDTO) {

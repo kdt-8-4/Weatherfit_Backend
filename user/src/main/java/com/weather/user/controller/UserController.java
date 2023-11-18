@@ -8,10 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -49,17 +46,19 @@ public class UserController {
     }
 
     @PatchMapping("/user/profile/modify")
-    public ResponseEntity modify(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<UserDTO> modify(@RequestBody UserDTO userDTO) {
         log.info("userDTO: " + userDTO);
 
-        return new ResponseEntity(HttpStatus.OK);
+        UserDTO result = userService.modify(userDTO);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @DeleteMapping("/user/profile/remove")
-    public ResponseEntity remove(@RequestBody UserDTO userDTO) {
-        log.info("userDTO: " + userDTO);
+    @DeleteMapping("/user/profile/remove/{email}")
+    public ResponseEntity remove(@PathVariable String email) {
+        log.info("email: " + email);
 
-        userService.remove(userDTO.getEmail());
+        userService.remove(email);
 
         return new ResponseEntity(HttpStatus.OK);
     }
