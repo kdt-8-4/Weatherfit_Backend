@@ -18,6 +18,18 @@ import java.util.Optional;
 public class UserController {
     private final UserService userService;
 
+    @GetMapping("/test")
+    public String test() {
+        log.info("테스트 컨트롤러 접근됨?");
+        return "test";
+    }
+
+    @GetMapping("/hello")
+    public String hello() {
+        log.info("헬로우 컨트롤러 접근됨?");
+        return "hello";
+    }
+
     @PostMapping("/user/signin")
     public ResponseEntity<Optional<UserDTO>> signin(@RequestBody UserDTO userDTO) {
         log.info("userDTO: " + userDTO);
