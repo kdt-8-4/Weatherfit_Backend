@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.repository.EntityGraph;
+
 import java.util.List;
 
 @Entity
@@ -41,5 +43,10 @@ public class BoardEntity extends BaseEntity {
     private List<String> hashTag;
 
     @Column(name = "status")
-    private boolean status;
+    private boolean status = true;
+
+    @OneToMany(mappedBy = "board_id", cascade = CascadeType.ALL)
+    private List<ImageEntity> images;
+
+
 }

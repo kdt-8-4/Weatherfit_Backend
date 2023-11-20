@@ -38,8 +38,9 @@ public class BoardService {
     }
 
     // 게시글 작성
-    public void insertBoard(BoardEntity board) {
+    public BoardEntity insertBoard(BoardEntity board) {
         boardRepository.save(board);
+        return board;
     }
 
     // 게시글 수정
