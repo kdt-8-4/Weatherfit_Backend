@@ -22,6 +22,7 @@ public class AuthUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        log.info("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
         log.info("email: " + email);
 
         Optional<User> optionalUser = userRepository.findByEmail(email, false);
@@ -34,7 +35,8 @@ public class AuthUserDetailsService implements UserDetailsService {
         log.info("user: " + user.getPassword());
 
         AuthUserDTO authUserDTO = new AuthUserDTO(
-                user.getEmail(), user.getPassword(), user.isFromSocial(), user.isStatus(),
+                user.getEmail(), user.getPassword(), user.getImage(), user.getName(), user.getNickname(),
+                user.isFromSocial(), user.isStatus(),
                 user.getRoleSet().stream().map((role) ->
                         new SimpleGrantedAuthority("Role_" + role.name())).collect(Collectors.toSet())
         );
