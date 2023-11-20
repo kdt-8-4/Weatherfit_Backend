@@ -5,8 +5,9 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var app = express();
+
+// require('dotenv').config();
 require('dotenv').config({ path: '/app/env' });
-const db = require('./models');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -53,9 +54,14 @@ app.get('/nodetest', (req, res)=> {
     res.json({ check : 'check' });
 })
 
-db.sequelize.sync({ force: false }).then(() => {
-    app.listen(process.env.PORT, () => {
-        console.log(`http://localhost:${process.env.PORT}`);
-    });
+const {connectDB} = require('./schemas/index')
+connectDB();
+const {initKafka} = require('./controller/CategoryController.js');
+
+app.listen(process.env.PORT, () => {
+    initKafka().catch(console.error);
+    console.log(`http://localhost:${process.env.PORT}`);
 });
+
+
 module.exports = app;
