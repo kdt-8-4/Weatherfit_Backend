@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 import java.util.Optional;
 
-@FeignClient(value = "comment-service", path = "/comment")
+@FeignClient(value = "${feignClient.url}", path = "/comment")
 public interface CommentClient {
     @GetMapping("/comments")
     public Optional<List<CommentResponseDTO>> getCommentAndReply(@RequestParam int boardId);
