@@ -59,7 +59,6 @@ public class BoardService {
         System.out.println(joiendString);
         System.out.println(joiendString2);
 
-
         kafkaTemplate.send("category", joiendString);
         kafkaTemplate.send("hashtag", joiendString2);
         return board;
@@ -74,7 +73,6 @@ public class BoardService {
         originalBoard.setHashTag(boardUpdateDTO.getHashTag());
         boardRepository.save(originalBoard);
     }
-
 
     // 게시글 삭제
     public void deleteBoard(int boardId) {
