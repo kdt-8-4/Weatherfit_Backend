@@ -3,8 +3,10 @@ package com.weather.user.security.service;
 import com.weather.user.entity.User;
 import com.weather.user.entity.UserRole;
 import com.weather.user.repository.UserRepository;
+import com.weather.user.security.dto.AuthUserDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -13,6 +15,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Service
@@ -22,7 +25,7 @@ public class OAuth2UserDetailsService extends DefaultOAuth2UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public OAuth2User loadUser(OAuth2UserRequest request) throws OAuth2AuthenticationException {
+    public AuthUserDTO loadUser(OAuth2UserRequest request) throws OAuth2AuthenticationException {
         log.info("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
         log.info("request: " + request);
 
@@ -37,7 +40,13 @@ public class OAuth2UserDetailsService extends DefaultOAuth2UserService {
 
         User user = saveSocialUser(oAuth2User);
 
-        return oAuth2User;
+        AuthUserDTO result = new AuthUserDTO(user.getEmail(), user.getPassword(), user.getImage(),
+                user.isFromSocial(), user.isStatus(),
+                user.getRoleSet().stream().map(
+                        role -> new SimpleGrantedAuthority("ROLE_" + role.name())).collect(Collectors.toList()),
+                oAuth2User.getAttributes());
+
+        return result;
     }
 
     private User saveSocialUser(OAuth2User oAuth2User) {
