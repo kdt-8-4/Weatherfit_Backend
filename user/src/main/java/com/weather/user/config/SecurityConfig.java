@@ -32,7 +32,7 @@ public class SecurityConfig {
         http.logout(Customizer.withDefaults());
         http.rememberMe(rememberMe -> rememberMe.tokenValiditySeconds(60*60*24*60).userDetailsService(authUserDetailsService));
 
-        http.addFilterBefore(apiCheckFilter(), UsernamePasswordAuthenticationFilter.class);
+        //http.addFilterBefore(apiCheckFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -42,8 +42,8 @@ public class SecurityConfig {
         return new LoginSuccessHandler(passwordEncoder());
     }
 
-    @Bean
-    public ApiCheckFilter apiCheckFilter() {
-        return new ApiCheckFilter();
-    }
+//    @Bean
+//    public ApiCheckFilter apiCheckFilter() {
+//        return new ApiCheckFilter();
+//    }
 }
