@@ -17,8 +17,8 @@ public class LikeController {
     }
 
     @PostMapping("/board/like/{boardId}")
-    public ResponseEntity<Void> like (@PathVariable("boardId") int boardId, @RequestBody LikeRequestDto likeRequestDto) {
+    public boolean like (@PathVariable("boardId") int boardId, @RequestBody LikeRequestDto likeRequestDto) {
         likeService.like(boardId, likeRequestDto.getUserId());
-        return ResponseEntity.ok().build();
+        return true;
     }
 }
