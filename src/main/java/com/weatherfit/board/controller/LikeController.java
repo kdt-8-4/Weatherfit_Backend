@@ -1,12 +1,24 @@
 package com.weatherfit.board.controller;
 
-import org.springframework.web.bind.annotation.RestController;
+import com.weatherfit.board.dto.LikeRequestDto;
+import com.weatherfit.board.service.LikeService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 public class LikeController {
 
+    private final LikeService likeService;
 
 
+    public LikeController(LikeService likeService) {
+        this.likeService = likeService;
+    }
 
-
+    @PostMapping("/board/like/{boardId}")
+    public ResponseEntity<Void> like (@PathVariable("boardId") int boardId, @RequestBody LikeRequestDto likeRequestDto) {
+        likeService.like(boardId, likeRequestDto.getUserId());
+        return ResponseEntity.ok().build();
+    }
 }

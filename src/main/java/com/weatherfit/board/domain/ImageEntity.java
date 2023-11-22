@@ -15,12 +15,12 @@ import lombok.NoArgsConstructor;
 public class ImageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int image_id;
+    private int imageId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_id", nullable = false)
+    @JoinColumn(name = "boardId", nullable = false)
     @JsonIgnore
-    private BoardEntity board_id;
+    private BoardEntity boardId;
 
     @Column(name = "image_url", nullable = false)
     private String image_url;

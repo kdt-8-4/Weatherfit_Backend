@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface BoardRepository extends JpaRepository<BoardEntity, Integer> {
+public interface BoardRepository extends JpaRepository<BoardEntity, Integer>, BoardCustomRepository {
 
     @EntityGraph(attributePaths = {"images"})
     List<BoardEntity> findAll();
@@ -16,5 +16,7 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Integer> {
 
     BoardEntity findById(int id);
 
-
+    List<BoardEntity> findByCategoryInAndHashTagIn(List<String> categories, List<String> hashTags);
+    List<BoardEntity> findByHashTagIn(List<String> hashTags);
+    List<BoardEntity> findByCategoryIn(List<String> categories);
 }

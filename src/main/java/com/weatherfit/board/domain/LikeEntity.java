@@ -1,5 +1,6 @@
 package com.weatherfit.board.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,12 +17,14 @@ import lombok.NoArgsConstructor;
 public class LikeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int like_id;
+    private int likeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_id", nullable = false)
-    private BoardEntity board_id;
+    @JoinColumn(name = "boardId")
+    @JsonBackReference
+    private BoardEntity boardId;
 
-    @Column(name = "user_id", nullable = false)
-    private int user_id;
+    @Column(name = "userId", nullable = false)
+    private int userId;
+
 }

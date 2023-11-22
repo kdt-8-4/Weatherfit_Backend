@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 @ToString
 public class ImageDTO {
-    private int image_id;
-    private int board_id;
+    private int imageId;
+    private int boardId;
     private String image_url;
 }

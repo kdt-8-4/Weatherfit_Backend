@@ -4,43 +4,45 @@ package com.weatherfit.board.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.netflix.discovery.converters.Auto;
 import com.weatherfit.board.domain.BoardEntity;
 import com.weatherfit.board.domain.ImageEntity;
+import com.weatherfit.board.dto.BoardDetailResponseDTO;
+import com.weatherfit.board.dto.BoardListResponseDTO;
+import com.weatherfit.board.dto.BoardUpdateDTO;
+import com.weatherfit.board.dto.CommentResponseDTO;
+import com.weatherfit.board.feignclient.CommentClient;
+import com.weatherfit.board.repository.BoardRepository;
 import com.weatherfit.board.repository.ImageRepository;
+import com.weatherfit.board.repository.LikeRepository;
 import com.weatherfit.board.service.BoardService;
 import com.weatherfit.board.service.ImageService;
-import org.apache.kafka.clients.admin.NewTopic;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @RestController
-
+@RequiredArgsConstructor
 public class BoardController {
 
     @Autowired
     BoardService boardService;
-
     @Autowired
     ImageService imageService;
-
     @Autowired
     private ImageRepository imageRepository;
-
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
-
-
+    @Autowired
+    private CommentClient commentClient;
 
     @GetMapping("/test")
     public String testTopic1() throws JsonProcessingException {
@@ -58,7 +60,7 @@ public class BoardController {
 
     // 게시글 목록 조회
     @GetMapping("/board")
-    public List<BoardEntity> listBoards(@RequestParam(required = false) String sort) {
+    public List<BoardListResponseDTO> listBoards(@RequestParam(required = false) String sort) {
         List<BoardEntity> list;
         if ("date".equals(sort)) {
             list = boardService.findDate();
@@ -67,7 +69,17 @@ public class BoardController {
         } else {
             list = boardService.findAll();
         }
-        return list;
+        List<BoardListResponseDTO> dtoList = list.stream()
+                .map(board -> BoardListResponseDTO.builder()
+                        .boardId(board.getBoardId())
+                        .nickName(board.getNickName())
+                        .likeCount(board.getLikeCount())
+                        .temperature(board.getTemperature())
+                        .images(board.getImages())
+                        .build())
+                .collect(Collectors.toList());
+
+        return dtoList;
     }
 
     // 게시글 상세 조회
@@ -79,7 +91,6 @@ public class BoardController {
     // 게시글 생성
     @PostMapping("/board/write")
     public BoardEntity insertBoard(@RequestParam("board") String boardJson, @RequestPart("images") MultipartFile[] images) {
-        System.out.println("요청확인 : " + boardJson);
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
@@ -92,7 +103,7 @@ public class BoardController {
 
                 ImageEntity imageEntity = ImageEntity.builder()
                         .image_url(imageUrl)
-                        .board_id(savedBoard)
+                        .boardId(savedBoard)
                         .build();
                 imageRepository.save(imageEntity);
             }
@@ -108,8 +119,9 @@ public class BoardController {
 
     // 게시글 수정
     @PatchMapping("/board/{boardId}")
-    public void patchBoard(@PathVariable int boardId, @RequestBody BoardEntity boardEntity) {
-        boardService.patchBoard(boardId, boardEntity);
+    @ResponseBody
+    public void patchBoard(@PathVariable int boardId, @RequestBody BoardUpdateDTO boardUpdateDTO) {
+        boardService.patchBoard(boardId, boardUpdateDTO);
     }
 
     // 게시글 삭제
@@ -119,4 +131,10 @@ public class BoardController {
         boardService.deleteBoard(boardId);
     }
 
+    // 게시글 검색
+    @GetMapping("/board/search")
+    public List<BoardEntity> search(@RequestParam(required = false) List<String> categories,
+                    @RequestParam(required = false) List<String> hashtags) {
+        return boardService.search(categories, hashtags);
+    }
 }
