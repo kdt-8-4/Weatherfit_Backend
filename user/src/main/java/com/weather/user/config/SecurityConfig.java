@@ -2,14 +2,15 @@ package com.weather.user.config;
 
 import com.weather.user.security.filter.ApiCheckFilter;
 import com.weather.user.security.filter.ApiLoginFilter;
+import com.weather.user.security.handler.LoginFailureHandler;
 import com.weather.user.security.handler.LoginSuccessHandler;
 import com.weather.user.security.service.AuthUserDetailsService;
-import com.weather.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,16 +28,19 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        http.authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/**").hasRole("USER"));
+        http.formLogin(login -> login.loginPage("https://weatherfit-frontend.vercel.app/login").successHandler(loginSuccessHandler()));
         http.csrf((csrf) -> csrf.disable());
-        http.formLogin(login -> login.loginPage("https://weatherfit-frontend.vercel.app/login"));
         http.oauth2Login(Customizer.withDefaults());
         http.logout(Customizer.withDefaults());
         http.rememberMe(rememberMe -> rememberMe.tokenValiditySeconds(60*60*24*60).userDetailsService(authUserDetailsService));
 
+        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.userDetailsService(authUserDetailsService).passwordEncoder(passwordEncoder());
+        AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
+        http.authenticationManager(authenticationManager);
+
         http.addFilterBefore(apiCheckFilter(), UsernamePasswordAuthenticationFilter.class);
-        //http.addFilterBefore(apiLoginFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(apiLoginFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -47,8 +51,13 @@ public class SecurityConfig {
     }
 
     @Bean
+    public LoginFailureHandler loginFailureHandler() {
+        return new LoginFailureHandler();
+    }
+
+    @Bean
     public ApiCheckFilter apiCheckFilter() {
-        return new ApiCheckFilter();
+        return new ApiCheckFilter("/test/**");
     }
 
     @Bean
@@ -60,6 +69,8 @@ public class SecurityConfig {
     public ApiLoginFilter apiLoginFilter(AuthenticationManager authenticationManager) throws Exception{
         ApiLoginFilter apiLoginFilter = new ApiLoginFilter("/api/login");
         apiLoginFilter.setAuthenticationManager(authenticationManager);
+        apiLoginFilter.setAuthenticationSuccessHandler(loginSuccessHandler());
+        apiLoginFilter.setAuthenticationFailureHandler(loginFailureHandler());
 
         return apiLoginFilter;
     }

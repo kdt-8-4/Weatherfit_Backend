@@ -41,6 +41,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             redirectStrategy.sendRedirect(request, response, "https://weatherfit-frontend.vercel.app");
         } else  {
             String result = objectMapper.writeValueAsString(authUserDTO);
+            response.setContentType("application/json;charset=utf-8");
             response.getWriter().write(result);
             redirectStrategy.sendRedirect(request, response, "https://weatherfit-frontend.vercel.app");
         }
