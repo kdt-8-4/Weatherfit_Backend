@@ -2,15 +2,15 @@ package com.weatherfit.board.dto;
 
 import com.weatherfit.board.domain.ImageEntity;
 import com.weatherfit.board.domain.LikeEntity;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
+@Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class BoardDetailResponseDTO {
     private int boardId;
     private String nickName;
@@ -22,4 +22,7 @@ public class BoardDetailResponseDTO {
     private boolean status;
     private List<ImageEntity> images;
     private List<CommentResponseDTO> comments;
+
+
+
 }

@@ -84,8 +84,23 @@ public class BoardController {
 
     // 게시글 상세 조회
     @GetMapping("/board/{boardId}")
-    public BoardEntity detailBoard(@PathVariable int boardId) {
-        return boardService.getBoardById(boardId);
+    public BoardDetailResponseDTO detailBoard(@PathVariable int boardId) {
+        BoardEntity boardEntity = boardService.getBoardById(boardId);
+
+        BoardDetailResponseDTO boardDetailResponseDTO = new BoardDetailResponseDTO();
+        boardDetailResponseDTO.setBoardId(boardEntity.getBoardId());
+        boardDetailResponseDTO.setNickName(boardEntity.getNickName());
+        boardDetailResponseDTO.setContent(boardEntity.getContent());
+        boardDetailResponseDTO.setLikeCount(boardEntity.getLikeCount());
+        boardDetailResponseDTO.setTemperature(boardEntity.getTemperature());
+        boardDetailResponseDTO.setCategory(boardEntity.getCategory());
+        boardDetailResponseDTO.setHashTag(boardEntity.getHashTag());
+        boardDetailResponseDTO.setStatus(boardEntity.isStatus());
+        boardDetailResponseDTO.setImages(boardEntity.getImages());
+
+        Optional<List<CommentResponseDTO>> comments = commentClient.getCommentAndReply(boardId);
+        boardDetailResponseDTO.setComments(comments.orElse(new ArrayList<>()));
+        return boardDetailResponseDTO;
     }
 
     // 게시글 생성
