@@ -98,7 +98,7 @@ public class BoardController {
     }
 
     // 게시글 생성
-    @PostMapping("/board/write")
+    @PostMapping("/write")
     public BoardEntity insertBoard(@RequestParam("board") String boardJson, @RequestPart("images") MultipartFile[] images) {
         ObjectMapper objectMapper = new ObjectMapper();
 
