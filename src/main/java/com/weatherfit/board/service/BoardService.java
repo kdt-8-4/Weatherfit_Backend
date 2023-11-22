@@ -1,5 +1,6 @@
 package com.weatherfit.board.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.discovery.converters.Auto;
 import com.weatherfit.board.domain.BoardEntity;
 
@@ -9,9 +10,11 @@ import com.weatherfit.board.repository.BoardCustomRepositoryImpl;
 import com.weatherfit.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +22,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BoardService {
 
+    private final KafkaTemplate<String, String> kafkaTemplate;
     private final BoardRepository boardRepository;
 
     // 게시글 전체 조회
@@ -47,6 +51,8 @@ public class BoardService {
     // 게시글 작성
     public BoardEntity insertBoard(BoardEntity board) {
         boardRepository.save(board);
+        ObjectMapper mapper = new ObjectMapper();
+        System.out.println(board.getCategory().toString());
         return board;
     }
 

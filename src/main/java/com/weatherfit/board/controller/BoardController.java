@@ -11,6 +11,7 @@ import com.weatherfit.board.dto.BoardListResponseDTO;
 import com.weatherfit.board.dto.BoardUpdateDTO;
 import com.weatherfit.board.dto.CommentResponseDTO;
 //import com.weatherfit.board.feignclient.CommentClient;
+import com.weatherfit.board.feignclient.CommentClient;
 import com.weatherfit.board.repository.BoardRepository;
 import com.weatherfit.board.repository.ImageRepository;
 import com.weatherfit.board.repository.LikeRepository;
@@ -39,21 +40,13 @@ public class BoardController {
     ImageService imageService;
     @Autowired
     private ImageRepository imageRepository;
+
     @Autowired
-    private KafkaTemplate<String, String> kafkaTemplate;
-//    @Autowired
-//    private CommentClient commentClient;
+    private CommentClient commentClient;
 
     @GetMapping("/test")
     public String testTopic1() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        List<String> list = Arrays.asList("test1", "test2", "test2");
-        List<String> list2 = Arrays.asList("test3", "test4", "test5");
-        String joiendString = String.join("/", list);
-        String joiendString2 = String.join("/", list2);
 
-        kafkaTemplate.send("category", joiendString);
-        kafkaTemplate.send("hashtag", joiendString2);
 
         return "done";
     }
@@ -84,28 +77,28 @@ public class BoardController {
 
     // 게시글 상세 조회
     @GetMapping("/detail/{boardId}")
-    public BoardEntity detailBoard(@PathVariable int boardId) {
-//        BoardEntity boardEntity = boardService.getBoardById(boardId);
-//
-//        BoardDetailResponseDTO boardDetailResponseDTO = new BoardDetailResponseDTO();
-//        boardDetailResponseDTO.setBoardId(boardEntity.getBoardId());
-//        boardDetailResponseDTO.setNickName(boardEntity.getNickName());
-//        boardDetailResponseDTO.setContent(boardEntity.getContent());
-//        boardDetailResponseDTO.setLikeCount(boardEntity.getLikeCount());
-//        boardDetailResponseDTO.setTemperature(boardEntity.getTemperature());
-//        boardDetailResponseDTO.setCategory(boardEntity.getCategory());
-//        boardDetailResponseDTO.setHashTag(boardEntity.getHashTag());
-//        boardDetailResponseDTO.setStatus(boardEntity.isStatus());
-//        boardDetailResponseDTO.setImages(boardEntity.getImages());
-//
-//        Optional<List<CommentResponseDTO>> comments = commentClient.getCommentAndReply(boardId);
-//        boardDetailResponseDTO.setComments(comments.orElse(new ArrayList<>()));
-//        return boardDetailResponseDTO;
-        return boardService.getBoardById(boardId);
+    public BoardDetailResponseDTO detailBoard(@PathVariable int boardId) {
+        BoardEntity boardEntity = boardService.getBoardById(boardId);
+
+        BoardDetailResponseDTO boardDetailResponseDTO = new BoardDetailResponseDTO();
+        boardDetailResponseDTO.setBoardId(boardEntity.getBoardId());
+        boardDetailResponseDTO.setNickName(boardEntity.getNickName());
+        boardDetailResponseDTO.setContent(boardEntity.getContent());
+        boardDetailResponseDTO.setLikeCount(boardEntity.getLikeCount());
+        boardDetailResponseDTO.setTemperature(boardEntity.getTemperature());
+        boardDetailResponseDTO.setCategory(boardEntity.getCategory());
+        boardDetailResponseDTO.setHashTag(boardEntity.getHashTag());
+        boardDetailResponseDTO.setStatus(boardEntity.isStatus());
+        boardDetailResponseDTO.setImages(boardEntity.getImages());
+
+        Optional<List<CommentResponseDTO>> comments = commentClient.getCommentAndReply(boardId);
+        boardDetailResponseDTO.setComments(comments.orElse(new ArrayList<>()));
+        return boardDetailResponseDTO;
+//        return boardService.getBoardById(boardId);
     }
 
     // 게시글 생성
-    @PostMapping("/write")
+    @PostMapping("/board/write")
     public BoardEntity insertBoard(@RequestParam("board") String boardJson, @RequestPart("images") MultipartFile[] images) {
         ObjectMapper objectMapper = new ObjectMapper();
 
