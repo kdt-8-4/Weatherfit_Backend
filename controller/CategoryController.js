@@ -6,18 +6,6 @@ const { Kafka } = require('kafkajs');
 const Category = require('../schemas/Category');
 const Hashtag = require('../schemas/Hashtag');
 
-const update = { $setOnInsert : { count : 0 } };
-const options = { upsert : true };
-exports.test = async (req, res) => {
-    const { categoryName, temperature } = req.body;
-    const query = { categoryName : categoryName, temperature : temperature };
-
-    const insertOrUpdate = await Category.updateOne(query, update, options);
-    const updateCount = { $inc : { count : 1 } };
-    const again = await Category.updateOne(query, updateCount);
-    res.send({ createtest, again });
-}
-
 exports.getHashtagsInfo = async (req, res) => {
     try {
         const result = await Hashtag.find().sort('-count');
@@ -97,6 +85,8 @@ const kafka = new Kafka({
 })
 
 const consumer = kafka.consumer({ groupId : 'cate'});
+const update = { $setOnInsert : { count : 0 } };
+const options = { upsert : true };
 
 exports.initKafka = async () => {
     await consumer.connect();
@@ -107,18 +97,30 @@ exports.initKafka = async () => {
             const replace = message.value.toString().replaceAll('"', '');
             //카테고리
             if(topic === "category") {
+                console.log('-----------------------카테고리---------------------');
+                const temperature = replace.split('/')[0];
+                console.log("temperature : ", temperature);
                 const categories = replace.split('/');
-                categories.forEach((val) =>{
-                    console.log(val);
-                })
+                for(let i=1 ; i<categories.length ; i++) {
+                    console.log(categories[i]);
+                    const query = { categoryName : categories[i], temperature : temperature };
+
+                    const insertOrUpdate = await Category.updateOne(query, update, options);
+                    const updateCount = { $inc : { count : 1 } };
+                    const again = await Category.updateOne(query, updateCount);
+                }
             } else {    //해시태그
+                console.log('----------------------해시태그----------------------');
                 const hashtags = replace.split('/');
-                hashtags.forEach((val) => {
-                    console.log(val);
-                })
+                for(let i=0 ; i<hashtags.length ; i++) {
+                    const query = { tagName : hashtags[i] };
+
+                    const insertOrUpdate = await Hashtag.updateOne(query, update, options);
+                    const updateCount = { $inc : { count : 1 } };
+                    const again = await Hashtag.updateOne(query, updateCount);
+                }
             }
 
         }
     })
 }
-
