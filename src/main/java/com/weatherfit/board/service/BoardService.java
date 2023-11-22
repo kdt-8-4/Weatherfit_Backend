@@ -52,7 +52,16 @@ public class BoardService {
     public BoardEntity insertBoard(BoardEntity board) {
         boardRepository.save(board);
         ObjectMapper mapper = new ObjectMapper();
-        System.out.println(board.getCategory().toString());
+
+        String joiendString = board.getTemperature() + "/" + String.join("/", board.getCategory());
+        String joiendString2 = String.join("/", board.getHashTag());
+
+        System.out.println(joiendString);
+        System.out.println(joiendString2);
+
+
+        kafkaTemplate.send("category", joiendString);
+        kafkaTemplate.send("hashtag", joiendString2);
         return board;
     }
 
