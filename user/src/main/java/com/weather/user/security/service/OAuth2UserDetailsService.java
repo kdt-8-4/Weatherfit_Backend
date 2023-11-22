@@ -46,6 +46,8 @@ public class OAuth2UserDetailsService extends DefaultOAuth2UserService {
                         role -> new SimpleGrantedAuthority("ROLE_" + role.name())).collect(Collectors.toList()),
                 oAuth2User.getAttributes());
 
+        log.info("AuthUserDTO: " + request);
+
         return result;
     }
 

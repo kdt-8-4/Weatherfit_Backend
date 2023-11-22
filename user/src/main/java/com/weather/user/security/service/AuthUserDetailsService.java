@@ -34,14 +34,14 @@ public class AuthUserDetailsService implements UserDetailsService {
         User user = optionalUser.get();
         log.info("user: " + user.getPassword());
 
-        AuthUserDTO authUserDTO = new AuthUserDTO(
+        AuthUserDTO result = new AuthUserDTO(
                 user.getEmail(), user.getPassword(), user.getImage(), user.getName(), user.getNickname(),
                 user.isFromSocial(), user.isStatus(),
                 user.getRoleSet().stream().map((role) ->
                         new SimpleGrantedAuthority("Role_" + role.name())).collect(Collectors.toSet())
         );
-        log.info("authUserDTO: " + authUserDTO);
+        log.info("authUserDTO: " + result);
 
-        return authUserDTO;
+        return result;
     }
 }

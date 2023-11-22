@@ -25,7 +25,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/**").permitAll());
+                .requestMatchers("/**").hasRole("USER"));
         http.csrf((csrf) -> csrf.disable());
         http.formLogin(login -> login.successHandler(loginSuccessHandler()));
         http.oauth2Login(login -> login.successHandler(loginSuccessHandler()));
