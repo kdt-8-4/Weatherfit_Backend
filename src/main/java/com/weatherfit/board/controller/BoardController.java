@@ -59,7 +59,7 @@ public class BoardController {
     }
 
     // 게시글 목록 조회
-    @GetMapping("/board")
+    @GetMapping("/list")
     public List<BoardListResponseDTO> listBoards(@RequestParam(required = false) String sort) {
         List<BoardEntity> list;
         if ("date".equals(sort)) {
@@ -83,7 +83,7 @@ public class BoardController {
     }
 
     // 게시글 상세 조회
-    @GetMapping("/board/{boardId}")
+    @GetMapping("/detail/{boardId}")
     public BoardEntity detailBoard(@PathVariable int boardId) {
 //        BoardEntity boardEntity = boardService.getBoardById(boardId);
 //
@@ -105,7 +105,7 @@ public class BoardController {
     }
 
     // 게시글 생성
-    @PostMapping("/board/write")
+    @PostMapping("/write")
     public BoardEntity insertBoard(@RequestParam("board") String boardJson, @RequestPart("images") MultipartFile[] images) {
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -134,7 +134,7 @@ public class BoardController {
     }
 
     // 게시글 수정
-    @PatchMapping("/board/{boardId}")
+    @PatchMapping("/edit/{boardId}")
     @ResponseBody
     public boolean patchBoard(@PathVariable int boardId, @RequestBody BoardUpdateDTO boardUpdateDTO) {
         boardService.patchBoard(boardId, boardUpdateDTO);
@@ -142,14 +142,14 @@ public class BoardController {
     }
 
     // 게시글 삭제
-    @DeleteMapping("/board/{boardId}")
+    @DeleteMapping("/delete/{boardId}")
     @ResponseBody
     public void deleteBoard(@PathVariable int boardId) {
         boardService.deleteBoard(boardId);
     }
 
     // 게시글 검색
-    @GetMapping("/board/search")
+    @GetMapping("/search")
     public List<BoardEntity> search(@RequestParam(required = false) List<String> categories,
                     @RequestParam(required = false) List<String> hashtags) {
         return boardService.search(categories, hashtags);

@@ -16,7 +16,7 @@ public class LikeController {
         this.likeService = likeService;
     }
 
-    @PostMapping("/board/like/{boardId}")
+    @PostMapping("/like/{boardId}")
     public boolean like (@PathVariable("boardId") int boardId, @RequestBody LikeRequestDto likeRequestDto) {
         likeService.like(boardId, likeRequestDto.getUserId());
         return true;
