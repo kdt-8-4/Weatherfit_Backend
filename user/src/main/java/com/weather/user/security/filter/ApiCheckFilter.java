@@ -27,9 +27,10 @@ public class ApiCheckFilter extends OncePerRequestFilter {
         throws ServletException, IOException {
         log.info("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
 
-        log.info(antPathMatcher.match(pattern, request.getRequestURI()));
+        boolean headerCheck = antPathMatcher.match(pattern, request.getRequestURI());
+        log.info("headerCheck: " + headerCheck);
 
-        if(antPathMatcher.match(pattern, request.getRequestURI())) {
+        if(headerCheck) {
             log.info("ApiCheckFilter..............................................");
             log.info("ApiCheckFilter..............................................");
             log.info("ApiCheckFilter..............................................");
