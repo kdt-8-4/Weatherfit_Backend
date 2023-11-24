@@ -32,10 +32,13 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         log.info("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
         log.info("인증에 성공했습니다.");
 
+        log.info(authentication);
+
         AuthUserDTO authUserDTO = (AuthUserDTO) authentication.getPrincipal();
         boolean fromSocial = authUserDTO.isFromSocial();
         String name = authUserDTO.getName();
 
+        log.info(authUserDTO);
 
         if(fromSocial && name == null) {
             redirectStrategy.sendRedirect(request, response, "https://weatherfit-frontend.vercel.app");
@@ -43,7 +46,6 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             String result = objectMapper.writeValueAsString(authUserDTO);
             response.setContentType("application/json;charset=utf-8");
             response.getWriter().write(result);
-            redirectStrategy.sendRedirect(request, response, "https://weatherfit-frontend.vercel.app");
         }
     }
 }
