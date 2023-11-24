@@ -1,20 +1,15 @@
 package com.weatherfit.board.controller;
 
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weatherfit.board.domain.BoardEntity;
 import com.weatherfit.board.domain.ImageEntity;
-import com.weatherfit.board.dto.BoardDetailResponseDTO;
-import com.weatherfit.board.dto.BoardListResponseDTO;
-import com.weatherfit.board.dto.BoardUpdateDTO;
-import com.weatherfit.board.dto.CommentResponseDTO;
-//import com.weatherfit.board.feignclient.CommentClient;
+import com.weatherfit.board.dto.*;
 import com.weatherfit.board.feignclient.CommentClient;
-import com.weatherfit.board.repository.BoardRepository;
 import com.weatherfit.board.repository.ImageRepository;
-import com.weatherfit.board.repository.LikeRepository;
 import com.weatherfit.board.service.BoardService;
 import com.weatherfit.board.service.ImageService;
 import lombok.RequiredArgsConstructor;
@@ -22,12 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 
 @RestController
@@ -44,17 +37,11 @@ public class BoardController {
     @Autowired
     private CommentClient commentClient;
 
-    @GetMapping("/test")
-    public String testTopic1() throws JsonProcessingException {
-
-
-        return "done";
-    }
 
     // 게시글 목록 조회
     @GetMapping("/list")
     public List<BoardListResponseDTO> listBoards(@RequestParam(required = false) String sort) {
-        List<BoardEntity> list;
+        List<BoardListResponseDTO> list;
         if ("date".equals(sort)) {
             list = boardService.findDate();
         } else if ("like".equals(sort)) {
@@ -62,24 +49,18 @@ public class BoardController {
         } else {
             list = boardService.findAll();
         }
-        List<BoardListResponseDTO> dtoList = list.stream()
-                .map(board -> BoardListResponseDTO.builder()
-                        .boardId(board.getBoardId())
-                        .nickName(board.getNickName())
-                        .likeCount(board.getLikeCount())
-                        .temperature(board.getTemperature())
-                        .images(board.getImages())
-                        .build())
-                .collect(Collectors.toList());
 
-        return dtoList;
+
+        return list;
     }
 
     // 게시글 상세 조회
     @GetMapping("/detail/{boardId}")
     public BoardDetailResponseDTO detailBoard(@PathVariable int boardId) {
         BoardEntity boardEntity = boardService.getBoardById(boardId);
-
+        if (boardEntity == null) {
+            throw new NotFoundException("Board not found with id " + boardId);
+        }
         BoardDetailResponseDTO boardDetailResponseDTO = new BoardDetailResponseDTO();
         boardDetailResponseDTO.setBoardId(boardEntity.getBoardId());
         boardDetailResponseDTO.setNickName(boardEntity.getNickName());
@@ -89,7 +70,11 @@ public class BoardController {
         boardDetailResponseDTO.setCategory(boardEntity.getCategory());
         boardDetailResponseDTO.setHashTag(boardEntity.getHashTag());
         boardDetailResponseDTO.setStatus(boardEntity.isStatus());
-        boardDetailResponseDTO.setImages(boardEntity.getImages());
+        List<ImageDTO> imageDTOList = new ArrayList<>();
+        for(ImageEntity images : boardEntity.getImages()) {
+            imageDTOList.add(images.entityToDTO(images));
+        }
+        boardDetailResponseDTO.setImages(imageDTOList);
 
         Optional<List<CommentResponseDTO>> comments = commentClient.getCommentAndReply(boardId);
         boardDetailResponseDTO.setComments(comments.orElse(new ArrayList<>()));
@@ -99,16 +84,25 @@ public class BoardController {
 
     // 게시글 생성
     @PostMapping("/write")
-    public BoardEntity insertBoard(@RequestParam("board") String boardJson, @RequestPart("images") MultipartFile[] images) {
+    public String insertBoard(@RequestParam("board") String boardJson, @RequestPart("images") MultipartFile[] images) {
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
-            // JSON 문자열을 BoardEntity 객체로 변환
-            BoardEntity boardEntity = objectMapper.readValue(boardJson, BoardEntity.class);
+            BoardWriteDTO boardWriteDTO = objectMapper.readValue(boardJson, BoardWriteDTO.class);
+
+            BoardEntity boardEntity = BoardEntity.builder()
+                    .boardId(boardWriteDTO.getBoardId())
+                    .nickName(boardWriteDTO.getNickName())
+                    .content(boardWriteDTO.getContent())
+                    .temperature(boardWriteDTO.getTemperature())
+                    .category(boardWriteDTO.getCategory())
+                    .hashTag(boardWriteDTO.getHashTag())
+                    .build();
+
             BoardEntity savedBoard = boardService.insertBoard(boardEntity);
 
             for (MultipartFile image : images) {
-                String imageUrl = imageService.saveImage(image);  // 이미지를 업로드하고 URL을 반환받음
+                String imageUrl = imageService.saveImage(image);
 
                 ImageEntity imageEntity = ImageEntity.builder()
                         .image_url(imageUrl)
@@ -117,7 +111,7 @@ public class BoardController {
                 imageRepository.save(imageEntity);
             }
 
-            return savedBoard;
+            return "savedBoard";
 
         } catch (JsonMappingException e) {
             throw new RuntimeException(e);
@@ -134,6 +128,13 @@ public class BoardController {
         return true;
     }
 
+    private final KafkaTemplate<String, String> kafkaTemplate;
+    @GetMapping("/test")
+    public String partion() {
+        kafkaTemplate.send("category", 1, "1", "Test");
+        return "done";
+    }
+
     // 게시글 삭제
     @DeleteMapping("/delete/{boardId}")
     @ResponseBody
@@ -143,7 +144,7 @@ public class BoardController {
 
     // 게시글 검색
     @GetMapping("/search")
-    public List<BoardEntity> search(@RequestParam(required = false) List<String> categories,
+    public List<BoardSearchDTO> search(@RequestParam(required = false) List<String> categories,
                     @RequestParam(required = false) List<String> hashtags) {
         return boardService.search(categories, hashtags);
     }

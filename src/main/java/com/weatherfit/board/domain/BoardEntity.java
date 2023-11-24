@@ -1,10 +1,10 @@
 package com.weatherfit.board.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.weatherfit.board.dto.ImageDTO;
 import com.weatherfit.board.repository.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,4 +56,14 @@ public class BoardEntity extends BaseEntity {
     @OneToMany(mappedBy = "boardId", cascade = CascadeType.REMOVE)
     private List<LikeEntity> likelist;
 
+    @Column(name = "weatherIcon")
+    private String weatherIcon;
+
+    public ImageDTO entityToDTO(ImageEntity imageEntity) {
+        return ImageDTO.builder()
+                .boardId(imageEntity.getBoardId().getBoardId())
+                .imageId(imageEntity.getImageId())
+                .image_url(imageEntity.getImage_url())
+                .build();
+    }
 }

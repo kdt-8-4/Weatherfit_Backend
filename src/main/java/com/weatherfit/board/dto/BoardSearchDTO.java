@@ -1,5 +1,6 @@
 package com.weatherfit.board.dto;
 
+import com.weatherfit.board.domain.ImageEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,11 +8,12 @@ import lombok.Setter;
 import java.util.List;
 
 @Getter
+@Setter
 @Builder
-public class BoardCreateDTO {
+public class BoardSearchDTO {
+    private int boardId;
     private String nickName;
-    private String content;
     private int temperature;
-    private List<String> category;
-    private List<String> hashTag;
+    private int likeCount;
+    private ImageDTO images;
 }

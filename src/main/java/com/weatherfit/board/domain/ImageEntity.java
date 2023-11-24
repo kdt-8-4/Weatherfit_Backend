@@ -1,5 +1,6 @@
 package com.weatherfit.board.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.weatherfit.board.dto.ImageDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,4 +25,13 @@ public class ImageEntity {
 
     @Column(name = "image_url", nullable = false)
     private String image_url;
+
+    public ImageDTO entityToDTO(ImageEntity imageEntity) {
+        return ImageDTO.builder()
+                .boardId(imageEntity.getBoardId().getBoardId())
+                .imageId(imageEntity.getImageId())
+                .image_url(imageEntity.getImage_url())
+                .build();
+
+    }
 }

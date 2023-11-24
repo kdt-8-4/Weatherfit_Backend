@@ -1,6 +1,7 @@
 package com.weatherfit.board.repository;
 
 import com.weatherfit.board.domain.BoardEntity;
+import com.weatherfit.board.dto.BoardSearchDTO;
 
 import java.util.List;
 
