@@ -28,7 +28,8 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        http.formLogin(login -> login.loginPage("https://weatherfit-frontend.vercel.app/login").successHandler(loginSuccessHandler()));
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/**").permitAll());
+        http.formLogin(login -> login.loginPage("/hello").successHandler(loginSuccessHandler()));
         http.csrf((csrf) -> csrf.disable());
         http.oauth2Login(Customizer.withDefaults());
         http.logout(Customizer.withDefaults());
