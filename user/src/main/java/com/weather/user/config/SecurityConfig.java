@@ -30,8 +30,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.authorizeHttpRequests(auth -> auth.requestMatchers("/**").permitAll());
         http.formLogin(login -> login.loginPage("/hello").successHandler(loginSuccessHandler()));
+        http.oauth2Login(login -> login.loginPage("/hello").successHandler(loginSuccessHandler()));
         http.csrf((csrf) -> csrf.disable());
-        http.oauth2Login(Customizer.withDefaults());
         http.logout(Customizer.withDefaults());
         http.rememberMe(rememberMe -> rememberMe.tokenValiditySeconds(60*60*24*60).userDetailsService(authUserDetailsService));
 

@@ -29,6 +29,11 @@ public class UserController {
         log.info("헬로우 컨트롤러 접근됨?");
         return "hello";
     }
+    @GetMapping("/loginTest")
+    public String helloTest(){
+        log.info("ddddd");
+        return "redirect:/oauth2/authorization/google";
+    }
 
     @PostMapping("/user/signin")
     public ResponseEntity<Optional<UserDTO>> signin(@RequestBody UserDTO userDTO) {
