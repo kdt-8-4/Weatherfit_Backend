@@ -19,7 +19,7 @@ public class ImageService {
     private final AmazonS3Client amazonS3Client;
 
     @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
+    private String bucketName;
 
     @Value("${spring.servlet.multipart.max-file-size}")
     private String maxSizeString;
@@ -27,17 +27,20 @@ public class ImageService {
     public String saveImage(MultipartFile file) {
         try {
             String fileName = file.getOriginalFilename();
-            String fileUrl = "https://" + bucket + ".s3.amazonaws.com/" + fileName;
+            String fileUrl = "https://" + bucketName + ".s3.amazonaws.com/" + fileName;
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType(file.getContentType());
             metadata.setContentLength(file.getSize());
-            amazonS3Client.putObject(bucket, fileName, file.getInputStream(), metadata);
+            amazonS3Client.putObject(bucketName, fileName, file.getInputStream(), metadata);
             System.out.println("SERVICE 완료");
             return fileUrl;
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to upload image to S3", e);
         }
+    }
+    public void deleteImage(String keyName) {
+        amazonS3Client.deleteObject(bucketName, keyName);
     }
 
 

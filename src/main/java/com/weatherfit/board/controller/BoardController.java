@@ -14,6 +14,7 @@ import com.weatherfit.board.service.BoardService;
 import com.weatherfit.board.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -82,7 +83,7 @@ public class BoardController {
 //        return boardService.getBoardById(boardId);
     }
 
-    // 게시글 생성
+    // 게시글 작성
     @PostMapping("/write")
     public String insertBoard(@RequestParam("board") String boardJson, @RequestPart("images") MultipartFile[] images) {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -121,17 +122,26 @@ public class BoardController {
     }
 
     // 게시글 수정
-    @PatchMapping("/edit/{boardId}")
+    @PatchMapping(value = "/edit/{boardId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public boolean patchBoard(@PathVariable int boardId, @RequestBody BoardUpdateDTO boardUpdateDTO) {
-        boardService.patchBoard(boardId, boardUpdateDTO);
-        return true;
+    public boolean patchBoard(@PathVariable int boardId,
+                              @RequestPart("board") String boardJson,
+                              @RequestPart(value = "images", required = false) MultipartFile[] images) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            BoardUpdateDTO boardUpdateDTO = objectMapper.readValue(boardJson, BoardUpdateDTO.class);
+            boardService.patchBoard(boardId, boardUpdateDTO, images);
+            return true;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private final KafkaTemplate<String, String> kafkaTemplate;
     @GetMapping("/test")
     public String partion() {
-        kafkaTemplate.send("category", 1, "1", "Test");
+        kafkaTemplate.send("categories", 1, "update", "Test");
+
         return "done";
     }
 

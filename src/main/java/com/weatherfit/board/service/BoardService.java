@@ -1,14 +1,19 @@
 package com.weatherfit.board.service;
 
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weatherfit.board.domain.BoardEntity;
+import com.weatherfit.board.domain.ImageEntity;
 import com.weatherfit.board.dto.BoardListResponseDTO;
 import com.weatherfit.board.dto.BoardSearchDTO;
 import com.weatherfit.board.dto.BoardUpdateDTO;
 import com.weatherfit.board.repository.BoardRepository;
+import com.weatherfit.board.repository.ImageRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +25,11 @@ public class BoardService {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final BoardRepository boardRepository;
+    private final ImageRepository imageRepository;
+    private final AmazonS3Client amazonS3Client;
+    private final ImageService imageService;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucketName;
 
     // 게시글 전체 조회
     public List<BoardListResponseDTO> findAll() {
@@ -96,11 +106,40 @@ public class BoardService {
     }
 
     // 게시글 수정
-    public void patchBoard(int boardId, BoardUpdateDTO boardUpdateDTO) {
+    public void patchBoard(int boardId, BoardUpdateDTO boardUpdateDTO, MultipartFile[] images) {
         Optional<BoardEntity> optionalBoard = Optional.ofNullable(boardRepository.findById(boardId));
 //        kafkaTemplate.send("category before", boardUpdateDTO.getCategory().toString());
 //        kafkaTemplate.send("hashtag before", boardUpdateDTO.getHashTag().toString());
+
         BoardEntity originalBoard = optionalBoard.orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + boardId));
+
+
+        List<Integer> imageIdsToDelete = boardUpdateDTO.getImageIdsToDelete();
+        if (imageIdsToDelete != null && !imageIdsToDelete.isEmpty()) {
+            for (Integer imageId : imageIdsToDelete) {
+                Optional<ImageEntity> optionalImage = imageRepository.findById(imageId);
+                ImageEntity imageToDelete = optionalImage.orElseThrow(() -> new IllegalArgumentException("해당 이미지가 존재하지 않습니다. id=" + imageId));
+
+
+                String imageUrl = imageToDelete.getImage_url();
+                String keyName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+                amazonS3Client.deleteObject(bucketName, keyName);
+
+                imageRepository.delete(imageToDelete);
+            }
+        }
+
+        if (images != null && images.length > 0) {
+            for (MultipartFile imageToAdd : images) {
+                String imageUrl = imageService.saveImage(imageToAdd);
+                ImageEntity newImageEntity = ImageEntity.builder()
+                        .image_url(imageUrl)
+                        .boardId(originalBoard)
+                        .build();
+                imageRepository.save(newImageEntity);
+            }
+        }
+
         originalBoard.setContent(boardUpdateDTO.getContent());
         originalBoard.setCategory(boardUpdateDTO.getCategory());
         originalBoard.setHashTag(boardUpdateDTO.getHashTag());
