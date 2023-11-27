@@ -24,7 +24,8 @@ public class LikeEntity {
     @JsonBackReference
     private BoardEntity boardId;
 
-    @Column(name = "userId", nullable = false)
-    private int userId;
+
+    @Column(name = "nickName", nullable = false)
+    private String nickName;
 
 }

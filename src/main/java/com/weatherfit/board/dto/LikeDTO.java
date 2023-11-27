@@ -11,5 +11,5 @@ import lombok.ToString;
 public class LikeDTO {
     private int likeId;
     private int boardId;
-    private int userId;
+    private String nickName;
 }

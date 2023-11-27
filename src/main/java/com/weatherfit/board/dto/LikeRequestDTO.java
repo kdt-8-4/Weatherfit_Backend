@@ -6,5 +6,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class LikeRequestDTO {
-    private int userId;
+    private String nickName;
 }

@@ -17,16 +17,16 @@ public class LikeService {
     private final BoardRepository boardRepository;
 
     @Transactional
-    public void like(int boardId, int userId) {
+    public void like(int boardId, String nickName) {
         BoardEntity boardEntity = boardRepository.findById(boardId);
-        Optional<LikeEntity> existingLikeEntity = likeRepository.findByBoardIdAndUserId(boardEntity, userId);
+        Optional<LikeEntity> existingLikeEntity = likeRepository.findByBoardIdAndNickName(boardEntity, nickName);
 
         if (existingLikeEntity.isPresent()) {
             likeRepository.delete(existingLikeEntity.get());
         } else {
             LikeEntity likeEntity = LikeEntity.builder()
                     .boardId(boardEntity)
-                    .userId(userId)
+                    .nickName(nickName)
                     .build();
             likeRepository.save(likeEntity);
         }

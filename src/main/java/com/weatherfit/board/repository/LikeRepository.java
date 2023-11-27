@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface LikeRepository extends JpaRepository<LikeEntity, Integer> {
     int countByBoardId_BoardId(int boardId);
-    Optional<LikeEntity> findByBoardIdAndUserId(BoardEntity boardId, int userId);
+    Optional<LikeEntity> findByBoardIdAndNickName(BoardEntity boardId, String nickName);
 }
