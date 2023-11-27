@@ -100,16 +100,14 @@ public class BoardService {
         System.out.println(joiendString);
         System.out.println(joiendString2);
 
-//        kafkaTemplate.send("category", joiendString);
-//        kafkaTemplate.send("hashtag", joiendString2);
+        kafkaTemplate.send("category", 0, "category", joiendString);
+        kafkaTemplate.send("hashtag", 0, "hashtag", joiendString2);
         return board;
     }
 
     // 게시글 수정
     public void patchBoard(int boardId, BoardUpdateDTO boardUpdateDTO, MultipartFile[] images) {
         Optional<BoardEntity> optionalBoard = Optional.ofNullable(boardRepository.findById(boardId));
-//        kafkaTemplate.send("category before", boardUpdateDTO.getCategory().toString());
-//        kafkaTemplate.send("hashtag before", boardUpdateDTO.getHashTag().toString());
 
         BoardEntity originalBoard = optionalBoard.orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + boardId));
 
@@ -140,18 +138,39 @@ public class BoardService {
             }
         }
 
+        String afterJoiendString = originalBoard.getTemperature() + "/" + String.join("/", originalBoard.getCategory()) + ":" + String.join("/", boardUpdateDTO.getCategory());
+        String afterJoiendString2 = String.join("/", originalBoard.getHashTag()) + ":" + String.join("/", boardUpdateDTO.getHashTag());
+        System.out.println(afterJoiendString);
+        System.out.println(afterJoiendString2);
+
         originalBoard.setContent(boardUpdateDTO.getContent());
         originalBoard.setCategory(boardUpdateDTO.getCategory());
         originalBoard.setHashTag(boardUpdateDTO.getHashTag());
         boardRepository.save(originalBoard);
-//        kafkaTemplate.send("category after", originalBoard.getCategory().toString());
-//        kafkaTemplate.send("hashtag after", originalBoard.getHashTag().toString());
+
+
+        // 카프카 전송
+        kafkaTemplate.send("category", 1, "category", afterJoiendString);
+        kafkaTemplate.send("hashtag", 1, "hashtag", afterJoiendString2);
 
     }
 
     // 게시글 삭제
     public void deleteBoard(int boardId) {
+        Optional<BoardEntity> optionalBoard = Optional.ofNullable(boardRepository.findById(boardId));
+
+        BoardEntity originalBoard = optionalBoard.orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + boardId));
+
+        String afterJoiendString = originalBoard.getTemperature() + "/" + String.join("/", originalBoard.getCategory());
+        String afterJoiendString2 = String.join("/", originalBoard.getHashTag());
+
+
+        kafkaTemplate.send("category", 2, "category", afterJoiendString);
+        kafkaTemplate.send("hashtag", 2, "hashtag", afterJoiendString2);
+
+
         boardRepository.deleteById(boardId);
+
     }
 
     // 게시글 검색

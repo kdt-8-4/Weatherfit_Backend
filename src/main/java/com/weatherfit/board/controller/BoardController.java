@@ -80,7 +80,6 @@ public class BoardController {
         Optional<List<CommentResponseDTO>> comments = commentClient.getCommentAndReply(boardId);
         boardDetailResponseDTO.setComments(comments.orElse(new ArrayList<>()));
         return boardDetailResponseDTO;
-//        return boardService.getBoardById(boardId);
     }
 
     // 게시글 작성
@@ -140,7 +139,7 @@ public class BoardController {
     private final KafkaTemplate<String, String> kafkaTemplate;
     @GetMapping("/test")
     public String partion() {
-        kafkaTemplate.send("categories", 1, "update", "Test");
+        kafkaTemplate.send("hashtag", 1, "update", "Test");
 
         return "done";
     }
