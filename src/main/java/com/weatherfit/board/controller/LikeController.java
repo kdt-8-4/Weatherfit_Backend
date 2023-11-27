@@ -16,8 +16,8 @@ public class LikeController {
     }
 
     @PostMapping("/like/{boardId}")
-    public boolean like (@PathVariable("boardId") int boardId, @RequestBody LikeRequestDTO likeRequestDto) {
-        likeService.like(boardId, likeRequestDto.getNickName());
+    public boolean like (@RequestHeader("decodedToken") String nickName, @PathVariable("boardId") int boardId) {
+        likeService.like(boardId, nickName);
         return true;
     }
 }

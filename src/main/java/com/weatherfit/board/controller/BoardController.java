@@ -18,10 +18,10 @@ import org.springframework.http.MediaType;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 
 
 @RestController
@@ -72,7 +72,7 @@ public class BoardController {
         boardDetailResponseDTO.setHashTag(boardEntity.getHashTag());
         boardDetailResponseDTO.setStatus(boardEntity.isStatus());
         List<ImageDTO> imageDTOList = new ArrayList<>();
-        for(ImageEntity images : boardEntity.getImages()) {
+        for (ImageEntity images : boardEntity.getImages()) {
             imageDTOList.add(images.entityToDTO(images));
         }
         boardDetailResponseDTO.setImages(imageDTOList);
@@ -84,7 +84,7 @@ public class BoardController {
 
     // 게시글 작성
     @PostMapping("/write")
-    public String insertBoard(@RequestParam("board") String boardJson, @RequestPart("images") MultipartFile[] images) {
+    public String insertBoard(@RequestHeader("decodedToken") String nickName, @RequestParam("board") String boardJson, @RequestPart("images") MultipartFile[] images) {
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
@@ -92,7 +92,7 @@ public class BoardController {
 
             BoardEntity boardEntity = BoardEntity.builder()
                     .boardId(boardWriteDTO.getBoardId())
-                    .nickName(boardWriteDTO.getNickName())
+                    .nickName(nickName)
                     .content(boardWriteDTO.getContent())
                     .temperature(boardWriteDTO.getTemperature())
                     .category(boardWriteDTO.getCategory())
@@ -123,7 +123,8 @@ public class BoardController {
     // 게시글 수정
     @PatchMapping(value = "/edit/{boardId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public boolean patchBoard(@PathVariable int boardId,
+    public boolean patchBoard(
+                              @PathVariable int boardId,
                               @RequestPart("board") String boardJson,
                               @RequestPart(value = "images", required = false) MultipartFile[] images) {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -137,6 +138,7 @@ public class BoardController {
     }
 
     private final KafkaTemplate<String, String> kafkaTemplate;
+
     @GetMapping("/test")
     public String partion() {
         kafkaTemplate.send("hashtag", 1, "update", "Test");
@@ -147,14 +149,15 @@ public class BoardController {
     // 게시글 삭제
     @DeleteMapping("/delete/{boardId}")
     @ResponseBody
-    public void deleteBoard(@PathVariable int boardId) {
+    public void deleteBoard(
+                            @PathVariable int boardId) {
         boardService.deleteBoard(boardId);
     }
 
     // 게시글 검색
     @GetMapping("/search")
     public List<BoardSearchDTO> search(@RequestParam(required = false) List<String> categories,
-                    @RequestParam(required = false) List<String> hashtags) {
+                                       @RequestParam(required = false) List<String> hashtags) {
         return boardService.search(categories, hashtags);
     }
 }
