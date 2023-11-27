@@ -40,6 +40,9 @@ dependencies {
 	implementation 'mysql:mysql-connector-java:8.0.31'
 	//추가
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	//추가
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+	implementation 'javax.xml.bind:jaxb-api:2.3.0'
 }
 
 dependencyManagement {

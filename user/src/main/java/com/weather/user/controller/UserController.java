@@ -18,33 +18,13 @@ import java.util.Optional;
 public class UserController {
     private final UserService userService;
 
-    @GetMapping("/test")
-    public String test() {
-        log.info("테스트 컨트롤러 접근됨?");
-        return "test";
-    }
-
-    @GetMapping("/hello")
-    public String hello() {
-        log.info("헬로우 컨트롤러 접근됨?");
-        return "hello";
-    }
-    @GetMapping("/loginTest")
-    public String helloTest(){
-        log.info("ddddd");
+    @GetMapping("/social/login/google")
+    public String googleLogin(){
+        log.info("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
         return "redirect:/oauth2/authorization/google";
     }
 
-    @PostMapping("/user/signin")
-    public ResponseEntity<Optional<UserDTO>> signin(@RequestBody UserDTO userDTO) {
-        log.info("userDTO: " + userDTO);
-
-        Optional<UserDTO> result = userService.signin(userDTO.getEmail(), userDTO.getPassword(), userDTO.isFromSocial());
-
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-    @PostMapping("/user/signup")
+    @PostMapping("/signup")
     public ResponseEntity signup(@RequestBody UserDTO userDTO) {
         log.info("userDTO: " + userDTO);
 
@@ -53,7 +33,7 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/user/profile")
+    @PostMapping("/profile")
     public ResponseEntity<UserDTO> profile(@RequestBody UserDTO userDTO) {
         log.info("userDTO: " + userDTO);
 
@@ -62,7 +42,7 @@ public class UserController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PatchMapping("/user/profile/modify")
+    @PatchMapping("/profile/modify")
     public ResponseEntity<UserDTO> modify(@RequestBody UserDTO userDTO) {
         log.info("userDTO: " + userDTO);
 
@@ -71,7 +51,7 @@ public class UserController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @DeleteMapping("/user/profile/remove/{email}")
+    @DeleteMapping("/profile/remove/{email}")
     public ResponseEntity remove(@PathVariable String email) {
         log.info("email: " + email);
 

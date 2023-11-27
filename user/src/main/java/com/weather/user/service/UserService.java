@@ -11,8 +11,6 @@ public interface UserService {
 
     void signup(UserDTO userDTO);
 
-    Optional<UserDTO> signin(String email, String password, boolean fromSocial);
-
     UserDTO profile(String email);
 
     UserDTO modify(UserDTO userDTO);

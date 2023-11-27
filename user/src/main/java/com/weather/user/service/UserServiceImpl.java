@@ -35,26 +35,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserDTO> signin(String email, String password, boolean isFromSocial) {
-        log.info(email + ", " + password + ", " + isFromSocial);
-        Optional<User> optionalUser = userRepository.findByEmail(email, isFromSocial);
-        log.info("optionalUser: " + optionalUser);
-
-        if(optionalUser.isEmpty()) {
-            throw new Error("존재하지 않는 이메일입니다.");
-        }
-
-        User user = optionalUser.get();
-
-        if(passwordEncoder.matches(password, user.getPassword())) {
-            Optional<UserDTO> result = Optional.ofNullable(entityToDTO(user));
-            return result;
-        } else {
-            throw new Error("비밀번호가 일치하지 않습니다.");
-        }
-    }
-
-    @Override
     public UserDTO profile(String email) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         log.info("optionalUser: " + optionalUser);
