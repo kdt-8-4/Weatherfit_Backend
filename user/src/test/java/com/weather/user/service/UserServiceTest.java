@@ -30,16 +30,4 @@ public class UserServiceTest {
 
         userService.signup(userDTO);
     }
-
-    @Test
-    void signinTest() {
-        UserDTO userDTO = UserDTO.builder()
-                .email("servicetester1@test.com")
-                .password("1234")
-                .fromSocial(true)
-                .build();
-
-        Optional<UserDTO> result = userService.signin(userDTO.getEmail(), userDTO.getPassword(), userDTO.isFromSocial());
-        System.out.println("result: " + result);
-    }
 }

@@ -5,6 +5,7 @@ import com.weather.user.security.filter.ApiLoginFilter;
 import com.weather.user.security.handler.LoginFailureHandler;
 import com.weather.user.security.handler.LoginSuccessHandler;
 import com.weather.user.security.service.AuthUserDetailsService;
+import com.weather.user.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -48,7 +49,7 @@ public class SecurityConfig {
 
     @Bean
     public LoginSuccessHandler loginSuccessHandler() {
-        return new LoginSuccessHandler(passwordEncoder());
+        return new LoginSuccessHandler(jwtUtil());
     }
 
     @Bean
@@ -74,5 +75,10 @@ public class SecurityConfig {
         apiLoginFilter.setAuthenticationFailureHandler(loginFailureHandler());
 
         return apiLoginFilter;
+    }
+
+    @Bean
+    public JWTUtil jwtUtil() {
+        return new JWTUtil();
     }
 }

@@ -2,28 +2,25 @@ package com.weather.user.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weather.user.security.dto.AuthUserDTO;
+import com.weather.user.util.JWTUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
-import net.minidev.json.JSONObject;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.DefaultRedirectStrategy;
-import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import java.io.IOException;
 
 @Log4j2
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
-    private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
     private ObjectMapper objectMapper = new ObjectMapper();
-    private PasswordEncoder passwordEncoder;
+    private JWTUtil jwtUtil;
 
-    public LoginSuccessHandler(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
+    public LoginSuccessHandler(JWTUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -35,13 +32,17 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         log.info(authentication);
 
         AuthUserDTO authUserDTO = (AuthUserDTO) authentication.getPrincipal();
-        boolean fromSocial = authUserDTO.isFromSocial();
-        String name = authUserDTO.getName();
-
         log.info(authUserDTO);
 
-        String result = objectMapper.writeValueAsString(authUserDTO);
-        response.setContentType("application/json;charset=utf-8");
-        response.getWriter().write(result);
+        try {
+            String token = jwtUtil.generateToken(authUserDTO.getEmail());
+
+            String result = objectMapper.writeValueAsString(authUserDTO);
+            result = result.replace("}", ", \"token\": \"" + token + "\"}");
+            response.setContentType("application/json;charset=utf-8");
+            response.getWriter().write(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

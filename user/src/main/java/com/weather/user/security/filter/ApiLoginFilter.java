@@ -1,6 +1,7 @@
 package com.weather.user.security.filter;
 
 import com.weather.user.security.handler.LoginSuccessHandler;
+import com.weather.user.util.JWTUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,6 +17,7 @@ import java.io.InputStreamReader;
 
 @Log4j2
 public class ApiLoginFilter extends AbstractAuthenticationProcessingFilter {
+
     public ApiLoginFilter(String defaultFilterProcessUrl) {
         super(defaultFilterProcessUrl);
     }
