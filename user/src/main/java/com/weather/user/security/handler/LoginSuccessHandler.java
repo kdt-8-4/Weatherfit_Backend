@@ -44,13 +44,13 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             result = result.replace("}", ", \"token\": \"" + token + "\"}");
 
             Cookie cookieToken = new Cookie("token", token);
-            cookieToken.setHttpOnly(true); // JavaScript를 통한 쿠키 접근을 막기 위해 사용
+            cookieToken.setHttpOnly(false); // JavaScript를 통한 쿠키 접근을 막기 위해 사용
             cookieToken.setMaxAge(3 * 60 * 60);
             response.addCookie(cookieToken);
 
             String userinfo = authUserDTO.getEmail() + "|" + authUserDTO.getName() + "|" + authUserDTO.getImage();
             Cookie cookieUserinfo = new Cookie("userinfo", userinfo);
-            cookieUserinfo.setHttpOnly(true);
+            cookieUserinfo.setHttpOnly(false);
             cookieUserinfo.setMaxAge(3 * 60 * 60);
             response.addCookie(cookieUserinfo);
 
