@@ -48,7 +48,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             cookieToken.setMaxAge(3 * 60 * 60);
             response.addCookie(cookieToken);
 
-            String userinfo = authUserDTO.getEmail() + "," + authUserDTO.getName() + "," + authUserDTO.getImage();
+            String userinfo = authUserDTO.getEmail() + "|" + authUserDTO.getName() + "|" + authUserDTO.getImage();
             Cookie cookieUserinfo = new Cookie("userinfo", userinfo);
             cookieUserinfo.setHttpOnly(true);
             cookieUserinfo.setMaxAge(3 * 60 * 60);
@@ -56,8 +56,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
             if(authUserDTO.isFromSocial()) {
                 redirectStrategy.sendRedirect(request, response, "https://weatherfit-frontend.vercel.app/");
-            }
-            else {
+            } else {
                 response.setContentType("application/json;charset=utf-8");
                 response.getWriter().write(result);
             }
