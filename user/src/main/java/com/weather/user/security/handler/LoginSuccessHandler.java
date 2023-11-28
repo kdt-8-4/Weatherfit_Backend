@@ -11,12 +11,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import java.io.IOException;
 
 @Log4j2
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
+    private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
     private ObjectMapper objectMapper = new ObjectMapper();
     private JWTUtil jwtUtil;
 
@@ -42,11 +45,13 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
             Cookie cookie = new Cookie("result", result);
             cookie.setHttpOnly(true); // JavaScript를 통한 쿠키 접근을 막기 위해 사용
-            cookie.setMaxAge(7 * 24 * 60 * 60); // 쿠키의 만료 시간 설정 (예: 7일)
-            response.addCookie(cookie); // 응답에 쿠키 추가
+            cookie.setMaxAge(3 * 60 * 60);
+            response.addCookie(cookie);
 
             response.setContentType("application/json;charset=utf-8");
             response.getWriter().write(result);
+
+            redirectStrategy.sendRedirect(request, response, "https://weatherfit-frontend.vercel.app/");
         } catch (Exception e) {
             e.printStackTrace();
         }
