@@ -50,6 +50,12 @@ public class UserServiceImpl implements UserService {
             throw new Error("이미 존재하는 이메일입니다.");
         }
 
+        optionalUser = userRepository.findByNickname(userDTO.getNickname());
+
+        if(optionalUser.isPresent()) {
+            throw new Error("이미 존재하는 닉네임입니다.");
+        }
+
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         userDTO.setStatus(true);
         User user = dtoToEntity(userDTO);
