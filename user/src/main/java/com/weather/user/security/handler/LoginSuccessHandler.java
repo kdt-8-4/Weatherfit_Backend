@@ -46,11 +46,13 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             Cookie cookieToken = new Cookie("token", token);
             cookieToken.setHttpOnly(false); // JavaScript를 통한 쿠키 접근을 막기 위해 사용
             cookieToken.setMaxAge(3 * 60 * 60);
+            cookieToken.setSecure(true);
             response.addCookie(cookieToken);
 
             String userinfo = authUserDTO.getEmail() + "|" + authUserDTO.getName() + "|" + authUserDTO.getImage();
             Cookie cookieUserinfo = new Cookie("userinfo", userinfo);
             cookieUserinfo.setHttpOnly(false);
+            cookieToken.setSecure(true);
             cookieUserinfo.setMaxAge(3 * 60 * 60);
             response.addCookie(cookieUserinfo);
 
