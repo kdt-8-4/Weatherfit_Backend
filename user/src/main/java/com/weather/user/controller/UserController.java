@@ -25,7 +25,7 @@ public class UserController {
         return "redirect:/oauth2/authorization/google";
     }
 
-    @PostMapping("/signup/email")
+    @PostMapping("/api/signup/email")
     public ResponseEntity<JSONObject> verifyEmail(@RequestBody UserDTO userDTO) {
         log.info("userDTO: " + userDTO);
 
@@ -37,7 +37,7 @@ public class UserController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PostMapping("/signup/nickname")
+    @PostMapping("/api/signup/nickname")
     public ResponseEntity<JSONObject> verifyNickname(@RequestBody UserDTO userDTO) {
         log.info("userDTO: " + userDTO);
 
@@ -49,7 +49,7 @@ public class UserController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/api/signup")
     public ResponseEntity<JSONObject> signup(@RequestBody UserDTO userDTO) {
         log.info("userDTO: " + userDTO);
 
@@ -62,7 +62,7 @@ public class UserController {
     }
 
 
-    @PostMapping("/profile")
+    @PostMapping("/api/profile")
     public ResponseEntity<UserDTO> profile(@RequestBody UserDTO userDTO) {
         log.info("userDTO: " + userDTO);
 
@@ -71,7 +71,7 @@ public class UserController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PatchMapping("/profile/modify")
+    @PatchMapping("/api/profile/modify")
     public ResponseEntity<UserDTO> modify(@RequestBody UserDTO userDTO) {
         log.info("userDTO: " + userDTO);
 
@@ -80,7 +80,7 @@ public class UserController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @DeleteMapping("/profile/remove/{email}")
+    @DeleteMapping("/api/profile/remove/{email}")
     public ResponseEntity remove(@PathVariable String email) {
         log.info("email: " + email);
 

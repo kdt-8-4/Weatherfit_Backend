@@ -38,24 +38,23 @@ public class ApiCheckFilter extends OncePerRequestFilter {
             log.info("ApiCheckFilter..............................................");
             log.info("ApiCheckFilter..............................................");
 
-            boolean checkHeader = checkAuthHeader(request);
-
-            if(checkHeader) {
-                filterChain.doFilter(request, response);
-            }
-            else {
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                response.setContentType("application/json;charset=utf-8");
-                JSONObject json = new JSONObject();
-                String message = "FAIL CHECK API TOKEN";
-                json.put("code", "403");
-                json.put("message", message);
-
-                PrintWriter out = response.getWriter();
-                out.print(json);
-
-            }
-            return;
+//            boolean checkHeader = checkAuthHeader(request);
+//
+//            if(checkHeader) {
+//                filterChain.doFilter(request, response);
+//            }
+//            else {
+//                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+//                response.setContentType("application/json;charset=utf-8");
+//                JSONObject json = new JSONObject();
+//                String message = "FAIL CHECK API TOKEN";
+//                json.put("code", "403");
+//                json.put("message", message);
+//
+//                PrintWriter out = response.getWriter();
+//                out.print(json);
+//            }
+//            return;
         }
 
         log.info("?");
