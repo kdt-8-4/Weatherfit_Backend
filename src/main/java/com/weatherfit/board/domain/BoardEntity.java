@@ -28,9 +28,6 @@ public class BoardEntity extends BaseEntity {
     @Column(name = "content", nullable = false)
     private String content = "";
 
-    @Column(name = "likeCount", columnDefinition = "int default 0")
-    private int likeCount = 0;
-
     @Builder.Default
     @Column(name = "temperature", nullable = false)
     private int temperature = 0;

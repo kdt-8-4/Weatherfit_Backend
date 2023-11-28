@@ -30,11 +30,9 @@ public class LikeService {
                     .build();
             likeRepository.save(likeEntity);
         }
-        int likeCount = likeRepository.countByBoardId_BoardId(boardId);
-        BoardEntity updatedBoardEntity = boardEntity.toBuilder()
-                .likeCount(likeCount)
-                .build();
-        boardRepository.save(updatedBoardEntity);
+    }
+    public int countLikes(int boardId) {
+        return likeRepository.countByBoardId_BoardId(boardId);
     }
 
 }

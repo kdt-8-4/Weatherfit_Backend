@@ -12,6 +12,7 @@ import com.weatherfit.board.feignclient.CommentClient;
 import com.weatherfit.board.repository.ImageRepository;
 import com.weatherfit.board.service.BoardService;
 import com.weatherfit.board.service.ImageService;
+import com.weatherfit.board.service.LikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -40,6 +41,8 @@ public class BoardController {
     @Autowired
     private CommentClient commentClient;
 
+    @Autowired
+    private LikeService likeService;
 
     // 게시글 목록 조회
     @GetMapping("/list")
@@ -68,7 +71,7 @@ public class BoardController {
         boardDetailResponseDTO.setBoardId(boardEntity.getBoardId());
         boardDetailResponseDTO.setNickName(boardEntity.getNickName());
         boardDetailResponseDTO.setContent(boardEntity.getContent());
-        boardDetailResponseDTO.setLikeCount(boardEntity.getLikeCount());
+        boardDetailResponseDTO.setLikeCount(likeService.countLikes(boardId));
         boardDetailResponseDTO.setTemperature(boardEntity.getTemperature());
         boardDetailResponseDTO.setCategory(boardEntity.getCategory());
         boardDetailResponseDTO.setHashTag(boardEntity.getHashTag());

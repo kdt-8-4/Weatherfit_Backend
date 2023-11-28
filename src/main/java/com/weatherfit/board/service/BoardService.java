@@ -10,6 +10,7 @@ import com.weatherfit.board.dto.BoardUpdateDTO;
 import com.weatherfit.board.repository.BoardRepository;
 import com.weatherfit.board.repository.ImageRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,8 @@ public class BoardService {
     private final ImageService imageService;
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
+    @Autowired
+    private LikeService likeService;
 
     // 게시글 전체 조회
     public List<BoardListResponseDTO> findAll() {
@@ -39,7 +42,7 @@ public class BoardService {
             dtoList.add(BoardListResponseDTO.builder()
                     .boardId(board.getBoardId())
                     .nickName(board.getNickName())
-                    .likeCount(board.getLikeCount())
+                    .likeCount(likeService.countLikes(board.getBoardId()))
                     .hashTag(board.getHashTag())
                     .category(board.getCategory())
                     .temperature(board.getTemperature())
@@ -58,7 +61,7 @@ public class BoardService {
             dtoList.add(BoardListResponseDTO.builder()
                     .boardId(board.getBoardId())
                     .nickName(board.getNickName())
-                    .likeCount(board.getLikeCount())
+                    .likeCount(likeService.countLikes(board.getBoardId()))
                     .hashTag(board.getHashTag())
                     .category(board.getCategory())
                     .temperature(board.getTemperature())
@@ -80,7 +83,7 @@ public class BoardService {
                     .nickName(board.getNickName())
                     .hashTag(board.getHashTag())
                     .category(board.getCategory())
-                    .likeCount(board.getLikeCount())
+                    .likeCount(likeService.countLikes(board.getBoardId()))
                     .temperature(board.getTemperature())
                     .images(board.entityToDTO(board.getImages().get(0)))
                     .build()
@@ -190,7 +193,7 @@ public class BoardService {
             BoardSearchDTO dto = BoardSearchDTO.builder()
                     .boardId(board.getBoardId())
                     .nickName(board.getNickName())
-                    .likeCount(board.getLikeCount())
+                    .likeCount(likeService.countLikes(board.getBoardId()))
                     .images(board.entityToDTO(board.getImages().get(0)))
                     .build();
 
