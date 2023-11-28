@@ -4,6 +4,8 @@ package com.weatherfit.board.dto;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 
 @Getter
 @Builder
@@ -13,4 +15,6 @@ public class BoardListResponseDTO {
     private int likeCount;
     private int temperature;
     private ImageDTO images;
+    private List<String> category;
+    private List<String> hashTag;
 }
