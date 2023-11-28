@@ -19,7 +19,9 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -84,7 +86,8 @@ public class BoardController {
 
     // 게시글 작성
     @PostMapping("/write")
-    public String insertBoard(@RequestHeader("decodedToken") String nickName, @RequestParam("board") String boardJson, @RequestPart("images") MultipartFile[] images) {
+    public String insertBoard(@RequestHeader("decodedToken") String nickName, @RequestParam("board") String boardJson, @RequestPart("images") MultipartFile[] images) throws UnsupportedEncodingException {
+        String decodedNickname = new String(Base64.getDecoder().decode(nickName), "UTF-8");
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
@@ -92,7 +95,7 @@ public class BoardController {
 
             BoardEntity boardEntity = BoardEntity.builder()
                     .boardId(boardWriteDTO.getBoardId())
-                    .nickName(nickName)
+                    .nickName(decodedNickname)
                     .content(boardWriteDTO.getContent())
                     .temperature(boardWriteDTO.getTemperature())
                     .category(boardWriteDTO.getCategory())
