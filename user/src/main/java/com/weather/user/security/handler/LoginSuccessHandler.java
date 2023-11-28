@@ -43,15 +43,25 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             String result = objectMapper.writeValueAsString(authUserDTO);
             result = result.replace("}", ", \"token\": \"" + token + "\"}");
 
-            Cookie cookie = new Cookie("token", token);
-            cookie.setHttpOnly(true); // JavaScript를 통한 쿠키 접근을 막기 위해 사용
-            cookie.setMaxAge(3 * 60 * 60);
-            response.addCookie(cookie);
+            Cookie cookieToken = new Cookie("token", token);
+            cookieToken.setHttpOnly(true); // JavaScript를 통한 쿠키 접근을 막기 위해 사용
+            cookieToken.setMaxAge(3 * 60 * 60);
+            response.addCookie(cookieToken);
 
-            response.setContentType("application/json;charset=utf-8");
-            response.getWriter().write(result);
+            String userinfo = authUserDTO.getEmail() + "," + authUserDTO.getName() + "," + authUserDTO.getImage();
+            Cookie cookieUserinfo = new Cookie("userinfo", userinfo);
+            cookieUserinfo.setHttpOnly(true);
+            cookieUserinfo.setMaxAge(3 * 60 * 60);
+            response.addCookie(cookieUserinfo);
 
-            redirectStrategy.sendRedirect(request, response, "https://weatherfit-frontend.vercel.app/");
+            if(authUserDTO.isFromSocial()) {
+                redirectStrategy.sendRedirect(request, response, "https://weatherfit-frontend.vercel.app/");
+            }
+            else {
+                response.setContentType("application/json;charset=utf-8");
+                response.getWriter().write(result);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
