@@ -35,7 +35,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         log.info(authUserDTO);
 
         try {
-            String token = jwtUtil.generateToken(authUserDTO.getEmail());
+            String token = jwtUtil.generateToken(authUserDTO.getNickname());
 
             String result = objectMapper.writeValueAsString(authUserDTO);
             result = result.replace("}", ", \"token\": \"" + token + "\"}");

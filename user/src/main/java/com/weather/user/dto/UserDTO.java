@@ -9,7 +9,7 @@ import lombok.*;
 public class UserDTO {
     private int id;
 
-    private String email, name, nickname, phone, image, password;
+    private String email, name, nickname, phone, image, password, token;
 
     private boolean fromSocial, status;
 }

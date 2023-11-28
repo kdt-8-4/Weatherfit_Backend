@@ -18,6 +18,28 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
+    public boolean verifyEmail(String email) {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+
+        if(optionalUser.isEmpty()) {
+            return true;
+        } else  {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean verifyNickname(String nickname) {
+        Optional<User> optionalUser = userRepository.findByNickname(nickname);
+
+        if(optionalUser.isEmpty()) {
+            return true;
+        } else  {
+            return false;
+        }
+    }
+
+    @Override
     public void signup(UserDTO userDTO) {
         log.info(userDTO);
 

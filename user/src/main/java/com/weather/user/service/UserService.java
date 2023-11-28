@@ -9,6 +9,10 @@ import java.util.Optional;
 
 public interface UserService {
 
+    boolean verifyEmail(String email);
+
+    boolean verifyNickname(String email);
+
     void signup(UserDTO userDTO);
 
     UserDTO profile(String email);

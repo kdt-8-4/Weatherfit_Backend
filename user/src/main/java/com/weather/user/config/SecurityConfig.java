@@ -59,7 +59,7 @@ public class SecurityConfig {
 
     @Bean
     public ApiCheckFilter apiCheckFilter() {
-        return new ApiCheckFilter("/test/**");
+        return new ApiCheckFilter("/api/**", jwtUtil());
     }
 
     @Bean
@@ -69,7 +69,7 @@ public class SecurityConfig {
 
     @Bean
     public ApiLoginFilter apiLoginFilter(AuthenticationManager authenticationManager) throws Exception{
-        ApiLoginFilter apiLoginFilter = new ApiLoginFilter("/api/login");
+        ApiLoginFilter apiLoginFilter = new ApiLoginFilter("/login/api");
         apiLoginFilter.setAuthenticationManager(authenticationManager);
         apiLoginFilter.setAuthenticationSuccessHandler(loginSuccessHandler());
         apiLoginFilter.setAuthenticationFailureHandler(loginFailureHandler());

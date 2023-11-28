@@ -5,6 +5,7 @@ import com.weather.user.entity.User;
 import com.weather.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import net.minidev.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,10 +19,34 @@ import java.util.Optional;
 public class UserController {
     private final UserService userService;
 
-    @GetMapping("/social/login/google")
+    @GetMapping("/login/social/google")
     public String googleLogin(){
         log.info("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
         return "redirect:/oauth2/authorization/google";
+    }
+
+    @PostMapping("/signup/email")
+    public ResponseEntity<JSONObject> verifyEmail(@RequestBody UserDTO userDTO) {
+        log.info("userDTO: " + userDTO);
+
+        boolean verifyEmail = userService.verifyEmail(userDTO.getEmail());
+
+        JSONObject result = new JSONObject();
+        result.put("result", verifyEmail);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PostMapping("/signup/nickname")
+    public ResponseEntity<JSONObject> verifyNickname(@RequestBody UserDTO userDTO) {
+        log.info("userDTO: " + userDTO);
+
+        boolean verifyNickname = userService.verifyNickname(userDTO.getNickname());
+
+        JSONObject result = new JSONObject();
+        result.put("result", verifyNickname);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping("/signup")
@@ -32,6 +57,7 @@ public class UserController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 
     @PostMapping("/profile")
     public ResponseEntity<UserDTO> profile(@RequestBody UserDTO userDTO) {

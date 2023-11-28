@@ -1,5 +1,6 @@
 package com.weather.user.security.filter;
 
+import com.weather.user.util.JWTUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,10 +18,12 @@ import java.io.PrintWriter;
 public class ApiCheckFilter extends OncePerRequestFilter {
     private AntPathMatcher antPathMatcher;
     private String pattern;
+    private JWTUtil jwtUtil;
 
-    public ApiCheckFilter(String pattern) {
+    public ApiCheckFilter(String pattern, JWTUtil jwtUtil) {
         this.antPathMatcher = new AntPathMatcher();
         this.pattern = pattern;
+        this.jwtUtil = jwtUtil;
     }
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -60,16 +63,22 @@ public class ApiCheckFilter extends OncePerRequestFilter {
     }
 
     private boolean checkAuthHeader(HttpServletRequest request) {
-        boolean result = false;
+        boolean checkResult = false;
 
-        String header = request.getHeader("Authorization");
+        String authHeader = request.getHeader("Authorization");
 
-        if(StringUtils.hasText(header)) {
-            if(header.equals("weatherfit")) {
-                result = true;
+        if(StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {
+            log.info("Authorization exist: " + authHeader);
+
+            try {
+                String email = jwtUtil.validateAndExtract(authHeader.substring(7));
+                log.info("validate result: " + email);
+                checkResult = email.length() > 0;
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
-        return result;
+        return checkResult;
     }
 }
