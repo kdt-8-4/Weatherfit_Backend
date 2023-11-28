@@ -71,9 +71,9 @@ public class ApiCheckFilter extends OncePerRequestFilter {
             log.info("Authorization exist: " + authHeader);
 
             try {
-                String email = jwtUtil.validateAndExtract(authHeader.substring(7));
-                log.info("validate result: " + email);
-                checkResult = email.length() > 0;
+                String nickname = jwtUtil.validateAndExtract(authHeader.substring(7));
+                log.info("validate result: " + nickname);
+                checkResult = nickname.length() > 0;
             } catch (Exception e) {
                 e.printStackTrace();
             }

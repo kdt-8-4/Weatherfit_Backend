@@ -50,12 +50,15 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity signup(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<JSONObject> signup(@RequestBody UserDTO userDTO) {
         log.info("userDTO: " + userDTO);
 
         userService.signup(userDTO);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        JSONObject result = new JSONObject();
+        result.put("result", true);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 
