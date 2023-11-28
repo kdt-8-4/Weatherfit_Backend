@@ -5,6 +5,7 @@ import com.weather.user.security.dto.AuthUserDTO;
 import com.weather.user.util.JWTUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
@@ -36,9 +37,14 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         try {
             String token = jwtUtil.generateToken(authUserDTO.getNickname());
-
             String result = objectMapper.writeValueAsString(authUserDTO);
             result = result.replace("}", ", \"token\": \"" + token + "\"}");
+
+            Cookie cookie = new Cookie("result", result);
+            cookie.setHttpOnly(true); // JavaScript를 통한 쿠키 접근을 막기 위해 사용
+            cookie.setMaxAge(7 * 24 * 60 * 60); // 쿠키의 만료 시간 설정 (예: 7일)
+            response.addCookie(cookie); // 응답에 쿠키 추가
+
             response.setContentType("application/json;charset=utf-8");
             response.getWriter().write(result);
         } catch (Exception e) {
