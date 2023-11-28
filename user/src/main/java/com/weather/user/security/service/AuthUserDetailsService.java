@@ -32,7 +32,6 @@ public class AuthUserDetailsService implements UserDetailsService {
         }
 
         User user = optionalUser.get();
-        log.info("user: " + user.getPassword());
 
         AuthUserDTO result = new AuthUserDTO(
                 user.getEmail(), user.getPassword(),user.getName(), user.getNickname(), user.getImage(),

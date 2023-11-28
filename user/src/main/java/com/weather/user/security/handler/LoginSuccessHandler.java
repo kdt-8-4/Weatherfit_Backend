@@ -43,7 +43,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             String result = objectMapper.writeValueAsString(authUserDTO);
             result = result.replace("}", ", \"token\": \"" + token + "\"}");
 
-            Cookie cookie = new Cookie("result", result);
+            Cookie cookie = new Cookie("token", token);
             cookie.setHttpOnly(true); // JavaScript를 통한 쿠키 접근을 막기 위해 사용
             cookie.setMaxAge(3 * 60 * 60);
             response.addCookie(cookie);
