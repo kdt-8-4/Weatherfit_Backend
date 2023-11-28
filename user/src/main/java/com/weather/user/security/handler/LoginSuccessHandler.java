@@ -52,7 +52,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             String userinfo = authUserDTO.getEmail() + "|" + authUserDTO.getName() + "|" + authUserDTO.getImage();
             Cookie cookieUserinfo = new Cookie("userinfo", userinfo);
             cookieUserinfo.setHttpOnly(false);
-            cookieToken.setSecure(true);
+            cookieUserinfo.setSecure(true);
             cookieUserinfo.setMaxAge(3 * 60 * 60);
             response.addCookie(cookieUserinfo);
 
