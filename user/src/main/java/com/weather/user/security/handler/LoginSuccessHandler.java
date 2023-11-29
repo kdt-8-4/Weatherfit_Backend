@@ -44,18 +44,14 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             result = result.replace("}", ", \"token\": \"" + token + "\"}");
 
             Cookie cookieToken = new Cookie("token", token);
-            cookieToken.setHttpOnly(false);
-            cookieToken.setMaxAge(3 * 60 * 60);
-            cookieToken.setSecure(true);
-            String cookieTokenHeader = String.format("%s; %s", cookieToken.toString(), "SameSite=None; Secure");
-            response.addHeader("Set-Cookie", cookieTokenHeader);
+            cookieToken = cookieSetting(cookieToken);
+//            String cookieTokenHeader = String.format("%s; %s", cookieToken.toString(), "SameSite=None; Secure");
+            response.addCookie(cookieToken);
 
             String userinfo = authUserDTO.getEmail() + "|" + authUserDTO.getName() + "|" + authUserDTO.getImage();
             Cookie cookieUserinfo = new Cookie("userinfo", userinfo);
-            cookieUserinfo.setHttpOnly(false);
-            cookieUserinfo.setMaxAge(3 * 60 * 60);
-            cookieUserinfo.setSecure(true);
-            String cookieUserinfoHeader = String.format("%s; %s", cookieToken.toString(), "SameSite=None; Secure");
+            cookieUserinfo = cookieSetting(cookieUserinfo);
+            String cookieUserinfoHeader = String.format("%s; SameSite=None; Secure", cookieUserinfo.toString());
             response.addHeader("Set-Cookie", cookieUserinfoHeader);
 
             if(authUserDTO.isFromSocial()) {
@@ -68,5 +64,14 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public Cookie cookieSetting(Cookie cookie) {
+        cookie.setHttpOnly(false);
+        cookie.setMaxAge(3 * 60 * 60);
+        cookie.setSecure(true);
+        cookie.setDomain("weatherfit-frontend.vercel.app");
+
+        return cookie;
     }
 }
