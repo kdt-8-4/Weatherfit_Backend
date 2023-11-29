@@ -49,9 +49,11 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             response.addCookie(cookieToken);
 
             String userinfo = authUserDTO.getEmail() + "|" + authUserDTO.getName() + "|" + authUserDTO.getImage();
-            Cookie cookieUserinfo = new Cookie("userinfo", userinfo);
-            cookieUserinfo = cookieSetting(cookieUserinfo);
-            String cookieUserinfoHeader = String.format("%s; SameSite=None; Secure", cookieUserinfo.toString());
+//            Cookie cookieUserinfo = new Cookie("userinfo", userinfo);
+//            cookieUserinfo = cookieSetting(cookieUserinfo);
+//            String test = cookieUserinfo.toString();
+//            log.info(test);
+            String cookieUserinfoHeader = String.format("accessToken=%s; SameSite=None; Secure", "accessToken", token);
             response.addHeader("Set-Cookie", cookieUserinfoHeader);
 
             if(authUserDTO.isFromSocial()) {
