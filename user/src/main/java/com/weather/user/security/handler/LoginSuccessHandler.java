@@ -47,7 +47,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             ResponseCookie cookieToken = ResponseCookie.from("accessToken", token)
                     .domain("weatherfit-frontend.vercel.app")
                     .sameSite("None")
-                    .maxAge(60 * 60 * 3)
+                    .maxAge(-1)
                     .httpOnly(false)
                     .secure(false)
                     .path("/").build();
