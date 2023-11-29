@@ -18,6 +18,8 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Integer>, Bo
 
     BoardEntity findById(int id);
 
+    List<BoardEntity> findByNickName(String nickName);
+
     List<BoardEntity> findByCategoryInAndHashTagIn(List<String> categories, List<String> hashTags);
     List<BoardEntity> findByHashTagIn(List<String> hashTags);
     List<BoardEntity> findByCategoryIn(List<String> categories);

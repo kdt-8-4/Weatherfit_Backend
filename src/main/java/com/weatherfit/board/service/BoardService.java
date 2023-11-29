@@ -47,7 +47,7 @@ public class BoardService {
                     .category(board.getCategory())
                     .temperature(board.getTemperature());
 
-            if(!board.getImages().isEmpty()) {
+            if (!board.getImages().isEmpty()) {
                 builder.images(board.entityToDTO(board.getImages().get(0)));
             }
 
@@ -70,7 +70,7 @@ public class BoardService {
                     .category(board.getCategory())
                     .temperature(board.getTemperature());
 
-            if(!board.getImages().isEmpty()) {
+            if (!board.getImages().isEmpty()) {
                 builder.images(board.entityToDTO(board.getImages().get(0)));
             }
 
@@ -93,7 +93,7 @@ public class BoardService {
                     .category(board.getCategory())
                     .temperature(board.getTemperature());
 
-            if(!board.getImages().isEmpty()) {
+            if (!board.getImages().isEmpty()) {
                 builder.images(board.entityToDTO(board.getImages().get(0)));
             }
 
@@ -102,6 +102,29 @@ public class BoardService {
 
         return dtoList;
     }
+
+    // 내가 쓴 게시글 조회
+    public List<BoardListResponseDTO> findNickname(String nickName) {
+        List<BoardEntity> entities = boardRepository.findByNickName(nickName);
+        List<BoardListResponseDTO> dtoList = new ArrayList<>();
+
+        for (BoardEntity board : entities) {
+            BoardListResponseDTO.BoardListResponseDTOBuilder builder = BoardListResponseDTO.builder()
+                    .boardId(board.getBoardId())
+                    .nickName(board.getNickName())
+                    .likeCount(likeService.countLikes(board.getBoardId()))
+                    .hashTag(board.getHashTag())
+                    .category(board.getCategory())
+                    .temperature(board.getTemperature());
+
+            if (!board.getImages().isEmpty()) {
+                builder.images(board.entityToDTO(board.getImages().get(0)));
+            }
+            dtoList.add(builder.build());
+        }
+        return dtoList;
+    }
+
 
     // 게시글 상세 조회
     public BoardEntity getBoardById(int boardId) {
@@ -125,11 +148,14 @@ public class BoardService {
     }
 
     // 게시글 수정
-    public void patchBoard(int boardId, BoardUpdateDTO boardUpdateDTO, MultipartFile[] images) {
+    public void patchBoard(int boardId, BoardUpdateDTO boardUpdateDTO, MultipartFile[] images, String nickName) {
         Optional<BoardEntity> optionalBoard = Optional.ofNullable(boardRepository.findById(boardId));
 
         BoardEntity originalBoard = optionalBoard.orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + boardId));
 
+        if (!originalBoard.getNickName().equals(nickName)) {
+            throw new IllegalArgumentException("게시글 수정 권한이 없습니다.");
+        }
 
         List<Integer> imageIdsToDelete = boardUpdateDTO.getImageIdsToDelete();
         if (imageIdsToDelete != null && !imageIdsToDelete.isEmpty()) {
@@ -175,10 +201,14 @@ public class BoardService {
     }
 
     // 게시글 삭제
-    public void deleteBoard(int boardId) {
+    public void deleteBoard(int boardId, String nickName) {
         Optional<BoardEntity> optionalBoard = Optional.ofNullable(boardRepository.findById(boardId));
 
         BoardEntity originalBoard = optionalBoard.orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + boardId));
+
+        if (!originalBoard.getNickName().equals(nickName)) {
+            throw new IllegalArgumentException("게시글 삭제 권한이 없습니다.");
+        }
 
         String afterJoiendString = originalBoard.getTemperature() + "/" + String.join("/", originalBoard.getCategory());
         String afterJoiendString2 = String.join("/", originalBoard.getHashTag());

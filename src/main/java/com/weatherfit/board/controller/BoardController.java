@@ -59,6 +59,13 @@ public class BoardController {
         return list;
     }
 
+    // 내가 쓴 게시글 조회
+    @GetMapping("/myList")
+    public List<BoardListResponseDTO> myListBoards(@RequestHeader("decodedToken") String nickName) throws UnsupportedEncodingException {
+        String decodedNickname = new String(Base64.getDecoder().decode(nickName), "UTF-8");
+        return boardService.findNickname(decodedNickname);
+    }
+
     // 게시글 상세 조회
     @GetMapping("/detail/{boardId}")
     public BoardDetailResponseDTO detailBoard(@PathVariable int boardId) {
@@ -129,13 +136,15 @@ public class BoardController {
     @PatchMapping(value = "/edit/{boardId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
     public boolean patchBoard(
+            @RequestHeader("decodedToken") String nickName,
             @PathVariable int boardId,
             @RequestPart("board") String boardJson,
             @RequestPart(value = "images", required = false) MultipartFile[] images) {
         ObjectMapper objectMapper = new ObjectMapper();
+
         try {
             BoardUpdateDTO boardUpdateDTO = objectMapper.readValue(boardJson, BoardUpdateDTO.class);
-            boardService.patchBoard(boardId, boardUpdateDTO, images);
+            boardService.patchBoard(boardId, boardUpdateDTO, images, nickName);
             return true;
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -146,8 +155,9 @@ public class BoardController {
     @DeleteMapping("/delete/{boardId}")
     @ResponseBody
     public void deleteBoard(
+            @RequestHeader("decodedToken") String nickName,
             @PathVariable int boardId) {
-        boardService.deleteBoard(boardId);
+        boardService.deleteBoard(boardId, nickName);
     }
 
     // 게시글 검색
