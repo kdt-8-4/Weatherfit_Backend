@@ -53,7 +53,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 //            cookieUserinfo = cookieSetting(cookieUserinfo);
 //            String test = cookieUserinfo.toString();
 //            log.info(test);
-            String cookieUserinfoHeader = String.format("accessToken=%s; SameSite=None; Secure", token);
+            String cookieUserinfoHeader = String.format("accessToken=%s; Max-Age=1080; SameSite=None; Secure", token);
             response.addHeader("Set-Cookie", cookieUserinfoHeader);
 
             if(authUserDTO.isFromSocial()) {
