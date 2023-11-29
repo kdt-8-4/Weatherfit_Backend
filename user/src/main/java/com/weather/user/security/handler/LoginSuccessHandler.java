@@ -49,17 +49,12 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
                     .sameSite("None")
                     .maxAge(60 * 60 * 3)
                     .httpOnly(false)
-                    .secure(true).build();
+                    .secure(true)
+                    .path("/").build();
             log.info(cookieToken.toString());
             response.addHeader("Set-Cookie", cookieToken.toString());
 
             String userinfo = authUserDTO.getEmail() + "|" + authUserDTO.getName() + "|" + authUserDTO.getImage();
-//            Cookie cookieUserinfo = new Cookie("userinfo", userinfo);
-//            cookieUserinfo = cookieSetting(cookieUserinfo);
-//            String test = cookieUserinfo.toString();
-//            log.info(test);
-            String cookieUserinfoHeader = String.format("accessToken=%s; Max-Age=1080; SameSite=None; Secure", token);
-            response.addHeader("Set-Cookie", cookieUserinfoHeader);
 
             if(authUserDTO.isFromSocial()) {
                 redirectStrategy.sendRedirect(request, response, "https://weatherfit-frontend.vercel.app/");
