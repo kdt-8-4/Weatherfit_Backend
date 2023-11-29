@@ -16,7 +16,6 @@ import com.weatherfit.board.service.LikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -130,9 +129,9 @@ public class BoardController {
     @PatchMapping(value = "/edit/{boardId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
     public boolean patchBoard(
-                              @PathVariable int boardId,
-                              @RequestPart("board") String boardJson,
-                              @RequestPart(value = "images", required = false) MultipartFile[] images) {
+            @PathVariable int boardId,
+            @RequestPart("board") String boardJson,
+            @RequestPart(value = "images", required = false) MultipartFile[] images) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             BoardUpdateDTO boardUpdateDTO = objectMapper.readValue(boardJson, BoardUpdateDTO.class);
@@ -143,20 +142,11 @@ public class BoardController {
         }
     }
 
-    private final KafkaTemplate<String, String> kafkaTemplate;
-
-    @GetMapping("/test")
-    public String partion() {
-        kafkaTemplate.send("hashtag", 1, "update", "Test");
-
-        return "done";
-    }
-
     // 게시글 삭제
     @DeleteMapping("/delete/{boardId}")
     @ResponseBody
     public void deleteBoard(
-                            @PathVariable int boardId) {
+            @PathVariable int boardId) {
         boardService.deleteBoard(boardId);
     }
 

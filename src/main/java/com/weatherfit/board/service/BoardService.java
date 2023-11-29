@@ -39,17 +39,21 @@ public class BoardService {
         List<BoardEntity> entities = boardRepository.findAll();
         List<BoardListResponseDTO> dtoList = new ArrayList<>();
         for (BoardEntity board : entities) {
-            dtoList.add(BoardListResponseDTO.builder()
+            BoardListResponseDTO.BoardListResponseDTOBuilder builder = BoardListResponseDTO.builder()
                     .boardId(board.getBoardId())
                     .nickName(board.getNickName())
                     .likeCount(likeService.countLikes(board.getBoardId()))
                     .hashTag(board.getHashTag())
                     .category(board.getCategory())
-                    .temperature(board.getTemperature())
-                    .images(board.entityToDTO(board.getImages().get(0)))
-                    .build()
-            );
+                    .temperature(board.getTemperature());
+
+            if(!board.getImages().isEmpty()) {
+                builder.images(board.entityToDTO(board.getImages().get(0)));
+            }
+
+            dtoList.add(builder.build());
         }
+
         return dtoList;
     }
 
@@ -58,16 +62,19 @@ public class BoardService {
         List<BoardEntity> entities = boardRepository.findAllByOrderByCreateDateDesc();
         List<BoardListResponseDTO> dtoList = new ArrayList<>();
         for (BoardEntity board : entities) {
-            dtoList.add(BoardListResponseDTO.builder()
+            BoardListResponseDTO.BoardListResponseDTOBuilder builder = BoardListResponseDTO.builder()
                     .boardId(board.getBoardId())
                     .nickName(board.getNickName())
                     .likeCount(likeService.countLikes(board.getBoardId()))
                     .hashTag(board.getHashTag())
                     .category(board.getCategory())
-                    .temperature(board.getTemperature())
-                    .images(board.entityToDTO(board.getImages().get(0)))
-                    .build()
-            );
+                    .temperature(board.getTemperature());
+
+            if(!board.getImages().isEmpty()) {
+                builder.images(board.entityToDTO(board.getImages().get(0)));
+            }
+
+            dtoList.add(builder.build());
         }
         return dtoList;
 
@@ -78,16 +85,19 @@ public class BoardService {
         List<BoardEntity> entities = boardRepository.findAllByOrderByLikeCountDesc();
         List<BoardListResponseDTO> dtoList = new ArrayList<>();
         for (BoardEntity board : entities) {
-            dtoList.add(BoardListResponseDTO.builder()
+            BoardListResponseDTO.BoardListResponseDTOBuilder builder = BoardListResponseDTO.builder()
                     .boardId(board.getBoardId())
                     .nickName(board.getNickName())
+                    .likeCount(likeService.countLikes(board.getBoardId()))
                     .hashTag(board.getHashTag())
                     .category(board.getCategory())
-                    .likeCount(likeService.countLikes(board.getBoardId()))
-                    .temperature(board.getTemperature())
-                    .images(board.entityToDTO(board.getImages().get(0)))
-                    .build()
-            );
+                    .temperature(board.getTemperature());
+
+            if(!board.getImages().isEmpty()) {
+                builder.images(board.entityToDTO(board.getImages().get(0)));
+            }
+
+            dtoList.add(builder.build());
         }
 
         return dtoList;

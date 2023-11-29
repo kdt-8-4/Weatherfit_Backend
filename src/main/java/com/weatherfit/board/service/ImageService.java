@@ -39,9 +39,6 @@ public class ImageService {
             throw new RuntimeException("Failed to upload image to S3", e);
         }
     }
-    public void deleteImage(String keyName) {
-        amazonS3Client.deleteObject(bucketName, keyName);
-    }
 
 
 }

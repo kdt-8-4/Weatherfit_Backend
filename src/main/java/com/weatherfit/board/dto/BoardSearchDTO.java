@@ -1,11 +1,9 @@
 package com.weatherfit.board.dto;
 
-import com.weatherfit.board.domain.ImageEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
 
 @Getter
 @Setter
