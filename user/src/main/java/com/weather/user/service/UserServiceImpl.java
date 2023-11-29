@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
         if(user.isStatus()) {
             user.changeNickname(userDTO.getNickname());
             user.changeImage(userDTO.getImage());
-            user.changePassword(userDTO.getPassword());
+            user.changePassword(passwordEncoder.encode(userDTO.getPassword()));
             userRepository.save(user);
 
             UserDTO result = entityToDTO(user);

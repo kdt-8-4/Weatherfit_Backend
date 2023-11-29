@@ -66,13 +66,4 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             e.printStackTrace();
         }
     }
-
-    public Cookie cookieSetting(Cookie cookie) {
-        cookie.setHttpOnly(false);
-        cookie.setMaxAge(3 * 60 * 60);
-        cookie.setSecure(true);
-        cookie.setDomain("weatherfit-frontend.vercel.app");
-
-        return cookie;
-    }
 }
