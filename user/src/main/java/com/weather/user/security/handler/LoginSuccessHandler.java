@@ -9,6 +9,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.DefaultRedirectStrategy;
@@ -43,10 +44,14 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             String result = objectMapper.writeValueAsString(authUserDTO);
             result = result.replace("}", ", \"token\": \"" + token + "\"}");
 
-            Cookie cookieToken = new Cookie("token", token);
-            cookieToken = cookieSetting(cookieToken);
-//            String cookieTokenHeader = String.format("%s; %s", cookieToken.toString(), "SameSite=None; Secure");
-            response.addCookie(cookieToken);
+            ResponseCookie cookieToken = ResponseCookie.from("accessToken", token)
+                    .domain("weatherfit-frontend.vercel.app")
+                    .sameSite("None")
+                    .maxAge(60 * 60 * 3)
+                    .httpOnly(false)
+                    .secure(true).build();
+            log.info(cookieToken.toString());
+            response.addHeader("Set-Cookie", cookieToken.toString());
 
             String userinfo = authUserDTO.getEmail() + "|" + authUserDTO.getName() + "|" + authUserDTO.getImage();
 //            Cookie cookieUserinfo = new Cookie("userinfo", userinfo);
