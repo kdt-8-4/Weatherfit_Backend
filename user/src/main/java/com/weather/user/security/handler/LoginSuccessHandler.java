@@ -49,7 +49,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
                     .sameSite("None")
                     .maxAge(60 * 60 * 3)
                     .httpOnly(false)
-                    .secure(true)
+                    .secure(false)
                     .path("/").build();
             log.info(cookieToken.toString());
             response.addHeader("Set-Cookie", cookieToken.toString());
@@ -62,7 +62,6 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
                 response.setContentType("application/json;charset=utf-8");
                 response.getWriter().write(result);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
