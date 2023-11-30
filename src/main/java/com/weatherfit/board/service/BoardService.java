@@ -1,12 +1,15 @@
 package com.weatherfit.board.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weatherfit.board.domain.BoardEntity;
 import com.weatherfit.board.domain.ImageEntity;
 import com.weatherfit.board.dto.BoardListResponseDTO;
 import com.weatherfit.board.dto.BoardSearchDTO;
 import com.weatherfit.board.dto.BoardUpdateDTO;
+import com.weatherfit.board.dto.BoardWriteDTO;
 import com.weatherfit.board.repository.BoardRepository;
 import com.weatherfit.board.repository.ImageRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +36,8 @@ public class BoardService {
     private String bucketName;
     @Autowired
     private LikeService likeService;
+    @Autowired
+    private BoardService boardService;
 
     // 게시글 전체 조회
     public List<BoardListResponseDTO> findAll() {
@@ -148,28 +153,58 @@ public class BoardService {
     }
 
     // 게시글 수정
-    public void patchBoard(int boardId, BoardUpdateDTO boardUpdateDTO, MultipartFile[] images, String nickName) {
+    public void patchBoard(int boardId, String boardJson, MultipartFile[] images, String nickName) {
         Optional<BoardEntity> optionalBoard = Optional.ofNullable(boardRepository.findById(boardId));
 
         BoardEntity originalBoard = optionalBoard.orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + boardId));
 
-        System.out.println(originalBoard.getNickName().toString());
-
-        List<Integer> imageIdsToDelete = boardUpdateDTO.getImageIdsToDelete();
-        if (imageIdsToDelete != null && !imageIdsToDelete.isEmpty()) {
-            for (Integer imageId : imageIdsToDelete) {
-                Optional<ImageEntity> optionalImage = imageRepository.findById(imageId);
-                ImageEntity imageToDelete = optionalImage.orElseThrow(() -> new IllegalArgumentException("해당 이미지가 존재하지 않습니다. id=" + imageId));
+        ObjectMapper objectMapper = new ObjectMapper();
+        imageRepository.deleteByBoardId(originalBoard);
 
 
-                String imageUrl = imageToDelete.getImage_url();
-                String keyName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
-                amazonS3Client.deleteObject(bucketName, keyName);
-
-                imageRepository.delete(imageToDelete);
-            }
+        BoardUpdateDTO boardUpdateDTO;
+        try {
+            boardUpdateDTO = objectMapper.readValue(boardJson, BoardUpdateDTO.class);
+        } catch (JsonMappingException e) {
+            throw new RuntimeException(e);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
+        BoardEntity boardEntity = BoardEntity.builder()
+                .boardId(boardId)
+                .content(boardUpdateDTO.getContent())
+                .category(boardUpdateDTO.getCategory())
+                .hashTag(boardUpdateDTO.getHashTag())
+                .build();
 
+        BoardEntity savedBoard = boardService.insertBoard(boardEntity);
+
+        for (MultipartFile image : images) {
+            String imageUrl = imageService.saveImage(image);
+
+            ImageEntity imageEntity = ImageEntity.builder()
+                    .image_url(imageUrl)
+                    .boardId(savedBoard)
+                    .build();
+            imageRepository.save(imageEntity);
+        }
+//        System.out.println(originalBoard.getNickName().toString());
+//
+//        List<Integer> imageIdsToDelete = boardUpdateDTO.getImageIdsToDelete();
+//        if (imageIdsToDelete != null && !imageIdsToDelete.isEmpty()) {
+//            for (Integer imageId : imageIdsToDelete) {
+//                Optional<ImageEntity> optionalImage = imageRepository.findById(imageId);
+//                ImageEntity imageToDelete = optionalImage.orElseThrow(() -> new IllegalArgumentException("해당 이미지가 존재하지 않습니다. id=" + imageId));
+//
+//
+//                String imageUrl = imageToDelete.getImage_url();
+//                String keyName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+//                amazonS3Client.deleteObject(bucketName, keyName);
+//
+//                imageRepository.delete(imageToDelete);
+//            }
+//        }
+//
 //        if (images != null && images.length > 0) {
 //            for (MultipartFile imageToAdd : images) {
 //                String imageUrl = imageService.saveImage(imageToAdd);

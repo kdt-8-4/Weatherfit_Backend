@@ -8,6 +8,7 @@ import java.util.List;
 @Getter
 @Setter
 public class BoardUpdateDTO {
+    private int boardId;
     private String content;
     private List<String> category;
     private List<String> hashTag;

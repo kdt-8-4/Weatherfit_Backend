@@ -141,15 +141,10 @@ public class BoardController {
             @RequestPart("board") String boardJson,
             @RequestPart(value = "images", required = false) MultipartFile[] images) throws UnsupportedEncodingException {
         String decodedNickname = new String(Base64.getDecoder().decode(nickName), "UTF-8");
-        ObjectMapper objectMapper = new ObjectMapper();
 
-        try {
-            BoardUpdateDTO boardUpdateDTO = objectMapper.readValue(boardJson, BoardUpdateDTO.class);
-            boardService.patchBoard(boardId, boardUpdateDTO, images, decodedNickname);
-            return true;
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+
+        boardService.patchBoard(boardId, boardJson, images, decodedNickname);
+        return true;
     }
 
     // 게시글 삭제
@@ -157,7 +152,8 @@ public class BoardController {
     @ResponseBody
     public void deleteBoard(
             @RequestHeader("decodedToken") String nickName,
-            @PathVariable int boardId) {
+            @PathVariable int boardId) throws UnsupportedEncodingException {
+        String decodedNickname = new String(Base64.getDecoder().decode(nickName), "UTF-8");
         boardService.deleteBoard(boardId, nickName);
     }
 
