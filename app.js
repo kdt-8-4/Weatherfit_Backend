@@ -46,6 +46,7 @@ const client = new Eureka({
     },
 });
 client.start();  // Eureka 서버에 서비스를 등록
+
 app.get('/health', (req, res) => {
     res.json({status: 'UP'});
 });

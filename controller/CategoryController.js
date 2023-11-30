@@ -1,26 +1,10 @@
 require('dotenv').config({ path: '/app/env' });
 // require('dotenv').config();
-
 const kafkaBrokers = process.env.KAFKA_BROKERS;
 const { Kafka } = require('kafkajs');
 const Category = require('../schemas/Category');
 const Hashtag = require('../schemas/Hashtag');
-exports.test = async (req ,res) => {
-    const categoryName = req.query.categoryName;
-    const temperature = Number(req.query.temperature);
-    console.log('categoryName : ', categoryName);
-    try {
-        const result = await Category.updateOne(
-            { categoryName : categoryName, temperature: temperature },
-            { $inc : { count : -1 } }
-        );
 
-        res.json({ result });
-    } catch (err) {
-        const message = `${err.name} : ${(parent)}`;
-        res.status(500).json({ message });
-    }
-}
 exports.getHashtagsInfo = async (req, res) => {
     try {
         const result = await Hashtag.find().sort('-count');
@@ -37,7 +21,7 @@ exports.getHashtagInfo = async (req, res) => {
     try {
         const result = await Hashtag.findOne({ tagName : tagName });
 
-        res.json({ result });
+        res.json({ count : result.count });
     } catch (err) {
         const message = `${err.name} : ${err.parent}`;
         res.status(500).json({ message })
@@ -66,7 +50,7 @@ exports.getTop5 = async (req, res)=> {
                 $limit: 5
             }
         ]);
-        res.json({ result });
+        res.json({ count : result.count });
     } catch(err) {
         const message = `${err.name} : ${err.parent}`;
         res.status(500).json({ message })
