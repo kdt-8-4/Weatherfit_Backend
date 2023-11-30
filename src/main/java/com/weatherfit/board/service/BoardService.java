@@ -177,7 +177,7 @@ public class BoardService {
                 .hashTag(boardUpdateDTO.getHashTag())
                 .build();
 
-        BoardEntity savedBoard = boardService.insertBoard(boardEntity);
+        BoardEntity savedBoard = boardRepository.save(boardEntity);
 
         for (MultipartFile image : images) {
             String imageUrl = imageService.saveImage(image);
