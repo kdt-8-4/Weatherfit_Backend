@@ -50,7 +50,7 @@ exports.getTop5 = async (req, res)=> {
                 $limit: 5
             }
         ]);
-        res.json({ count : result.count });
+        res.json({ result });
     } catch(err) {
         const message = `${err.name} : ${err.parent}`;
         res.status(500).json({ message })
