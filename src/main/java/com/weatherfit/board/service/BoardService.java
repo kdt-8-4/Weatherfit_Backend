@@ -155,9 +155,7 @@ public class BoardService {
 
         System.out.println(originalBoard.getNickName().toString());
 
-        if (!originalBoard.getNickName().equals(nickName)) {
-            throw new IllegalArgumentException("게시글 수정 권한이 없습니다.");
-        }
+
 
         List<Integer> imageIdsToDelete = boardUpdateDTO.getImageIdsToDelete();
         if (imageIdsToDelete != null && !imageIdsToDelete.isEmpty()) {
