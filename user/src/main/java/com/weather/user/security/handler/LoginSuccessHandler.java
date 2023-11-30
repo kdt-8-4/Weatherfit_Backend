@@ -44,17 +44,6 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             String result = objectMapper.writeValueAsString(authUserDTO);
             result = result.replace("}", ", \"token\": \"" + token + "\"}");
 
-            ResponseCookie cookieToken = ResponseCookie.from("accessToken", token)
-                    .domain("weatherfit-frontend.vercel.app")
-                    .maxAge(-1)
-                    .httpOnly(true)
-                    .secure(true)
-                    .path("/").build();
-            log.info(cookieToken.toString());
-            response.addHeader("Set-Cookie", cookieToken.toString());
-
-            String userinfo = authUserDTO.getEmail() + "|" + authUserDTO.getName() + "|" + authUserDTO.getImage();
-
             if(authUserDTO.isFromSocial()) {
                 redirectStrategy.sendRedirect(request, response, "https://weatherfit-frontend.vercel.app/");
             } else {

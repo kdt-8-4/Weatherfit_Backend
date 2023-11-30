@@ -1,7 +1,7 @@
 package com.weather.user.controller;
 
 import com.weather.user.dto.UserDTO;
-import com.weather.user.service.MailService;
+//import com.weather.user.service.MailService;
 import com.weather.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    private final MailService mailService;
+//    private final MailService mailService;
 
     @GetMapping("/login/social/google")
     public String googleLogin(){
@@ -27,7 +27,7 @@ public class UserController {
     @PostMapping("/api/signup/email")
     public ResponseEntity sendEmail(@RequestBody String email) throws Exception {
         log.info("email: " + email);
-        mailService.sendCodeToEmail(email);
+//        mailService.sendCodeToEmail(email);
 
         return new ResponseEntity(HttpStatus.OK);
     }
