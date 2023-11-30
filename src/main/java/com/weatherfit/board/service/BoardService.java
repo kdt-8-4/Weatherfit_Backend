@@ -36,8 +36,6 @@ public class BoardService {
     private String bucketName;
     @Autowired
     private LikeService likeService;
-    @Autowired
-    private BoardService boardService;
 
     // 게시글 전체 조회
     public List<BoardListResponseDTO> findAll() {
