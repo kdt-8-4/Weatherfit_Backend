@@ -7,5 +7,4 @@ router.get('/hashtags', CategoryController.getHashtagsInfo);
 router.get('/hashtag', CategoryController.getHashtagInfo);
 router.get('/typing', CategoryController.searchByTyping);
 router.get('/tops', CategoryController.getTop5);
-router.get('/test', CategoryController.test);
 module.exports = router;
