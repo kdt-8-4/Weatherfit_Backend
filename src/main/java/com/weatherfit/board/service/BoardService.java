@@ -224,6 +224,7 @@ public class BoardService {
         System.out.println(afterJoiendString);
         System.out.println(afterJoiendString2);
 
+        originalBoard.setNickName(nickName);
         originalBoard.setContent(boardUpdateDTO.getContent());
         originalBoard.setCategory(boardUpdateDTO.getCategory());
         originalBoard.setHashTag(boardUpdateDTO.getHashTag());

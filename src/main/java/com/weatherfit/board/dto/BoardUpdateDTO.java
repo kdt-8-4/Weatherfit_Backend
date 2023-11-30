@@ -9,9 +9,9 @@ import java.util.List;
 @Setter
 public class BoardUpdateDTO {
     private int boardId;
+    private String nickName;
     private String content;
     private List<String> category;
     private List<String> hashTag;
-    private List<Integer> imageIdsToDelete;
     private List<ImageEntity> images;
 }
