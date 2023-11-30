@@ -139,12 +139,13 @@ public class BoardController {
             @RequestHeader("decodedToken") String nickName,
             @PathVariable int boardId,
             @RequestPart("board") String boardJson,
-            @RequestPart(value = "images", required = false) MultipartFile[] images) {
+            @RequestPart(value = "images", required = false) MultipartFile[] images) throws UnsupportedEncodingException {
+        String decodedNickname = new String(Base64.getDecoder().decode(nickName), "UTF-8");
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
             BoardUpdateDTO boardUpdateDTO = objectMapper.readValue(boardJson, BoardUpdateDTO.class);
-            boardService.patchBoard(boardId, boardUpdateDTO, images, nickName);
+            boardService.patchBoard(boardId, boardUpdateDTO, images, decodedNickname);
             return true;
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

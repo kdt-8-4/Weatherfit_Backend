@@ -153,6 +153,8 @@ public class BoardService {
 
         BoardEntity originalBoard = optionalBoard.orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + boardId));
 
+        System.out.println(originalBoard.getNickName().toString());
+
         if (!originalBoard.getNickName().equals(nickName)) {
             throw new IllegalArgumentException("게시글 수정 권한이 없습니다.");
         }
