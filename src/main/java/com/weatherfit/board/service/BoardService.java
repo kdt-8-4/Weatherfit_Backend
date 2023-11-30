@@ -12,6 +12,7 @@ import com.weatherfit.board.dto.BoardUpdateDTO;
 import com.weatherfit.board.dto.BoardWriteDTO;
 import com.weatherfit.board.repository.BoardRepository;
 import com.weatherfit.board.repository.ImageRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -151,6 +152,7 @@ public class BoardService {
     }
 
     // 게시글 수정
+    @Transactional
     public void patchBoard(int boardId, String boardJson, MultipartFile[] images, String nickName) {
         Optional<BoardEntity> optionalBoard = Optional.ofNullable(boardRepository.findById(boardId));
 
