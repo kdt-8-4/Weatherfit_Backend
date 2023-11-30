@@ -155,8 +155,6 @@ public class BoardService {
 
         System.out.println(originalBoard.getNickName().toString());
 
-
-
         List<Integer> imageIdsToDelete = boardUpdateDTO.getImageIdsToDelete();
         if (imageIdsToDelete != null && !imageIdsToDelete.isEmpty()) {
             for (Integer imageId : imageIdsToDelete) {
@@ -172,16 +170,16 @@ public class BoardService {
             }
         }
 
-        if (images != null && images.length > 0) {
-            for (MultipartFile imageToAdd : images) {
-                String imageUrl = imageService.saveImage(imageToAdd);
-                ImageEntity newImageEntity = ImageEntity.builder()
-                        .image_url(imageUrl)
-                        .boardId(originalBoard)
-                        .build();
-                imageRepository.save(newImageEntity);
-            }
-        }
+//        if (images != null && images.length > 0) {
+//            for (MultipartFile imageToAdd : images) {
+//                String imageUrl = imageService.saveImage(imageToAdd);
+//                ImageEntity newImageEntity = ImageEntity.builder()
+//                        .image_url(imageUrl)
+//                        .boardId(originalBoard)
+//                        .build();
+//                imageRepository.save(newImageEntity);
+//            }
+//        }
 
         String afterJoiendString = originalBoard.getTemperature() + "/" + String.join("/", originalBoard.getCategory()) + ":" + String.join("/", boardUpdateDTO.getCategory());
         String afterJoiendString2 = String.join("/", originalBoard.getHashTag()) + ":" + String.join("/", boardUpdateDTO.getHashTag());
@@ -191,6 +189,7 @@ public class BoardService {
         originalBoard.setContent(boardUpdateDTO.getContent());
         originalBoard.setCategory(boardUpdateDTO.getCategory());
         originalBoard.setHashTag(boardUpdateDTO.getHashTag());
+        originalBoard.setImages(boardUpdateDTO.getImages());
         boardRepository.save(originalBoard);
 
 
