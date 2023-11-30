@@ -151,10 +151,8 @@ public class BoardController {
     @DeleteMapping("/delete/{boardId}")
     @ResponseBody
     public void deleteBoard(
-            @RequestHeader("decodedToken") String nickName,
             @PathVariable int boardId) throws UnsupportedEncodingException {
-        String decodedNickname = new String(Base64.getDecoder().decode(nickName), "UTF-8");
-        boardService.deleteBoard(boardId, nickName);
+        boardService.deleteBoard(boardId);
     }
 
     // 게시글 검색

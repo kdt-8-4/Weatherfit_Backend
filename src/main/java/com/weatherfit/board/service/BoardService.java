@@ -38,6 +38,7 @@ public class BoardService {
     @Autowired
     private LikeService likeService;
 
+
     // 게시글 전체 조회
     public List<BoardListResponseDTO> findAll() {
         List<BoardEntity> entities = boardRepository.findAll();
@@ -160,7 +161,9 @@ public class BoardService {
 
         ObjectMapper objectMapper = new ObjectMapper();
         imageRepository.deleteByBoardId(originalBoard);
-
+//        String image_Url =
+//        String keyName = image_Url.substring(image_Url.lastIndexOf("/") + 1);
+//        amazonS3Client.deleteObject(bucketName, keyName);
 
         BoardUpdateDTO boardUpdateDTO;
         try {
@@ -235,18 +238,13 @@ public class BoardService {
     }
 
     // 게시글 삭제
-    public void deleteBoard(int boardId, String nickName) {
+    public void deleteBoard(int boardId) {
         Optional<BoardEntity> optionalBoard = Optional.ofNullable(boardRepository.findById(boardId));
 
         BoardEntity originalBoard = optionalBoard.orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + boardId));
 
-        if (!originalBoard.getNickName().equals(nickName)) {
-            throw new IllegalArgumentException("게시글 삭제 권한이 없습니다.");
-        }
-
         String afterJoiendString = originalBoard.getTemperature() + "/" + String.join("/", originalBoard.getCategory());
         String afterJoiendString2 = String.join("/", originalBoard.getHashTag());
-
 
         kafkaTemplate.send("category", 2, "category", afterJoiendString);
         kafkaTemplate.send("hashtag", 2, "hashtag", afterJoiendString2);
