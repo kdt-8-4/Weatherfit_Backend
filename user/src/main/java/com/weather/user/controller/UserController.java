@@ -1,7 +1,7 @@
 package com.weather.user.controller;
 
 import com.weather.user.dto.UserDTO;
-import com.weather.user.entity.User;
+import com.weather.user.service.MailService;
 import com.weather.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -11,13 +11,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @Controller
 @Log4j2
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final MailService mailService;
 
     @GetMapping("/login/social/google")
     public String googleLogin(){
@@ -26,16 +25,32 @@ public class UserController {
     }
 
     @PostMapping("/api/signup/email")
-    public ResponseEntity<JSONObject> verifyEmail(@RequestBody UserDTO userDTO) {
-        log.info("userDTO: " + userDTO);
+    public ResponseEntity sendEmail(@RequestBody String email) throws Exception {
+        log.info("email: " + email);
+        mailService.sendCodeToEmail(email);
 
-        boolean verifyEmail = userService.verifyEmail(userDTO.getEmail());
-
-        JSONObject result = new JSONObject();
-        result.put("result", verifyEmail);
-
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.OK);
     }
+
+    @PostMapping("/api/token")
+    public ResponseEntity token(@RequestBody String token) throws Exception {
+        log.info("token: " + token);
+        mailService.sendCodeToEmail(token);
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+//    @PostMapping("/api/signup/email")
+//    public ResponseEntity<JSONObject> verifyEmail(@RequestBody UserDTO userDTO) {
+//        log.info("userDTO: " + userDTO);
+//
+//        boolean verifyEmail = userService.verifyEmail(userDTO.getEmail());
+//
+//        JSONObject result = new JSONObject();
+//        result.put("result", verifyEmail);
+//
+//        return new ResponseEntity<>(result, HttpStatus.OK);
+//    }
 
     @PostMapping("/api/signup/nickname")
     public ResponseEntity<JSONObject> verifyNickname(@RequestBody UserDTO userDTO) {

@@ -46,10 +46,9 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
             ResponseCookie cookieToken = ResponseCookie.from("accessToken", token)
                     .domain("weatherfit-frontend.vercel.app")
-                    .sameSite("None")
                     .maxAge(-1)
-                    .httpOnly(false)
-                    .secure(false)
+                    .httpOnly(true)
+                    .secure(true)
                     .path("/").build();
             log.info(cookieToken.toString());
             response.addHeader("Set-Cookie", cookieToken.toString());
