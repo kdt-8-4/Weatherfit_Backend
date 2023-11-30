@@ -34,8 +34,7 @@ public class UserController {
 
     @PostMapping("/api/token")
     public ResponseEntity token(@RequestBody String token) throws Exception {
-        log.info("token!: " + token);
-        mailService.sendCodeToEmail(token);
+        log.info("token: " + token);
 
         return new ResponseEntity(HttpStatus.OK);
     }
