@@ -266,6 +266,8 @@ public class BoardService {
             BoardSearchDTO dto = BoardSearchDTO.builder()
                     .boardId(board.getBoardId())
                     .nickName(board.getNickName())
+                    .category(board.getCategory())
+                    .hashTag(board.getHashTag())
                     .likeCount(likeService.countLikes(board.getBoardId()))
                     .images(board.entityToDTO(board.getImages().get(0)))
                     .build();
