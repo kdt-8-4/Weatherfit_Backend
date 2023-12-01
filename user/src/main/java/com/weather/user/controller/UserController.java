@@ -25,14 +25,17 @@ public class UserController {
     }
 
 
-    @PostMapping("/api/token")
-    public ResponseEntity token(@RequestBody String token) throws Exception {
+    @PostMapping("/login/google/token")
+    public ResponseEntity<JSONObject> googleToken(@RequestBody String token) throws Exception {
         log.info("token: " + token.toString());
 
-        return new ResponseEntity(HttpStatus.OK);
+        JSONObject result = new JSONObject();
+        result.put("result", true);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PostMapping("/api/signup/email")
+    @PostMapping("/signup/email")
     public ResponseEntity<JSONObject> verifyEmail(@RequestBody UserDTO userDTO) {
         log.info("userDTO: " + userDTO);
 
@@ -44,7 +47,7 @@ public class UserController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PostMapping("/api/signup/nickname")
+    @PostMapping("/signup/nickname")
     public ResponseEntity<JSONObject> verifyNickname(@RequestBody UserDTO userDTO) {
         log.info("userDTO: " + userDTO);
 
@@ -56,7 +59,7 @@ public class UserController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PostMapping("/api/signup")
+    @PostMapping("/signup")
     public ResponseEntity<JSONObject> signup(@RequestBody UserDTO userDTO) {
         log.info("userDTO: " + userDTO);
 

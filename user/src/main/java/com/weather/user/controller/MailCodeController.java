@@ -17,16 +17,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class MailCodeController {
     private final MailService mailService;
 
-    @PostMapping("/api/signup/email/send")
-    public ResponseEntity sendEmail(@RequestBody MailCodeDTO mailCodeDTO) throws Exception {
+    @PostMapping("/signup/email/send")
+    public ResponseEntity<JSONObject> sendEmail(@RequestBody MailCodeDTO mailCodeDTO) throws Exception {
         String email = mailCodeDTO.getEmail();
         log.info("email: " + email);
         mailService.sendCodeToEmail(email);
 
-        return new ResponseEntity(HttpStatus.OK);
+        JSONObject result = new JSONObject();
+        result.put("result", true);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PostMapping("/api/signup/email/verify")
+    @PostMapping("/signup/email/verify")
     public ResponseEntity<JSONObject> verifyEmail(@RequestBody MailCodeDTO mailCodeDTO) throws Exception {
         String email = mailCodeDTO.getEmail();
         String code = mailCodeDTO.getCode();
