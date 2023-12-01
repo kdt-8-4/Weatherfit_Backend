@@ -18,13 +18,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
 
-    @GetMapping("/login/social/google")
-    public String googleLogin(){
-        log.info("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-        return "redirect:/oauth2/authorization/google";
-    }
-
-
     @PostMapping("/login/google/token")
     public ResponseEntity<JSONObject> googleToken(@RequestBody String token) throws Exception {
         log.info("token: " + token.toString());
