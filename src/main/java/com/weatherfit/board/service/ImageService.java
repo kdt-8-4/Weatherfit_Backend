@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.util.UUID;
 
 
 @Service
@@ -21,18 +22,13 @@ public class ImageService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-    @Value("${spring.servlet.multipart.max-file-size}")
-    private String maxSizeString;
-
     public String saveImage(MultipartFile file) {
         try {
-            String fileName = file.getOriginalFilename();
-            String fileUrl = "https://" + bucketName + ".s3.amazonaws.com/" + fileName;
+            String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();            String fileUrl = "https://" + bucketName + ".s3.amazonaws.com/" + fileName;
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType(file.getContentType());
             metadata.setContentLength(file.getSize());
             amazonS3Client.putObject(bucketName, fileName, file.getInputStream(), metadata);
-            System.out.println("SERVICE 완료");
             return fileUrl;
         } catch (IOException e) {
             e.printStackTrace();
