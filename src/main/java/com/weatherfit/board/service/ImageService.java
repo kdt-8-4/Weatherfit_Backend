@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 
@@ -24,7 +26,9 @@ public class ImageService {
 
     public String saveImage(MultipartFile file) {
         try {
-            String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();            String fileUrl = "https://" + bucketName + ".s3.amazonaws.com/" + fileName;
+            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+            String fileName = timestamp + "_" + file.getOriginalFilename();
+            String fileUrl = "https://" + bucketName + ".s3.amazonaws.com/" + fileName;
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType(file.getContentType());
             metadata.setContentLength(file.getSize());
