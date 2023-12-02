@@ -158,9 +158,10 @@ public class BoardService {
 
         ObjectMapper objectMapper = new ObjectMapper();
 
-        // 삭제할 이미지 삭제
-        for (String id : deleteImageIds) {
-            imageRepository.deleteById(Integer.valueOf(id));
+        if (deleteImageIds != null) {
+            for (String id : deleteImageIds) {
+                // 이미지 삭제 처리
+            }
         }
 
         // 새로운 이미지 저장
