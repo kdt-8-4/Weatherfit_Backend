@@ -19,6 +19,6 @@ public class CommentResponseDTO {
 
     private String createdDate;
     private String createdTime;
-
+    private int status;
     private List<ReplyResponseDTO> replyList;
 }
