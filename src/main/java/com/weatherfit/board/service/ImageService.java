@@ -24,6 +24,7 @@ public class ImageService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
+
     public String saveImage(MultipartFile file) {
         try {
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
@@ -47,6 +48,10 @@ public class ImageService {
             e.printStackTrace();
             throw new RuntimeException("Failed to upload image to S3", e);
         }
+    }
+    public void deleteImage(String imageUrl) {
+        String imageName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+        amazonS3Client.deleteObject(bucketName, imageName);
     }
 }
 

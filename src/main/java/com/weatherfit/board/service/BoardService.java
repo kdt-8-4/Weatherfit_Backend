@@ -33,7 +33,7 @@ public class BoardService {
     private final ImageService imageService;
     @Autowired
     private LikeService likeService;
-
+    private final AmazonS3Client amazonS3Client;
 
     // 게시글 전체 조회
     public List<BoardListResponseDTO> findAll() {
@@ -156,7 +156,11 @@ public class BoardService {
         BoardEntity originalBoard = optionalBoard.orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + boardId));
 
         ObjectMapper objectMapper = new ObjectMapper();
-        imageRepository.deleteByBoardId(originalBoard);
+
+        // 기존 이미지 삭제
+        for (ImageEntity image : originalBoard.getImages()) {
+            imageService.deleteImage(image.getImage_url());
+        }
 
         BoardUpdateDTO boardUpdateDTO;
         try {
