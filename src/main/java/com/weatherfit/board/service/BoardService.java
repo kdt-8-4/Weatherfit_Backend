@@ -160,7 +160,8 @@ public class BoardService {
 
         if (deleteImageIds != null) {
             for (String id : deleteImageIds) {
-                // 이미지 삭제 처리
+                imageRepository.deleteById(Integer.valueOf(id));
+
             }
         }
 
