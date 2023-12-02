@@ -56,4 +56,11 @@ public class ImageService {
             throw new RuntimeException("Failed to upload image to S3", e);
         }
     }
+    public void deleteImage(String imageUrl) {
+        String imageName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+        amazonS3Client.deleteObject(bucketName, imageName);
+    }
 }
+
+
+

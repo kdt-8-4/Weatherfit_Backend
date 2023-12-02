@@ -168,14 +168,17 @@ public class BoardService {
         for (MultipartFile image : images) {
             String imageUrl = imageService.saveImage(image);
 
-            ImageEntity imageEntity = ImageEntity.builder()
-                    .imageUrl(imageUrl)
-                    .boardId(originalBoard)
-                    .build();
-            imageRepository.save(imageEntity);
+            // 이미지 URL이 DB에 이미 존재하는지 확인합니다.
+            if (!imageRepository.existsByImageUrl(imageUrl)) {
+                ImageEntity imageEntity = ImageEntity.builder()
+                        .imageUrl(imageUrl)
+                        .boardId(originalBoard)
+                        .build();
+                imageRepository.save(imageEntity);
 
-            // 기존 게시글의 이미지 목록에 새로운 이미지를 추가합니다.
-            originalBoard.getImages().add(imageEntity);
+                // 기존 게시글의 이미지 목록에 새로운 이미지를 추가합니다.
+                originalBoard.getImages().add(imageEntity);
+            }
         }
 
         // 삭제된 이미지 처리
