@@ -195,7 +195,6 @@ public class BoardService {
                 .content(boardUpdateDTO.getContent())
                 .category(boardUpdateDTO.getCategory())
                 .hashTag(boardUpdateDTO.getHashTag())
-                .images(newImages)
                 .build();
 
         BoardEntity savedBoard = boardRepository.save(boardEntity);
