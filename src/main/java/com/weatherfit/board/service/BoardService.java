@@ -192,7 +192,7 @@ public class BoardService {
         // 삭제된 이미지 처리
         if (deletedImages != null) {
             for (String imageUrl : deletedImages) {
-                ImageEntity imageEntity = imageRepository.findByImageUrl(imageUrl);
+                ImageEntity imageEntity = imageRepository.findByImage_url(imageUrl);
                 if (imageEntity != null) {
                     imageService.deleteImage(imageUrl);
                     imageRepository.delete(imageEntity);
