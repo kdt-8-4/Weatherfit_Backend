@@ -109,6 +109,7 @@ public class BoardController {
                     .temperature(boardWriteDTO.getTemperature())
                     .category(boardWriteDTO.getCategory())
                     .hashTag(boardWriteDTO.getHashTag())
+                    .weatherIcon(boardWriteDTO.getWeatherIcon())
                     .build();
 
             BoardEntity savedBoard = boardService.insertBoard(boardEntity);

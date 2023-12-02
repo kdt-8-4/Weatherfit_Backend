@@ -46,7 +46,8 @@ public class BoardService {
                     .likeCount(likeService.countLikes(board.getBoardId()))
                     .hashTag(board.getHashTag())
                     .category(board.getCategory())
-                    .temperature(board.getTemperature());
+                    .temperature(board.getTemperature())
+                    .weatherIcon(board.getWeatherIcon());
 
             if (!board.getImages().isEmpty()) {
                 builder.images(board.entityToDTO(board.getImages().get(0)));
@@ -69,7 +70,8 @@ public class BoardService {
                     .likeCount(likeService.countLikes(board.getBoardId()))
                     .hashTag(board.getHashTag())
                     .category(board.getCategory())
-                    .temperature(board.getTemperature());
+                    .temperature(board.getTemperature())
+                    .weatherIcon(board.getWeatherIcon());
 
             if (!board.getImages().isEmpty()) {
                 builder.images(board.entityToDTO(board.getImages().get(0)));
@@ -92,7 +94,8 @@ public class BoardService {
                     .likeCount(likeService.countLikes(board.getBoardId()))
                     .hashTag(board.getHashTag())
                     .category(board.getCategory())
-                    .temperature(board.getTemperature());
+                    .temperature(board.getTemperature())
+                    .weatherIcon(board.getWeatherIcon());
 
             if (!board.getImages().isEmpty()) {
                 builder.images(board.entityToDTO(board.getImages().get(0)));
@@ -116,7 +119,8 @@ public class BoardService {
                     .likeCount(likeService.countLikes(board.getBoardId()))
                     .hashTag(board.getHashTag())
                     .category(board.getCategory())
-                    .temperature(board.getTemperature());
+                    .temperature(board.getTemperature())
+                    .weatherIcon(board.getWeatherIcon());
 
             if (!board.getImages().isEmpty()) {
                 builder.images(board.entityToDTO(board.getImages().get(0)));
@@ -231,6 +235,7 @@ public class BoardService {
                     .hashTag(board.getHashTag())
                     .likeCount(likeService.countLikes(board.getBoardId()))
                     .images(board.entityToDTO(board.getImages().get(0)))
+                    .weatherIcon(board.getWeatherIcon())
                     .build();
 
             result.add(dto);

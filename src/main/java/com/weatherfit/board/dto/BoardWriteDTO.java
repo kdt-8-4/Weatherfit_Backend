@@ -18,4 +18,5 @@ public class BoardWriteDTO {
     private int temperature;
     private List<String> category;
     private List<String> hashTag;
+    private String weatherIcon;
 }

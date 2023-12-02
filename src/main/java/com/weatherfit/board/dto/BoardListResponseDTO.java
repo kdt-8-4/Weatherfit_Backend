@@ -19,4 +19,5 @@ public class BoardListResponseDTO {
     private ImageDTO images;
     private List<String> category;
     private List<String> hashTag;
+    private String weatherIcon;
 }
