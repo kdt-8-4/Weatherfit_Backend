@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
@@ -27,22 +29,28 @@ public class ImageService {
 
     public String saveImage(MultipartFile file) {
         try {
-            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
             String originalFilename = file.getOriginalFilename();
-            String fileName = timestamp + "_" + originalFilename;
+            String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+
+            // 이미지의 해시값을 생성합니다.
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] imageBytes = file.getBytes();
+            byte[] digest = md.digest(imageBytes);
+            String imageHash = new BigInteger(1, digest).toString(16); // 변경된 부분
+
+            // 이미지 이름에 해시값을 사용합니다.
+            String fileName = imageHash + fileExtension;
             String fileUrl = "https://" + bucketName + ".s3.amazonaws.com/" + fileName;
 
-            if (amazonS3Client.doesObjectExist(bucketName, fileName)) {
-                fileName = timestamp + "_" + UUID.randomUUID().toString() + "_" + originalFilename;
-                fileUrl = "https://" + bucketName + ".s3.amazonaws.com/" + fileName;
+            if (!amazonS3Client.doesObjectExist(bucketName, fileName)) {
+                ObjectMetadata metadata = new ObjectMetadata();
+                metadata.setContentType(file.getContentType());
+                metadata.setContentLength(file.getSize());
+                amazonS3Client.putObject(bucketName, fileName, file.getInputStream(), metadata);
             }
 
-            ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setContentType(file.getContentType());
-            metadata.setContentLength(file.getSize());
-            amazonS3Client.putObject(bucketName, fileName, file.getInputStream(), metadata);
             return fileUrl;
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to upload image to S3", e);
         }

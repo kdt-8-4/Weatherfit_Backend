@@ -157,12 +157,6 @@ public class BoardService {
 
         ObjectMapper objectMapper = new ObjectMapper();
 
-        // 기존 이미지 삭제
-        for (ImageEntity image : originalBoard.getImages()) {
-            imageService.deleteImage(image.getImage_url());
-            imageRepository.delete(image);
-        }
-
         BoardUpdateDTO boardUpdateDTO;
         try {
             boardUpdateDTO = objectMapper.readValue(boardJson, BoardUpdateDTO.class);
@@ -171,25 +165,40 @@ public class BoardService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        BoardEntity boardEntity = BoardEntity.builder()
-                .boardId(boardId)
-                .content(boardUpdateDTO.getContent())
-                .category(boardUpdateDTO.getCategory())
-                .hashTag(boardUpdateDTO.getHashTag())
-                .build();
 
-        BoardEntity savedBoard = boardRepository.save(boardEntity);
+        List<ImageEntity> newImages = new ArrayList<>();
 
         for (MultipartFile image : images) {
             String imageUrl = imageService.saveImage(image);
 
             ImageEntity imageEntity = ImageEntity.builder()
                     .image_url(imageUrl)
-                    .boardId(originalBoard)  // savedBoard를 originalBoard로 변경
+                    .boardId(originalBoard)
                     .build();
             imageRepository.save(imageEntity);
+
+            newImages.add(imageEntity);
         }
 
+        // 새로운 이미지 URL과 기존의 이미지 URL을 비교하여 이미지가 수정되었는지 판단합니다.
+        for (ImageEntity originalImage : originalBoard.getImages()) {
+            boolean isModified = newImages.stream().noneMatch(newImage -> newImage.getImage_url().equals(originalImage.getImage_url()));
+            if (isModified) {
+                // 이미지가 수정되었을 경우, 기존의 이미지를 삭제합니다.
+                imageService.deleteImage(originalImage.getImage_url());
+                imageRepository.delete(originalImage);
+            }
+        }
+
+        BoardEntity boardEntity = BoardEntity.builder()
+                .boardId(boardId)
+                .content(boardUpdateDTO.getContent())
+                .category(boardUpdateDTO.getCategory())
+                .hashTag(boardUpdateDTO.getHashTag())
+                .images(newImages)
+                .build();
+
+        BoardEntity savedBoard = boardRepository.save(boardEntity);
 
         String afterJoiendString = originalBoard.getTemperature() + "/" + String.join("/", originalBoard.getCategory()) + ":" + String.join("/", boardUpdateDTO.getCategory());
         String afterJoiendString2 = String.join("/", originalBoard.getHashTag()) + ":" + String.join("/", boardUpdateDTO.getHashTag());
@@ -198,15 +207,14 @@ public class BoardService {
         originalBoard.setContent(boardUpdateDTO.getContent());
         originalBoard.setCategory(boardUpdateDTO.getCategory());
         originalBoard.setHashTag(boardUpdateDTO.getHashTag());
-        originalBoard.setImages(boardUpdateDTO.getImages());  // 이미지 정보를 boardUpdateDTO에서 가져오는 것이 아니라, 위에서 새로 추가한 이미지 정보를 사용해야 합니다.
+        originalBoard.setImages(newImages);
         boardRepository.save(originalBoard);
-
 
         // 카프카 전송
         kafkaTemplate.send("category", 1, "category", afterJoiendString);
         kafkaTemplate.send("hashtag", 1, "hashtag", afterJoiendString2);
-
     }
+
 
     // 게시글 삭제
     public void deleteBoard(int boardId) {
