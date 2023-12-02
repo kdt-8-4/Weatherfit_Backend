@@ -165,8 +165,6 @@ public class BoardService {
             throw new RuntimeException(e);
         }
 
-        List<ImageEntity> newImages = new ArrayList<>();
-
         for (MultipartFile image : images) {
             String imageUrl = imageService.saveImage(image);
 
@@ -176,17 +174,8 @@ public class BoardService {
                     .build();
             imageRepository.save(imageEntity);
 
-            newImages.add(imageEntity);
-        }
-
-        // 새로운 이미지 URL과 기존의 이미지 URL을 비교하여 이미지가 수정되었는지 판단합니다.
-        for (ImageEntity originalImage : originalBoard.getImages()) {
-            boolean isModified = newImages.stream().noneMatch(newImage -> newImage.getImageUrl().equals(originalImage.getImageUrl()));
-            if (isModified) {
-                // 이미지가 수정되었을 경우, 기존의 이미지를 삭제합니다.
-                imageService.deleteImage(originalImage.getImageUrl());
-                imageRepository.delete(originalImage);
-            }
+            // 기존 게시글의 이미지 목록에 새로운 이미지를 추가합니다.
+            originalBoard.getImages().add(imageEntity);
         }
 
         // 삭제된 이미지 처리
@@ -218,7 +207,6 @@ public class BoardService {
         originalBoard.setContent(boardUpdateDTO.getContent());
         originalBoard.setCategory(boardUpdateDTO.getCategory());
         originalBoard.setHashTag(boardUpdateDTO.getHashTag());
-        originalBoard.setImages(newImages);
         boardRepository.save(originalBoard);
 
         // 카프카 전송
