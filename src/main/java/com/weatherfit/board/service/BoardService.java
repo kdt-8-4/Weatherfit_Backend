@@ -160,6 +160,7 @@ public class BoardService {
         // 기존 이미지 삭제
         for (ImageEntity image : originalBoard.getImages()) {
             imageService.deleteImage(image.getImage_url());
+            imageRepository.delete(image);
         }
 
         BoardUpdateDTO boardUpdateDTO;
