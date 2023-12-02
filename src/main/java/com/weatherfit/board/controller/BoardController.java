@@ -140,8 +140,8 @@ public class BoardController {
             @RequestHeader("decodedToken") String nickName,
             @PathVariable int boardId,
             @RequestPart("board") String boardJson,
-            @RequestPart("images") MultipartFile[] images,
-            @RequestPart("deletedImages") String[] deletedImages) throws UnsupportedEncodingException {
+            @RequestPart(value = "images", required = false) MultipartFile[] images,
+            @RequestPart(value = "deletedImages", required = false) String[] deletedImages) throws UnsupportedEncodingException {
 
         String decodedNickname = new String(Base64.getDecoder().decode(nickName), "UTF-8");
 
