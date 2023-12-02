@@ -118,7 +118,7 @@ public class BoardController {
                 String imageUrl = imageService.saveImage(image);
 
                 ImageEntity imageEntity = ImageEntity.builder()
-                        .image_url(imageUrl)
+                        .imageUrl(imageUrl)
                         .boardId(savedBoard)
                         .build();
                 imageRepository.save(imageEntity);

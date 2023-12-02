@@ -13,7 +13,7 @@ public class MyLikeDTO {
     public MyLikeDTO(BoardEntity boardEntity) {
         this.boardId = boardEntity.getBoardId();
         if(!boardEntity.getImages().isEmpty()) {
-            this.images = String.valueOf(boardEntity.getImages().get(0).getImage_url());
+            this.images = String.valueOf(boardEntity.getImages().get(0).getImageUrl());
         }
     }
 }

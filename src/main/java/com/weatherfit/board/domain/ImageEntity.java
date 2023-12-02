@@ -24,17 +24,14 @@ public class ImageEntity {
     private BoardEntity boardId;
 
     @Column(name = "image_url", nullable = false)
-    private String image_url;
+    private String imageUrl;
 
     public ImageDTO entityToDTO(ImageEntity imageEntity) {
         return ImageDTO.builder()
                 .boardId(imageEntity.getBoardId().getBoardId())
                 .imageId(imageEntity.getImageId())
-                .image_url(imageEntity.getImage_url())
+                .imageUrl(imageEntity.getImageUrl())
                 .build();
 
-    }
-    public String getImageUrl() { // 수정된 부분
-        return image_url;
     }
 }

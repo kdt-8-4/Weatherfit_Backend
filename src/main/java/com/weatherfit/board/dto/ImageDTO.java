@@ -12,7 +12,7 @@ import java.util.List;
 public class ImageDTO {
     private int imageId;
     private int boardId;
-    private String image_url;
+    private String imageUrl;
 
 
 }

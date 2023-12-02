@@ -60,7 +60,7 @@ public class BoardEntity extends BaseEntity {
         return ImageDTO.builder()
                 .boardId(imageEntity.getBoardId().getBoardId())
                 .imageId(imageEntity.getImageId())
-                .image_url(imageEntity.getImage_url())
+                .imageUrl(imageEntity.getImageUrl())
                 .build();
     }
 }

@@ -171,7 +171,7 @@ public class BoardService {
             String imageUrl = imageService.saveImage(image);
 
             ImageEntity imageEntity = ImageEntity.builder()
-                    .image_url(imageUrl)
+                    .imageUrl(imageUrl)
                     .boardId(originalBoard)
                     .build();
             imageRepository.save(imageEntity);
@@ -181,10 +181,10 @@ public class BoardService {
 
         // 새로운 이미지 URL과 기존의 이미지 URL을 비교하여 이미지가 수정되었는지 판단합니다.
         for (ImageEntity originalImage : originalBoard.getImages()) {
-            boolean isModified = newImages.stream().noneMatch(newImage -> newImage.getImage_url().equals(originalImage.getImage_url()));
+            boolean isModified = newImages.stream().noneMatch(newImage -> newImage.getImageUrl().equals(originalImage.getImageUrl()));
             if (isModified) {
                 // 이미지가 수정되었을 경우, 기존의 이미지를 삭제합니다.
-                imageService.deleteImage(originalImage.getImage_url());
+                imageService.deleteImage(originalImage.getImageUrl());
                 imageRepository.delete(originalImage);
             }
         }
