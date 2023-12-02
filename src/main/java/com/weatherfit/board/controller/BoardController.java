@@ -134,7 +134,7 @@ public class BoardController {
     }
 
     // 게시글 수정
-    @PatchMapping(value = "/edit/{boardId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/edit/{boardId}")
     @ResponseBody
     public boolean patchBoard(
             @RequestHeader("decodedToken") String nickName,

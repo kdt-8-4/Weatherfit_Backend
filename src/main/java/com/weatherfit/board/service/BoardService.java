@@ -165,15 +165,16 @@ public class BoardService {
             }
         }
 
-        // 새로운 이미지 저장
-        for (MultipartFile image : newImages) {
-            String imageUrl = imageService.saveImage(image);
+        if (newImages != null) {
+            for (MultipartFile image : newImages) {
+                String imageUrl = imageService.saveImage(image);
 
-            ImageEntity imageEntity = ImageEntity.builder()
-                    .image_url(imageUrl)
-                    .boardId(originalBoard)
-                    .build();
-            imageRepository.save(imageEntity);
+                ImageEntity imageEntity = ImageEntity.builder()
+                        .image_url(imageUrl)
+                        .boardId(originalBoard)
+                        .build();
+                imageRepository.save(imageEntity);
+            }
         }
 
         // 게시글 정보 수정
