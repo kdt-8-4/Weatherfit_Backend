@@ -33,7 +33,7 @@ public class ImageService {
             String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
 
             // 파일 이름에 원래 이름을 사용합니다.
-            String fileName = originalFilename + fileExtension;
+            String fileName = originalFilename;
             String fileUrl = "https://" + bucketName + ".s3.amazonaws.com/" + fileName;
 
             if (!amazonS3Client.doesObjectExist(bucketName, fileName)) {
