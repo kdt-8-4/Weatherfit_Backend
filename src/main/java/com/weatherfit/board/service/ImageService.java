@@ -36,13 +36,14 @@ public class ImageService {
             MessageDigest md = MessageDigest.getInstance("MD5");
             byte[] imageBytes = file.getBytes();
             byte[] digest = md.digest(imageBytes);
-            String imageHash = new BigInteger(1, digest).toString(16); // 변경된 부분
+            String imageHash = new BigInteger(1, digest).toString(16);
 
             // 이미지 이름에 해시값을 사용합니다.
             String fileName = imageHash + fileExtension;
             String fileUrl = "https://" + bucketName + ".s3.amazonaws.com/" + fileName;
 
-            if (!amazonS3Client.doesObjectExist(bucketName, fileName)) {
+            // 파일의 내용이 변경되지 않았는지 확인합니다.
+            if (!imageRepository.existsByImageUrl(fileUrl)) {
                 ObjectMetadata metadata = new ObjectMetadata();
                 metadata.setContentType(file.getContentType());
                 metadata.setContentLength(file.getSize());
@@ -55,11 +56,4 @@ public class ImageService {
             throw new RuntimeException("Failed to upload image to S3", e);
         }
     }
-    public void deleteImage(String imageUrl) {
-        String imageName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
-        amazonS3Client.deleteObject(bucketName, imageName);
-    }
 }
-
-
-
