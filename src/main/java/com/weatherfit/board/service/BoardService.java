@@ -149,15 +149,32 @@ public class BoardService {
     }
 
     // 게시글 수정
+    // 게시글 수정
     @Transactional
-    public void patchBoard(int boardId, String boardJson, MultipartFile[] images, String nickName) {
+    public void patchBoard(int boardId, String boardJson, MultipartFile[] newImages, List<String> deleteImageIds, String nickName) {
         Optional<BoardEntity> optionalBoard = Optional.ofNullable(boardRepository.findById(boardId));
 
         BoardEntity originalBoard = optionalBoard.orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + boardId));
 
         ObjectMapper objectMapper = new ObjectMapper();
-        imageRepository.deleteByBoardId(originalBoard);
 
+        // 삭제할 이미지 삭제
+        for (String id : deleteImageIds) {
+            imageRepository.deleteById(Integer.valueOf(id));
+        }
+
+        // 새로운 이미지 저장
+        for (MultipartFile image : newImages) {
+            String imageUrl = imageService.saveImage(image);
+
+            ImageEntity imageEntity = ImageEntity.builder()
+                    .image_url(imageUrl)
+                    .boardId(originalBoard)
+                    .build();
+            imageRepository.save(imageEntity);
+        }
+
+        // 게시글 정보 수정
         BoardUpdateDTO boardUpdateDTO;
         try {
             boardUpdateDTO = objectMapper.readValue(boardJson, BoardUpdateDTO.class);
@@ -166,6 +183,7 @@ public class BoardService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+
         BoardEntity boardEntity = BoardEntity.builder()
                 .boardId(boardId)
                 .content(boardUpdateDTO.getContent())
@@ -174,17 +192,6 @@ public class BoardService {
                 .build();
 
         BoardEntity savedBoard = boardRepository.save(boardEntity);
-
-        for (MultipartFile image : images) {
-            String imageUrl = imageService.saveImage(image);
-
-            ImageEntity imageEntity = ImageEntity.builder()
-                    .image_url(imageUrl)
-                    .boardId(savedBoard)
-                    .build();
-            imageRepository.save(imageEntity);
-        }
-
 
         String afterJoiendString = originalBoard.getTemperature() + "/" + String.join("/", originalBoard.getCategory()) + ":" + String.join("/", boardUpdateDTO.getCategory());
         String afterJoiendString2 = String.join("/", originalBoard.getHashTag()) + ":" + String.join("/", boardUpdateDTO.getHashTag());
@@ -196,12 +203,11 @@ public class BoardService {
         originalBoard.setImages(boardUpdateDTO.getImages());
         boardRepository.save(originalBoard);
 
-
         // 카프카 전송
         kafkaTemplate.send("category", 1, "category", afterJoiendString);
         kafkaTemplate.send("hashtag", 1, "hashtag", afterJoiendString2);
-
     }
+
 
     // 게시글 삭제
     public void deleteBoard(int boardId) {

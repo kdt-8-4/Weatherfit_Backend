@@ -140,13 +140,14 @@ public class BoardController {
             @RequestHeader("decodedToken") String nickName,
             @PathVariable int boardId,
             @RequestPart("board") String boardJson,
-            @RequestPart(value = "images", required = false) MultipartFile[] images) throws UnsupportedEncodingException {
+            @RequestPart(value = "images", required = false) MultipartFile[] newImages,
+            @RequestPart(value = "deleteImageIds", required = false) List<String> deleteImageIds) throws UnsupportedEncodingException {
         String decodedNickname = new String(Base64.getDecoder().decode(nickName), "UTF-8");
 
-
-        boardService.patchBoard(boardId, boardJson, images, decodedNickname);
+        boardService.patchBoard(boardId, boardJson, newImages, deleteImageIds, decodedNickname);
         return true;
     }
+
 
     // 게시글 삭제
     @DeleteMapping("/delete/{boardId}")
