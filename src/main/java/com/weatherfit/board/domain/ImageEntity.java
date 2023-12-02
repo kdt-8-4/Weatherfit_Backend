@@ -34,5 +34,7 @@ public class ImageEntity {
                 .build();
 
     }
-
+    public String getImageUrl() { // 수정된 부분
+        return image_url;
+    }
 }
