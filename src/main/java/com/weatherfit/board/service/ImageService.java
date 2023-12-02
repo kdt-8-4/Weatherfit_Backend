@@ -32,18 +32,11 @@ public class ImageService {
             String originalFilename = file.getOriginalFilename();
             String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
 
-            // 이미지의 해시값을 생성합니다.
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] imageBytes = file.getBytes();
-            byte[] digest = md.digest(imageBytes);
-            String imageHash = new BigInteger(1, digest).toString(16);
-
-            // 이미지 이름에 해시값을 사용합니다.
-            String fileName = imageHash + fileExtension;
+            // 파일 이름에 원래 이름을 사용합니다.
+            String fileName = originalFilename + fileExtension;
             String fileUrl = "https://" + bucketName + ".s3.amazonaws.com/" + fileName;
 
-            // 파일의 내용이 변경되지 않았는지 확인합니다.
-            if (!imageRepository.existsByImageUrl(fileUrl)) {
+            if (!amazonS3Client.doesObjectExist(bucketName, fileName)) {
                 ObjectMetadata metadata = new ObjectMetadata();
                 metadata.setContentType(file.getContentType());
                 metadata.setContentLength(file.getSize());
