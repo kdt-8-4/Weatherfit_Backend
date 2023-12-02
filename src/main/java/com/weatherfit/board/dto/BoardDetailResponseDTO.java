@@ -13,7 +13,7 @@ public class BoardDetailResponseDTO {
     private String nickName;
     private String content;
     private int likeCount;
-    private int temperature;
+    private double temperature;
     private List<String> category;
     private List<String> hashTag;
     private boolean status;

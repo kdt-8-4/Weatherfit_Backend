@@ -13,7 +13,7 @@ import java.util.List;
 public class BoardSearchDTO {
     private int boardId;
     private String nickName;
-    private int temperature;
+    private double temperature;
     private int likeCount;
     private ImageDTO images;
     private List<String> category;

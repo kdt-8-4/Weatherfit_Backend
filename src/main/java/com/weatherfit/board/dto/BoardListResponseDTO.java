@@ -15,7 +15,7 @@ public class BoardListResponseDTO {
     private int boardId;
     private String nickName;
     private int likeCount;
-    private int temperature;
+    private double temperature;
     private ImageDTO images;
     private List<String> category;
     private List<String> hashTag;

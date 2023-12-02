@@ -30,7 +30,7 @@ public class BoardEntity extends BaseEntity {
 
     @Builder.Default
     @Column(name = "temperature", nullable = false)
-    private int temperature = 0;
+    private double temperature = 0;
 
     @ElementCollection
     @Column(name = "category", nullable = false)
