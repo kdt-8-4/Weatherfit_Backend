@@ -7,4 +7,4 @@ WORKDIR /app
 COPY build/libs/*.jar app.jar
 
 # 컨테이너가 시작될 때 실행될 명령어를 설정합니다.
-ENTRYPOINT ["java","-jar","app.jar"]
+ENTRYPOINT ["java","-Duser.timezone=Asia/Seoul","-jar","app.jar"]

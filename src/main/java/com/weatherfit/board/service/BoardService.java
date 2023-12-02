@@ -14,7 +14,6 @@ import com.weatherfit.board.repository.ImageRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -150,7 +149,7 @@ public class BoardService {
 
     // 게시글 수정
     @Transactional
-    public void patchBoard(int boardId, String boardJson, MultipartFile[] images, String nickName) {
+    public void patchBoard(int boardId, String boardJson, MultipartFile[] images, String[] deletedImages, String nickName) {
         Optional<BoardEntity> optionalBoard = Optional.ofNullable(boardRepository.findById(boardId));
 
         BoardEntity originalBoard = optionalBoard.orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + boardId));
@@ -187,6 +186,17 @@ public class BoardService {
                 // 이미지가 수정되었을 경우, 기존의 이미지를 삭제합니다.
                 imageService.deleteImage(originalImage.getImage_url());
                 imageRepository.delete(originalImage);
+            }
+        }
+
+        // 삭제된 이미지 처리
+        if (deletedImages != null) {
+            for (String imageUrl : deletedImages) {
+                ImageEntity imageEntity = imageRepository.findByImageUrl(imageUrl);
+                if (imageEntity != null) {
+                    imageService.deleteImage(imageUrl);
+                    imageRepository.delete(imageEntity);
+                }
             }
         }
 
