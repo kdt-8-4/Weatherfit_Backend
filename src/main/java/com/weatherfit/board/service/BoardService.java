@@ -185,7 +185,7 @@ public class BoardService {
 
             ImageEntity imageEntity = ImageEntity.builder()
                     .image_url(imageUrl)
-                    .boardId(savedBoard)
+                    .boardId(originalBoard)  // savedBoard를 originalBoard로 변경
                     .build();
             imageRepository.save(imageEntity);
         }
@@ -198,7 +198,7 @@ public class BoardService {
         originalBoard.setContent(boardUpdateDTO.getContent());
         originalBoard.setCategory(boardUpdateDTO.getCategory());
         originalBoard.setHashTag(boardUpdateDTO.getHashTag());
-        originalBoard.setImages(boardUpdateDTO.getImages());
+        originalBoard.setImages(boardUpdateDTO.getImages());  // 이미지 정보를 boardUpdateDTO에서 가져오는 것이 아니라, 위에서 새로 추가한 이미지 정보를 사용해야 합니다.
         boardRepository.save(originalBoard);
 
 

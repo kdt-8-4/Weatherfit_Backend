@@ -32,9 +32,7 @@ public class ImageService {
             String fileName = timestamp + "_" + originalFilename;
             String fileUrl = "https://" + bucketName + ".s3.amazonaws.com/" + fileName;
 
-            // 파일명이 이미 존재하는지 확인
             if (amazonS3Client.doesObjectExist(bucketName, fileName)) {
-                // 파일명이 존재한다면, 고유한 UUID를 추가하여 새로운 파일명 생성
                 fileName = timestamp + "_" + UUID.randomUUID().toString() + "_" + originalFilename;
                 fileUrl = "https://" + bucketName + ".s3.amazonaws.com/" + fileName;
             }
