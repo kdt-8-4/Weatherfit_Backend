@@ -26,6 +26,8 @@ public class ImageEntity {
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
+    @Column()
+
     public ImageDTO entityToDTO(ImageEntity imageEntity) {
         return ImageDTO.builder()
                 .boardId(imageEntity.getBoardId().getBoardId())

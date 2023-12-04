@@ -11,9 +11,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.security.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
+
+import static java.lang.System.currentTimeMillis;
 
 
 @Service
@@ -29,13 +32,14 @@ public class ImageService {
 
     public String saveImage(MultipartFile file) {
         try {
-
             String originalFilename = file.getOriginalFilename();
             String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
 
-            // UUID를 생성하고, 이를 파일 이름에 포함합니다.
-            String uuid = UUID.randomUUID().toString();
-            String fileName = uuid + "_" + originalFilename;
+            // 현재 시간을 가져와서, 이를 파일 이름에 포함합니다.
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+            String formattedNow = now.format(formatter);
+            String fileName = formattedNow + "_weatherfit_" + originalFilename;
             String fileUrl = "https://" + bucketName + ".s3.amazonaws.com/" + fileName;
 
             if (!amazonS3Client.doesObjectExist(bucketName, fileName)) {
