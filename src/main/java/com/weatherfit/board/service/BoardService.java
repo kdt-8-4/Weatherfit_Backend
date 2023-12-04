@@ -151,8 +151,8 @@ public class BoardService {
         String joiendString = board.getTemperature() + "/" + String.join("/", board.getCategory());
         String joiendString2 = String.join("/", board.getHashTag());
 
-//        kafkaTemplate.send("category", 0, "category", joiendString);
-//        kafkaTemplate.send("hashtag", 0, "hashtag", joiendString2);
+        kafkaTemplate.send("category", 0, "category", joiendString);
+        kafkaTemplate.send("hashtag", 0, "hashtag", joiendString2);
         return board;
     }
 
@@ -218,8 +218,8 @@ public class BoardService {
         boardRepository.save(originalBoard);
 
         // 카프카 전송
-//        kafkaTemplate.send("category", 1, "category", afterJoiendString);
-//        kafkaTemplate.send("hashtag", 1, "hashtag", afterJoiendString2);
+        kafkaTemplate.send("category", 1, "category", afterJoiendString);
+        kafkaTemplate.send("hashtag", 1, "hashtag", afterJoiendString2);
     }
 
 
@@ -232,8 +232,8 @@ public class BoardService {
         String afterJoiendString = originalBoard.getTemperature() + "/" + String.join("/", originalBoard.getCategory());
         String afterJoiendString2 = String.join("/", originalBoard.getHashTag());
 
-//        kafkaTemplate.send("category", 2, "category", afterJoiendString);
-//        kafkaTemplate.send("hashtag", 2, "hashtag", afterJoiendString2);
+        kafkaTemplate.send("category", 2, "category", afterJoiendString);
+        kafkaTemplate.send("hashtag", 2, "hashtag", afterJoiendString2);
 
 
         boardRepository.deleteById(boardId);
