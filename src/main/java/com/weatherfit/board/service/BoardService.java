@@ -37,6 +37,7 @@ public class BoardService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
+
     // 게시글 전체 조회
     public List<BoardListResponseDTO> findAll() {
         List<BoardEntity> entities = boardRepository.findAll();
@@ -171,15 +172,19 @@ public class BoardService {
             throw new RuntimeException(e);
         }
 
+
         // 게시글에 연결된 모든 이미지를 S3에서 삭제합니다.
         for (ImageEntity imageEntity : originalBoard.getImages()) {
+            System.out.println("Deleting image with file name: " + imageEntity.getFileName());
             imageService.deleteImage(imageEntity);
             imageRepository.delete(imageEntity);
         }
         originalBoard.getImages().clear();
 
+        System.out.println("Number of uploaded images: " + (images != null ? images.length : 0));
         for (MultipartFile image : images) {
             String fileName = imageService.saveImage(image);  // saveImage 메소드에서 반환받은 파일 이름
+            System.out.println("Saved image with file name: " + fileName);
             String imageUrl = "https://" + bucketName + ".s3.amazonaws.com/" + fileName;
 
             // 이미지가 이미 저장되어 있는지 확인

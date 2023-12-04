@@ -52,7 +52,7 @@ public class ImageService {
                 amazonS3Client.putObject(bucketName, fileName, file.getInputStream(), metadata);
             }
 
-            return fileName;
+            return fileUrl;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to upload image to S3", e);
@@ -61,9 +61,11 @@ public class ImageService {
 
 
     public void deleteImage(ImageEntity imageEntity) {
-        String fileName = imageEntity.getFileName();
+        String imageUrl = imageEntity.getImageUrl();
+        String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
         amazonS3Client.deleteObject(bucketName, fileName);
     }
+
 }
 
 
