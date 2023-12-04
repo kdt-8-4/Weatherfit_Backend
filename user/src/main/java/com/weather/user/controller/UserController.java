@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @Log4j2
@@ -75,8 +76,11 @@ public class UserController {
     }
 
     @PatchMapping("/api/profile/modify")
-    public ResponseEntity<UserDTO> modify(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<UserDTO> modify(
+            @RequestPart("file") MultipartFile file,
+            @RequestPart("userDTO") UserDTO userDTO) {
         log.info("userDTO: " + userDTO);
+        log.info("file: " + file);
 
         UserDTO result = userService.modify(userDTO);
 
@@ -84,11 +88,14 @@ public class UserController {
     }
 
     @DeleteMapping("/api/profile/remove/{email}")
-    public ResponseEntity remove(@PathVariable String email) {
+    public ResponseEntity<JSONObject> remove(@PathVariable String email) {
         log.info("email: " + email);
 
         userService.remove(email);
 
-        return new ResponseEntity(HttpStatus.OK);
+        JSONObject result = new JSONObject();
+        result.put("result", true);
+
+        return new ResponseEntity(result, HttpStatus.OK);
     }
 }

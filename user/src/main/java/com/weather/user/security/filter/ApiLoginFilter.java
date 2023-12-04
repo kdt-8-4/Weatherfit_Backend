@@ -1,5 +1,6 @@
 package com.weather.user.security.filter;
 
+import com.weather.user.repository.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,6 +30,8 @@ public class ApiLoginFilter extends AbstractAuthenticationProcessingFilter {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         log.info("email: " + email);
+
+
 
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(email, password);
 

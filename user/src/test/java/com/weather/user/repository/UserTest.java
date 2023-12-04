@@ -25,7 +25,7 @@ public class UserTest {
                     .email("user" + i + "@test.com")
                     .password(passwordEncoder.encode("1234"))
                     .name("USER" + i)
-                    .nickname("테스터")
+                    .nickname("테스터" + i)
                     .fromSocial(false)
                     .status(true)
                     .build();

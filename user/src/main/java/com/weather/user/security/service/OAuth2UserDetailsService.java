@@ -33,7 +33,6 @@ public class OAuth2UserDetailsService extends DefaultOAuth2UserService {
         log.info("params: " + request.getAdditionalParameters());
 
         OAuth2User oAuth2User = super.loadUser(request);
-
         oAuth2User.getAttributes().forEach((key, value) -> {
             log.info(key + ": " + value);
         });

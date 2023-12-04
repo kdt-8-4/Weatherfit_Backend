@@ -99,7 +99,7 @@ public class UserServiceImpl implements UserService {
             UserDTO result = entityToDTO(user);
             return result;
         } else {
-            throw new Error("잘못 된 접근입니다.");
+            throw new Error("이미 탈퇴 처리중인 유저입니다.");
         }
     }
 

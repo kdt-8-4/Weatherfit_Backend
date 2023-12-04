@@ -1,5 +1,6 @@
 package com.weather.user.config;
 
+import com.weather.user.repository.UserRepository;
 import com.weather.user.security.filter.ApiCheckFilter;
 import com.weather.user.security.filter.ApiLoginFilter;
 import com.weather.user.security.handler.LoginFailureHandler;
