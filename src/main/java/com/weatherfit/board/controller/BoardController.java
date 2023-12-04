@@ -116,9 +116,11 @@ public class BoardController {
             BoardEntity savedBoard = boardService.insertBoard(boardEntity);
 
             for (MultipartFile image : images) {
-                String imageUrl = imageService.saveImage(image);
+                String imageUrl = imageService.saveImage(image);  // saveImage 메소드에서 반환받은 이미지 URL
+                String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);  // 이미지 URL에서 파일 이름 추출
 
                 ImageEntity imageEntity = ImageEntity.builder()
+                        .fileName(fileName)
                         .imageUrl(imageUrl)
                         .boardId(savedBoard)
                         .build();

@@ -181,11 +181,9 @@ public class BoardService {
         }
         originalBoard.getImages().clear();
 
-        System.out.println("Number of uploaded images: " + (images != null ? images.length : 0));
         for (MultipartFile image : images) {
-            String fileName = imageService.saveImage(image);  // saveImage 메소드에서 반환받은 파일 이름
-            System.out.println("Saved image with file name: " + fileName);
-            String imageUrl = "https://" + bucketName + ".s3.amazonaws.com/" + fileName;
+            String imageUrl = imageService.saveImage(image);    // saveImage 메소드에서 반환받은 파일 이름
+            String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
 
             // 이미지가 이미 저장되어 있는지 확인
             if (!imageRepository.existsByImageUrl(imageUrl)) {
