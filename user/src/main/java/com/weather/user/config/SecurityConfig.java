@@ -6,6 +6,7 @@ import com.weather.user.security.filter.ApiLoginFilter;
 import com.weather.user.security.handler.LoginFailureHandler;
 import com.weather.user.security.handler.LoginSuccessHandler;
 import com.weather.user.security.service.AuthUserDetailsService;
+import com.weather.user.service.UserService;
 import com.weather.user.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +25,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final AuthUserDetailsService authUserDetailsService;
+    private final UserService userService;
 
     @Bean
     PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
@@ -43,7 +45,7 @@ public class SecurityConfig {
         http.authenticationManager(authenticationManager);
 
         http.addFilterBefore(apiCheckFilter(), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(apiLoginFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(apiLoginFilter(authenticationManager, userService), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -69,8 +71,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public ApiLoginFilter apiLoginFilter(AuthenticationManager authenticationManager) throws Exception{
-        ApiLoginFilter apiLoginFilter = new ApiLoginFilter("/login/api");
+    public ApiLoginFilter apiLoginFilter(AuthenticationManager authenticationManager, UserService userService) throws Exception{
+        ApiLoginFilter apiLoginFilter = new ApiLoginFilter("/login/api", userService);
         apiLoginFilter.setAuthenticationManager(authenticationManager);
         apiLoginFilter.setAuthenticationSuccessHandler(loginSuccessHandler());
         apiLoginFilter.setAuthenticationFailureHandler(loginFailureHandler());
