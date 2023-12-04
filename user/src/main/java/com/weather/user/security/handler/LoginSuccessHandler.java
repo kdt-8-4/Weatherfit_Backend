@@ -26,7 +26,6 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
     private ObjectMapper objectMapper = new ObjectMapper();
     private JWTUtil jwtUtil;
-    private UserService userService;
 
     public LoginSuccessHandler(JWTUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
@@ -41,8 +40,6 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         AuthUserDTO authUserDTO = (AuthUserDTO) authentication.getPrincipal();
         log.info(authUserDTO);
-
-        userService.profile(authUserDTO.getEmail());
 
         try {
             String token = jwtUtil.generateToken(authUserDTO.getNickname());

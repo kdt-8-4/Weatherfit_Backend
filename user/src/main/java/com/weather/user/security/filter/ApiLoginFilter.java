@@ -1,5 +1,6 @@
 package com.weather.user.security.filter;
 
+import com.weather.user.dto.UserDTO;
 import com.weather.user.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,6 +9,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,7 +28,7 @@ public class ApiLoginFilter extends AbstractAuthenticationProcessingFilter {
         throws IOException, ServletException {
         log.info("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
         String body = getBody(request);
-        log.info("body: ", body);
+        log.info("body: ", request.toString());
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         log.info("email: " + email);
