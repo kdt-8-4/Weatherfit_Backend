@@ -36,7 +36,6 @@ public class ImageService {
     public String saveImage(MultipartFile file) {
         try {
             String originalFilename = file.getOriginalFilename();
-            String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
 
             // 현재 시간을 가져와서, 이를 파일 이름에 포함합니다.
             LocalDateTime now = LocalDateTime.now();

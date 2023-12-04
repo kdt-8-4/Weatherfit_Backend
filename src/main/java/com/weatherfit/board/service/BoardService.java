@@ -151,8 +151,8 @@ public class BoardService {
         String joiendString = board.getTemperature() + "/" + String.join("/", board.getCategory());
         String joiendString2 = String.join("/", board.getHashTag());
 
-        kafkaTemplate.send("category", 0, "category", joiendString);
-        kafkaTemplate.send("hashtag", 0, "hashtag", joiendString2);
+//        kafkaTemplate.send("category", 0, "category", joiendString);
+//        kafkaTemplate.send("hashtag", 0, "hashtag", joiendString2);
         return board;
     }
 
@@ -175,14 +175,13 @@ public class BoardService {
 
         // 게시글에 연결된 모든 이미지를 S3에서 삭제합니다.
         for (ImageEntity imageEntity : originalBoard.getImages()) {
-            System.out.println("Deleting image with file name: " + imageEntity.getFileName());
             imageService.deleteImage(imageEntity);
             imageRepository.delete(imageEntity);
         }
         originalBoard.getImages().clear();
 
         for (MultipartFile image : images) {
-            String imageUrl = imageService.saveImage(image);    // saveImage 메소드에서 반환받은 파일 이름
+            String imageUrl = imageService.saveImage(image);
             String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
 
             // 이미지가 이미 저장되어 있는지 확인
@@ -219,8 +218,8 @@ public class BoardService {
         boardRepository.save(originalBoard);
 
         // 카프카 전송
-        kafkaTemplate.send("category", 1, "category", afterJoiendString);
-        kafkaTemplate.send("hashtag", 1, "hashtag", afterJoiendString2);
+//        kafkaTemplate.send("category", 1, "category", afterJoiendString);
+//        kafkaTemplate.send("hashtag", 1, "hashtag", afterJoiendString2);
     }
 
 
@@ -233,8 +232,8 @@ public class BoardService {
         String afterJoiendString = originalBoard.getTemperature() + "/" + String.join("/", originalBoard.getCategory());
         String afterJoiendString2 = String.join("/", originalBoard.getHashTag());
 
-        kafkaTemplate.send("category", 2, "category", afterJoiendString);
-        kafkaTemplate.send("hashtag", 2, "hashtag", afterJoiendString2);
+//        kafkaTemplate.send("category", 2, "category", afterJoiendString);
+//        kafkaTemplate.send("hashtag", 2, "hashtag", afterJoiendString2);
 
 
         boardRepository.deleteById(boardId);
