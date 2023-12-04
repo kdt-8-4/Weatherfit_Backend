@@ -170,6 +170,17 @@ public class BoardService {
             throw new RuntimeException(e);
         }
 
+
+        if (boardUpdateDTO.getDeletedImages() != null) {
+            for (Integer imageId : boardUpdateDTO.getDeletedImages()) {
+                Optional<ImageEntity> optionalImageEntity = imageRepository.findById(imageId);
+                ImageEntity imageEntity = optionalImageEntity.orElseThrow(() -> new IllegalArgumentException("해당 이미지가 존재하지 않습니다. id=" + imageId));
+
+                imageRepository.deleteById(imageId);
+                imageService.deleteImage(imageEntity.getImageUrl());
+            }
+        }
+
         for (MultipartFile image : images) {
             String imageUrl = imageService.saveImage(image);
 
@@ -186,15 +197,6 @@ public class BoardService {
         }
 
 
-        if (boardUpdateDTO.getDeletedImages() != null) {
-            for (Integer imageId : boardUpdateDTO.getDeletedImages()) {
-                Optional<ImageEntity> optionalImageEntity = imageRepository.findById(imageId);
-                ImageEntity imageEntity = optionalImageEntity.orElseThrow(() -> new IllegalArgumentException("해당 이미지가 존재하지 않습니다. id=" + imageId));
-
-                imageRepository.deleteById(imageId);
-                imageService.deleteImage(imageEntity.getImageUrl());
-            }
-        }
 
         BoardEntity boardEntity = BoardEntity.builder()
                 .boardId(boardId)
