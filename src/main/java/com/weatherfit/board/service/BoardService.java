@@ -154,7 +154,7 @@ public class BoardService {
 
     // 게시글 수정
     @Transactional
-    public void patchBoard(int boardId, String boardJson, MultipartFile[] images, String[] deletedImages, String nickName) {
+    public void patchBoard(int boardId, String boardJson, MultipartFile[] images, String nickName) {
         Optional<BoardEntity> optionalBoard = Optional.ofNullable(boardRepository.findById(boardId));
 
         BoardEntity originalBoard = optionalBoard.orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + boardId));
@@ -172,27 +172,23 @@ public class BoardService {
 
         for (MultipartFile image : images) {
             String imageUrl = imageService.saveImage(image);
+            ImageEntity imageEntity = ImageEntity.builder()
+                    .imageUrl(imageUrl)
+                    .boardId(originalBoard)
+                    .build();
+            imageRepository.save(imageEntity);
 
-            if (!imageRepository.existsByImageUrl(imageUrl)) {
-                ImageEntity imageEntity = ImageEntity.builder()
-                        .imageUrl(imageUrl)
-                        .boardId(originalBoard)
-                        .build();
-                imageRepository.save(imageEntity);
+            originalBoard.getImages().add(imageEntity);
 
-                originalBoard.getImages().add(imageEntity);
-            }
         }
 
-        // 삭제된 이미지 처리
-        if (deletedImages != null) {
-            for (String imageUrl : deletedImages) {
-                ImageEntity imageEntity = imageRepository.findByImageUrl(imageUrl);
-                if (imageEntity != null) {
-                    imageRepository.delete(imageEntity);
-                    imageService.deleteImage(imageUrl);
+        if (boardUpdateDTO.getDeletedImages() != null) {
+            for (Integer imageId : boardUpdateDTO.getDeletedImages()) {
+                Optional<ImageEntity> optionalImageEntity = imageRepository.findById(imageId);
+                ImageEntity imageEntity = optionalImageEntity.orElseThrow(() -> new IllegalArgumentException("해당 이미지가 존재하지 않습니다. id=" + imageId));
 
-                }
+                imageRepository.deleteById(imageId);
+                imageService.deleteImage(imageEntity.getImageUrl());
             }
         }
 
