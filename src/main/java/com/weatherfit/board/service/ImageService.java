@@ -9,16 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.Timestamp;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.UUID;
-
-import static java.lang.System.currentTimeMillis;
-
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +19,6 @@ public class ImageService {
     @Autowired
     ImageRepository imageRepository;
     private final AmazonS3Client amazonS3Client;
-
 
 
     @Value("${cloud.aws.s3.bucket}")
@@ -37,7 +29,6 @@ public class ImageService {
         try {
             String originalFilename = file.getOriginalFilename();
 
-            // 현재 시간을 가져와서, 이를 파일 이름에 포함합니다.
             LocalDateTime now = LocalDateTime.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
             String formattedNow = now.format(formatter);

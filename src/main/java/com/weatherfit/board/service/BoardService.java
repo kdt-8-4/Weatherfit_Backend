@@ -1,8 +1,6 @@
 package com.weatherfit.board.service;
 
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weatherfit.board.domain.BoardEntity;
 import com.weatherfit.board.domain.ImageEntity;
@@ -14,7 +12,6 @@ import com.weatherfit.board.repository.ImageRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,10 +30,6 @@ public class BoardService {
     private final ImageService imageService;
     @Autowired
     private LikeService likeService;
-    private final AmazonS3Client amazonS3Client;
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucketName;
-
 
     // 게시글 전체 조회
     public List<BoardListResponseDTO> findAll() {
@@ -158,7 +151,7 @@ public class BoardService {
 
     // 게시글 수정
     @Transactional
-    public void patchBoard(int boardId, String boardJson, MultipartFile[] images, String nickName) {
+    public List<String> patchBoard(int boardId, String boardJson, MultipartFile[] images, String nickName) {
         Optional<BoardEntity> optionalBoard = Optional.ofNullable(boardRepository.findById(boardId));
 
         BoardEntity originalBoard = optionalBoard.orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + boardId));
@@ -172,19 +165,18 @@ public class BoardService {
             throw new RuntimeException(e);
         }
 
-
-        // 게시글에 연결된 모든 이미지를 S3에서 삭제합니다.
         for (ImageEntity imageEntity : originalBoard.getImages()) {
             imageService.deleteImage(imageEntity);
             imageRepository.delete(imageEntity);
         }
         originalBoard.getImages().clear();
 
+        List<String> newImageUrls = new ArrayList<>();
         for (MultipartFile image : images) {
             String imageUrl = imageService.saveImage(image);
+            newImageUrls.add(imageUrl);
             String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
 
-            // 이미지가 이미 저장되어 있는지 확인
             if (!imageRepository.existsByImageUrl(imageUrl)) {
                 ImageEntity imageEntity = ImageEntity.builder()
                         .fileName(fileName)
@@ -196,8 +188,6 @@ public class BoardService {
                 originalBoard.getImages().add(imageEntity);
             }
         }
-
-
 
         BoardEntity boardEntity = BoardEntity.builder()
                 .boardId(boardId)
@@ -220,6 +210,7 @@ public class BoardService {
         // 카프카 전송
         kafkaTemplate.send("category", 1, "category", afterJoiendString);
         kafkaTemplate.send("hashtag", 1, "hashtag", afterJoiendString2);
+        return newImageUrls;
     }
 
 

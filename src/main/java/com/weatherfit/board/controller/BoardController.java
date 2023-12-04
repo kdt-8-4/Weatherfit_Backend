@@ -139,20 +139,16 @@ public class BoardController {
     // 게시글 수정
     @PatchMapping(value = "/edit/{boardId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public boolean patchBoard(
+    public List<String> patchBoard(
             @RequestHeader("decodedToken") String nickName,
             @PathVariable int boardId,
             @RequestPart("board") String boardJson,
             @RequestPart(value = "images", required = false) MultipartFile[] images
-            ) throws UnsupportedEncodingException, JsonProcessingException {
+    ) throws UnsupportedEncodingException, JsonProcessingException {
 
         String decodedNickname = new String(Base64.getDecoder().decode(nickName), "UTF-8");
-
-        System.out.println(boardJson);
-
-
-        boardService.patchBoard(boardId, boardJson, images, decodedNickname);
-        return true;
+        List<String> newImageUrls = boardService.patchBoard(boardId, boardJson, images, decodedNickname);
+        return newImageUrls;
     }
 
     // 게시글 삭제
