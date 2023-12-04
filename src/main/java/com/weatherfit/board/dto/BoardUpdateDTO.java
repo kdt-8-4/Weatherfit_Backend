@@ -16,5 +16,4 @@ public class BoardUpdateDTO {
     private List<String> hashTag;
     private List<ImageEntity> images;
     private Integer[] deletedImages;
-
 }

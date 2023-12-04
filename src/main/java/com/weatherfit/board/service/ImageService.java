@@ -32,8 +32,9 @@ public class ImageService {
             String originalFilename = file.getOriginalFilename();
             String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
 
-            // 파일 이름에 원래 이름을 사용합니다.
-            String fileName = originalFilename;
+            // UUID를 생성하고, 이를 파일 이름에 포함합니다.
+            String uuid = UUID.randomUUID().toString();
+            String fileName = uuid + "_" + originalFilename;
             String fileUrl = "https://" + bucketName + ".s3.amazonaws.com/" + fileName;
 
             if (!amazonS3Client.doesObjectExist(bucketName, fileName)) {
@@ -49,6 +50,7 @@ public class ImageService {
             throw new RuntimeException("Failed to upload image to S3", e);
         }
     }
+
     public void deleteImage(String imageUrl) {
         String imageName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
         amazonS3Client.deleteObject(bucketName, imageName);

@@ -172,15 +172,19 @@ public class BoardService {
 
         for (MultipartFile image : images) {
             String imageUrl = imageService.saveImage(image);
-            ImageEntity imageEntity = ImageEntity.builder()
-                    .imageUrl(imageUrl)
-                    .boardId(originalBoard)
-                    .build();
-            imageRepository.save(imageEntity);
 
-            originalBoard.getImages().add(imageEntity);
+            // 이미지가 이미 저장되어 있는지 확인
+            if (!imageRepository.existsByImageUrl(imageUrl)) {
+                ImageEntity imageEntity = ImageEntity.builder()
+                        .imageUrl(imageUrl)
+                        .boardId(originalBoard)
+                        .build();
+                imageRepository.save(imageEntity);
 
+                originalBoard.getImages().add(imageEntity);
+            }
         }
+
 
         if (boardUpdateDTO.getDeletedImages() != null) {
             for (Integer imageId : boardUpdateDTO.getDeletedImages()) {
