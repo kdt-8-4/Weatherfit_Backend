@@ -14,6 +14,7 @@ import com.weatherfit.board.repository.ImageRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,6 +34,8 @@ public class BoardService {
     @Autowired
     private LikeService likeService;
     private final AmazonS3Client amazonS3Client;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucketName;
 
     // 게시글 전체 조회
     public List<BoardListResponseDTO> findAll() {
@@ -170,18 +173,19 @@ public class BoardService {
 
         // 게시글에 연결된 모든 이미지를 S3에서 삭제합니다.
         for (ImageEntity imageEntity : originalBoard.getImages()) {
-            imageService.deleteImage(imageEntity.getImageUrl());
+            imageService.deleteImage(imageEntity);
             imageRepository.delete(imageEntity);
         }
         originalBoard.getImages().clear();
 
         for (MultipartFile image : images) {
-            // 이미지를 업로드하고 URL을 받아옵니다.
-            String imageUrl = imageService.saveImage(image);
+            String fileName = imageService.saveImage(image);  // saveImage 메소드에서 반환받은 파일 이름
+            String imageUrl = "https://" + bucketName + ".s3.amazonaws.com/" + fileName;
 
             // 이미지가 이미 저장되어 있는지 확인
             if (!imageRepository.existsByImageUrl(imageUrl)) {
                 ImageEntity imageEntity = ImageEntity.builder()
+                        .fileName(fileName)
                         .imageUrl(imageUrl)
                         .boardId(originalBoard)
                         .build();

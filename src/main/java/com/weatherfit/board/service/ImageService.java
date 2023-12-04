@@ -2,6 +2,7 @@ package com.weatherfit.board.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.weatherfit.board.domain.ImageEntity;
 import com.weatherfit.board.repository.ImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,8 @@ public class ImageService {
     ImageRepository imageRepository;
     private final AmazonS3Client amazonS3Client;
 
+
+
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
@@ -49,16 +52,17 @@ public class ImageService {
                 amazonS3Client.putObject(bucketName, fileName, file.getInputStream(), metadata);
             }
 
-            return fileUrl;
+            return fileName;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to upload image to S3", e);
         }
     }
 
-    public void deleteImage(String imageUrl) {
-        String imageName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
-        amazonS3Client.deleteObject(bucketName, imageName);
+
+    public void deleteImage(ImageEntity imageEntity) {
+        String fileName = imageEntity.getFileName();
+        amazonS3Client.deleteObject(bucketName, fileName);
     }
 }
 

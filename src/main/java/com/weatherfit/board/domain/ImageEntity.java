@@ -26,6 +26,8 @@ public class ImageEntity {
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
+    private String fileName;
+
     @Column()
 
     public ImageDTO entityToDTO(ImageEntity imageEntity) {
