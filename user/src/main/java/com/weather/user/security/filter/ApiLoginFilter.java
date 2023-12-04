@@ -1,12 +1,9 @@
 package com.weather.user.security.filter;
 
-import com.weather.user.entity.User;
-import com.weather.user.repository.UserRepository;
 import com.weather.user.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,15 +13,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Optional;
 
 @Log4j2
 public class ApiLoginFilter extends AbstractAuthenticationProcessingFilter {
-    private UserService userService;
 
-    public ApiLoginFilter(String defaultFilterProcessUrl, UserService userService) {
+    public ApiLoginFilter(String defaultFilterProcessUrl) {
         super(defaultFilterProcessUrl);
-        this.userService = userService;
     }
 
     @Override
@@ -36,8 +30,6 @@ public class ApiLoginFilter extends AbstractAuthenticationProcessingFilter {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         log.info("email: " + email);
-
-        userService.profile(email);
 
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(email, password);
 
