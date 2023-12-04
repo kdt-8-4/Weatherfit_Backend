@@ -82,6 +82,7 @@ public class BoardController {
         boardDetailResponseDTO.setCategory(boardEntity.getCategory());
         boardDetailResponseDTO.setHashTag(boardEntity.getHashTag());
         boardDetailResponseDTO.setStatus(boardEntity.isStatus());
+        boardDetailResponseDTO.setLikelist(boardEntity.getLikelist());
         List<ImageDTO> imageDTOList = new ArrayList<>();
         for (ImageEntity images : boardEntity.getImages()) {
             imageDTOList.add(images.entityToDTO(images));
