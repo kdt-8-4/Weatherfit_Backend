@@ -164,24 +164,19 @@ public class BoardService {
         BoardUpdateDTO boardUpdateDTO;
         try {
             boardUpdateDTO = objectMapper.readValue(boardJson, BoardUpdateDTO.class);
-        } catch (JsonMappingException e) {
-            throw new RuntimeException(e);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
 
-
-        if (boardUpdateDTO.getDeletedImages() != null) {
-            for (Integer imageId : boardUpdateDTO.getDeletedImages()) {
-                Optional<ImageEntity> optionalImageEntity = imageRepository.findById(imageId);
-                ImageEntity imageEntity = optionalImageEntity.orElseThrow(() -> new IllegalArgumentException("해당 이미지가 존재하지 않습니다. id=" + imageId));
-
-                imageRepository.deleteById(imageId);
-                imageService.deleteImage(imageEntity.getImageUrl());
-            }
+        // 게시글에 연결된 모든 이미지를 S3에서 삭제합니다.
+        for (ImageEntity imageEntity : originalBoard.getImages()) {
+            imageService.deleteImage(imageEntity.getImageUrl());
+            imageRepository.delete(imageEntity);
         }
+        originalBoard.getImages().clear();
 
         for (MultipartFile image : images) {
+            // 이미지를 업로드하고 URL을 받아옵니다.
             String imageUrl = imageService.saveImage(image);
 
             // 이미지가 이미 저장되어 있는지 확인

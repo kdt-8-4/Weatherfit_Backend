@@ -29,6 +29,7 @@ public class ImageService {
 
     public String saveImage(MultipartFile file) {
         try {
+
             String originalFilename = file.getOriginalFilename();
             String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
 
