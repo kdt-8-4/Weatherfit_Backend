@@ -171,19 +171,20 @@ public class BoardService {
             imageRepository.delete(imageEntity);
         }
 
-        for (MultipartFile image : images) {
-            String imageUrl = imageService.saveImage(image);
-            String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+        if (images != null) {
+            for (MultipartFile image : images) {
+                String imageUrl = imageService.saveImage(image);
+                String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
 
-            ImageEntity imageEntity = ImageEntity.builder()
-                    .fileName(fileName)
-                    .imageUrl(imageUrl)
-                    .boardId(originalBoard)
-                    .build();
-            imageRepository.save(imageEntity);
+                ImageEntity imageEntity = ImageEntity.builder()
+                        .fileName(fileName)
+                        .imageUrl(imageUrl)
+                        .boardId(originalBoard)
+                        .build();
+                imageRepository.save(imageEntity);
 
-            originalBoard.getImages().add(imageEntity);
-
+                originalBoard.getImages().add(imageEntity);
+            }
         }
 
         BoardEntity boardEntity = BoardEntity.builder()
