@@ -1,5 +1,6 @@
 package com.weather.user.controller;
 
+import com.weather.user.dto.GoogleUserDTO;
 import com.weather.user.dto.MailCodeDTO;
 import com.weather.user.dto.UserDTO;
 import com.weather.user.service.MailService;
@@ -19,10 +20,10 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/login/google/token")
-    public ResponseEntity<JSONObject> googleToken(@RequestBody String token) throws Exception {
+    @PostMapping("/login/google")
+    public ResponseEntity<JSONObject> google(@RequestBody GoogleUserDTO googleUserDTO) throws Exception {
         log.info(" ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ googleToken controller ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-        log.info("token: " + token.toString());
+        log.info("googleUserDTO: " + googleUserDTO);
 
         JSONObject result = new JSONObject();
         result.put("result", true);

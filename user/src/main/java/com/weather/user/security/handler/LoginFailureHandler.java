@@ -23,9 +23,6 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
 
         JSONObject json = new JSONObject();
 
-        String email = request.getParameter("email");
-        log.info(email);
-
         json.put("code", "401");
         json.put("message", exception.getMessage());
 
