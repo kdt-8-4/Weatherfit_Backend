@@ -123,7 +123,7 @@ public class UserServiceImpl implements UserService {
             user.changeStatus();
             userRepository.save(user);
         } else {
-            throw new Error("잘못 된 접근입니다.");
+            throw new Error("이미 탈퇴 처리중인 유저입니다.");
         }
 
     }

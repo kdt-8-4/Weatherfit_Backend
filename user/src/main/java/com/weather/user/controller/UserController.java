@@ -81,10 +81,18 @@ public class UserController {
     }
 
     @PatchMapping("/api/profile/modify")
-    public ResponseEntity<UserDTO> modify(
-            @RequestPart("profile") MultipartFile profile,
-            @RequestPart("userDTO") UserDTO userDTO) {
+    public ResponseEntity<UserDTO> modify(@RequestBody UserDTO userDTO) {
         log.info(" ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ modify controller ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+        log.info("userDTO: " + userDTO);
+
+        UserDTO result = userService.modify(userDTO);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PatchMapping("/api/profile/modify/image")
+    public ResponseEntity<UserDTO> modifyImage(@RequestPart("email") UserDTO userDTO, @RequestPart("profile") MultipartFile profile) {
+        log.info(" ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ modifyImage controller ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
         log.info("userDTO: " + userDTO);
         log.info("profile: " + profile);
 
