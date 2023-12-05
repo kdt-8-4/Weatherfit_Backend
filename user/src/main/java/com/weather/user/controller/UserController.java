@@ -91,10 +91,10 @@ public class UserController {
     }
 
     @PatchMapping("/api/profile/modify/image")
-    public ResponseEntity<UserDTO> modifyImage(@RequestPart("email") UserDTO userDTO, @RequestPart("profile") MultipartFile profile) {
+    public ResponseEntity<UserDTO> modifyImage(@RequestPart("email") UserDTO userDTO, @RequestPart("image") MultipartFile image) {
         log.info(" ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ modifyImage controller ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
         log.info("userDTO: " + userDTO);
-        log.info("profile: " + profile);
+        log.info("image: " + image);
 
         UserDTO result = userService.modify(userDTO);
 
