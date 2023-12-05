@@ -139,7 +139,7 @@ public class BoardController {
     // 게시글 수정
     @PatchMapping(value = "/edit/{boardId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public List<String> patchBoard(
+    public boolean patchBoard(
             @RequestHeader("decodedToken") String nickName,
             @PathVariable int boardId,
             @RequestPart("board") String boardJson,
@@ -147,8 +147,8 @@ public class BoardController {
     ) throws UnsupportedEncodingException, JsonProcessingException {
 
         String decodedNickname = new String(Base64.getDecoder().decode(nickName), "UTF-8");
-        List<String> newImageUrls = boardService.patchBoard(boardId, boardJson, images, decodedNickname);
-        return newImageUrls;
+        boardService.patchBoard(boardId, boardJson, images, decodedNickname);
+        return true;
     }
 
     // 게시글 삭제

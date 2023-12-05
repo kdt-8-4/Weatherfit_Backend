@@ -151,7 +151,7 @@ public class BoardService {
 
     // 게시글 수정
     @Transactional
-    public List<String> patchBoard(int boardId, String boardJson, MultipartFile[] images, String nickName) {
+    public void patchBoard(int boardId, String boardJson, MultipartFile[] images, String nickName) {
         Optional<BoardEntity> optionalBoard = Optional.ofNullable(boardRepository.findById(boardId));
 
         BoardEntity originalBoard = optionalBoard.orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + boardId));
@@ -171,10 +171,8 @@ public class BoardService {
         }
         originalBoard.getImages().clear();
 
-        List<String> newImageUrls = new ArrayList<>();
         for (MultipartFile image : images) {
             String imageUrl = imageService.saveImage(image);
-            newImageUrls.add(imageUrl);
             String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
 
             if (!imageRepository.existsByImageUrl(imageUrl)) {
@@ -210,7 +208,6 @@ public class BoardService {
         // 카프카 전송
         kafkaTemplate.send("category", 1, "category", afterJoiendString);
         kafkaTemplate.send("hashtag", 1, "hashtag", afterJoiendString2);
-        return newImageUrls;
     }
 
 
