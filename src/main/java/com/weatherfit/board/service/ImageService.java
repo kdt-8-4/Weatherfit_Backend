@@ -26,6 +26,7 @@ public class ImageService {
 
 
     public String saveImage(MultipartFile file) {
+        String fileUrl = null;
         try {
             String originalFilename = file.getOriginalFilename();
 
@@ -33,7 +34,7 @@ public class ImageService {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
             String formattedNow = now.format(formatter);
             String fileName = formattedNow + "_weatherfit_" + originalFilename;
-            String fileUrl = "https://" + bucketName + ".s3.amazonaws.com/" + fileName;
+            fileUrl = "https://" + bucketName + ".s3.amazonaws.com/" + fileName;
 
             if (!amazonS3Client.doesObjectExist(bucketName, fileName)) {
                 ObjectMetadata metadata = new ObjectMetadata();
@@ -41,21 +42,28 @@ public class ImageService {
                 metadata.setContentLength(file.getSize());
                 amazonS3Client.putObject(bucketName, fileName, file.getInputStream(), metadata);
             }
-
-            return fileUrl;
         } catch (Exception e) {
             e.printStackTrace();
+            if (fileUrl != null) {
+                deleteImageByUrl(fileUrl);
+            }
             throw new RuntimeException("Failed to upload image to S3", e);
         }
+
+        return fileUrl;
     }
 
 
     public void deleteImage(ImageEntity imageEntity) {
         String imageUrl = imageEntity.getImageUrl();
-        String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
-        amazonS3Client.deleteObject(bucketName, fileName);
+//        String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+        amazonS3Client.deleteObject(bucketName, imageUrl);
     }
 
+//    public void deleteImageByUrl(String imageUrl) {
+//        String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+//        amazonS3Client.deleteObject(bucketName, fileName);
+//    }
 }
 
 
