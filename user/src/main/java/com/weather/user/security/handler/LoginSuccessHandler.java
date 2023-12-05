@@ -46,12 +46,8 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             String result = objectMapper.writeValueAsString(authUserDTO);
             result = result.replace("}", ", \"token\": \"" + token + "\"}");
 
-            if(authUserDTO.isFromSocial()) {
-                redirectStrategy.sendRedirect(request, response, "https://weatherfit-frontend.vercel.app/");
-            } else {
-                response.setContentType("application/json;charset=utf-8");
-                response.getWriter().write(result);
-            }
+            response.setContentType("application/json;charset=utf-8");
+            response.getWriter().write(result);
         } catch (Exception e) {
             e.printStackTrace();
         }
