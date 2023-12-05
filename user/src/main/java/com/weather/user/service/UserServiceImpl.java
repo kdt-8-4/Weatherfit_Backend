@@ -1,11 +1,14 @@
 package com.weather.user.service;
 
+import com.weather.user.dto.GoogleUserDTO;
 import com.weather.user.dto.UserDTO;
 import com.weather.user.entity.User;
+import com.weather.user.entity.UserRole;
 import com.weather.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -126,5 +129,33 @@ public class UserServiceImpl implements UserService {
             throw new Error("이미 탈퇴 처리중인 유저입니다.");
         }
 
+    }
+
+    @Override
+    public UserDTO googleUserCheck(GoogleUserDTO googleUserDTO) {
+        log.info("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+        String email = googleUserDTO.getEmail();
+        String image = googleUserDTO.getPicture();
+        Optional<User> optionalUser = userRepository.findByEmail(email, true);
+
+        if(optionalUser.isPresent()) {
+            User socialUser = optionalUser.get();
+            UserDTO result = entityToDTO(socialUser);
+            return result;
+        } else {
+            User socialUser = User.builder()
+                    .email(email)
+                    .password(passwordEncoder.encode("1234"))
+                    .image(image)
+                    .fromSocial(true)
+                    .status(true)
+                    .build();
+            socialUser.addRole(UserRole.USER);
+
+            userRepository.save(socialUser);
+
+            UserDTO result = entityToDTO(socialUser);
+            return result;
+        }
     }
 }

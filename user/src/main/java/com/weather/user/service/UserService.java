@@ -1,6 +1,7 @@
 package com.weather.user.service;
 
 
+import com.weather.user.dto.GoogleUserDTO;
 import com.weather.user.dto.UserDTO;
 import com.weather.user.entity.User;
 
@@ -18,6 +19,8 @@ public interface UserService {
     UserDTO modify(UserDTO userDTO);
 
     void remove(String email);
+
+    UserDTO googleUserCheck(GoogleUserDTO googleUserDTO);
 
     default User dtoToEntity(UserDTO userDTO) {
         User user = User.builder()

@@ -26,7 +26,7 @@ public class UserController {
         log.info(" ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ googleToken controller ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
         log.info("googleUserDTO: " + googleUserDTO);
 
-        UserDTO result = userService.profile(googleUserDTO.getEmail());
+        UserDTO result = userService.googleUserCheck(googleUserDTO);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
