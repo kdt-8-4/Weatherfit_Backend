@@ -92,14 +92,16 @@ public class UserController {
     }
 
     @PatchMapping("/api/profile/modify/image")
-    public ResponseEntity<UserDTO> modifyImage(@RequestPart("email") UserDTO userDTO, @RequestPart("image") MultipartFile image) {
+    public ResponseEntity<UserDTO> modifyImage(@RequestPart("image") MultipartFile image, @RequestPart("email") String email) {
         log.info(" ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ modifyImage controller ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-        log.info("userDTO: " + userDTO);
+        log.info("email: " + email);
         log.info("image: " + image);
 
-        UserDTO result = userService.modify(userDTO);
+        //UserDTO result = userService.modify(userDTO);
 
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        UserDTO temp = new UserDTO();
+
+        return new ResponseEntity<>(temp, HttpStatus.OK);
     }
 
     @DeleteMapping("/api/profile/remove/{email}")
