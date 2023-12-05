@@ -165,26 +165,25 @@ public class BoardService {
             throw new RuntimeException(e);
         }
 
-        for (ImageEntity imageEntity : originalBoard.getImages()) {
-            imageService.deleteImage(imageEntity);
+        for (Integer imageId : boardUpdateDTO.getDeletedImages()) {
+            Optional<ImageEntity> optionalImage = imageRepository.findById(imageId);
+            ImageEntity imageEntity = optionalImage.orElseThrow(() -> new IllegalArgumentException("해당 이미지가 존재하지 않습니다. id=" + imageId));
             imageRepository.delete(imageEntity);
         }
-        originalBoard.getImages().clear();
 
         for (MultipartFile image : images) {
             String imageUrl = imageService.saveImage(image);
             String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
 
-            if (!imageRepository.existsByImageUrl(imageUrl)) {
-                ImageEntity imageEntity = ImageEntity.builder()
-                        .fileName(fileName)
-                        .imageUrl(imageUrl)
-                        .boardId(originalBoard)
-                        .build();
-                imageRepository.save(imageEntity);
+            ImageEntity imageEntity = ImageEntity.builder()
+                    .fileName(fileName)
+                    .imageUrl(imageUrl)
+                    .boardId(originalBoard)
+                    .build();
+            imageRepository.save(imageEntity);
 
-                originalBoard.getImages().add(imageEntity);
-            }
+            originalBoard.getImages().add(imageEntity);
+
         }
 
         BoardEntity boardEntity = BoardEntity.builder()
@@ -193,8 +192,6 @@ public class BoardService {
                 .category(boardUpdateDTO.getCategory())
                 .hashTag(boardUpdateDTO.getHashTag())
                 .build();
-
-        BoardEntity savedBoard = boardRepository.save(boardEntity);
 
         String afterJoiendString = originalBoard.getTemperature() + "/" + String.join("/", originalBoard.getCategory()) + ":" + String.join("/", boardUpdateDTO.getCategory());
         String afterJoiendString2 = String.join("/", originalBoard.getHashTag()) + ":" + String.join("/", boardUpdateDTO.getHashTag());

@@ -50,13 +50,10 @@ public class ImageService {
     }
 
 
-    public void deleteImage(ImageEntity imageEntity) {
-        String imageUrl = imageEntity.getImageUrl();
-//        String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
-        amazonS3Client.deleteObject(bucketName, imageUrl);
-    }
+//    public void deleteImage(ImageEntity imageEntity) {
+//        String imageUrl = imageEntity.getImageUrl();
+////        String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+//        amazonS3Client.deleteObject(bucketName, imageUrl);
+//    }
 
 }
-
-
-
