@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.minidev.json.JSONObject;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -91,8 +92,8 @@ public class UserController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PatchMapping("/api/profile/modify/image")
-    public ResponseEntity<UserDTO> modifyImage(@RequestPart("image") MultipartFile image, @RequestPart("email") String email) {
+    @PatchMapping(value = "/api/profile/modify/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<UserDTO> modifyImage(@RequestPart(value = "image", required = false) MultipartFile image, @RequestPart("email") String email) {
         log.info(" ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ modifyImage controller ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
         log.info("email: " + email);
         log.info("image: " + image);
