@@ -91,9 +91,15 @@ public class UserServiceImpl implements UserService {
         User user = optionalUser.get();
 
         if(user.isStatus()) {
-            user.changeNickname(userDTO.getNickname());
-            user.changeImage(userDTO.getImage());
-            user.changePassword(passwordEncoder.encode(userDTO.getPassword()));
+            if(userDTO.getNickname() != null) {
+                user.changeNickname(userDTO.getNickname());
+            }
+            if(userDTO.getImage() != null) {
+                user.changeImage(userDTO.getImage());
+            }
+            if(userDTO.getPassword() != null) {
+                user.changePassword(passwordEncoder.encode(userDTO.getPassword()));
+            }
             userRepository.save(user);
 
             UserDTO result = entityToDTO(user);
