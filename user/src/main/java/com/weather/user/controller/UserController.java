@@ -21,6 +21,7 @@ public class UserController {
 
     @PostMapping("/login/google/token")
     public ResponseEntity<JSONObject> googleToken(@RequestBody String token) throws Exception {
+        log.info(" ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ googleToken controller ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
         log.info("token: " + token.toString());
 
         JSONObject result = new JSONObject();
@@ -31,6 +32,7 @@ public class UserController {
 
     @PostMapping("/signup/email")
     public ResponseEntity<JSONObject> verifyEmail(@RequestBody UserDTO userDTO) {
+        log.info(" ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ verifyEmail controller ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
         log.info("userDTO: " + userDTO);
 
         boolean verifyEmail = userService.verifyEmail(userDTO.getEmail());
@@ -43,6 +45,7 @@ public class UserController {
 
     @PostMapping("/signup/nickname")
     public ResponseEntity<JSONObject> verifyNickname(@RequestBody UserDTO userDTO) {
+        log.info(" ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ verifyNickname controller ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
         log.info("userDTO: " + userDTO);
 
         boolean verifyNickname = userService.verifyNickname(userDTO.getNickname());
@@ -55,6 +58,7 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<JSONObject> signup(@RequestBody UserDTO userDTO) {
+        log.info(" ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ signup controller ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
         log.info("userDTO: " + userDTO);
 
         userService.signup(userDTO);
@@ -68,6 +72,7 @@ public class UserController {
 
     @PostMapping("/api/profile")
     public ResponseEntity<UserDTO> profile(@RequestBody UserDTO userDTO) {
+        log.info(" ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ profile controller ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
         log.info("userDTO: " + userDTO);
 
         UserDTO result = userService.profile(userDTO.getEmail());
@@ -77,10 +82,11 @@ public class UserController {
 
     @PatchMapping("/api/profile/modify")
     public ResponseEntity<UserDTO> modify(
-            @RequestPart("image") MultipartFile image,
+            @RequestPart("profile") MultipartFile profile,
             @RequestPart("userDTO") UserDTO userDTO) {
+        log.info(" ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ modify controller ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
         log.info("userDTO: " + userDTO);
-        log.info("image: " + image);
+        log.info("profile: " + profile);
 
         UserDTO result = userService.modify(userDTO);
 
@@ -89,6 +95,7 @@ public class UserController {
 
     @DeleteMapping("/api/profile/remove/{email}")
     public ResponseEntity<JSONObject> remove(@PathVariable String email) {
+        log.info(" ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ remove controller ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
         log.info("email: " + email);
 
         userService.remove(email);
