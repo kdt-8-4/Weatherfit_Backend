@@ -1,4 +1,6 @@
 package com.weatherfit.board.controller;
+
+import com.weatherfit.board.domain.BoardEntity;
 import com.weatherfit.board.dto.MyLikeDTO;
 import com.weatherfit.board.service.LikeService;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +20,7 @@ public class LikeController {
     }
 
     @PostMapping("/like/{boardId}")
-    public boolean like (@RequestHeader("decodedToken") String nickName, @PathVariable("boardId") int boardId) throws UnsupportedEncodingException {
+    public boolean like(@RequestHeader("decodedToken") String nickName, @PathVariable("boardId") int boardId) throws UnsupportedEncodingException {
         String decodedNickname = new String(Base64.getDecoder().decode(nickName), "UTF-8");
         likeService.like(boardId, decodedNickname);
         return true;
@@ -31,4 +33,7 @@ public class LikeController {
 
         return myLikeList;
     }
+
+
+
 }

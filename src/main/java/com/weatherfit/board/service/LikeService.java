@@ -7,6 +7,7 @@ import com.weatherfit.board.repository.BoardRepository;
 import com.weatherfit.board.repository.LikeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -35,11 +36,13 @@ public class LikeService {
         }
     }
 
+    // 좋아요 수 카운트
     public int countLikes(int boardId) {
         return likeRepository.countByBoardId_BoardId(boardId);
     }
 
 
+    // 내가 좋아요 한 게시글 리스트
     public List<MyLikeDTO> myLike(String nickName) {
         List<LikeEntity> likeEntities = likeRepository.findByNickName(nickName);
 
@@ -62,4 +65,6 @@ public class LikeService {
 
             return likeDTOS;
     }
+
+
 }

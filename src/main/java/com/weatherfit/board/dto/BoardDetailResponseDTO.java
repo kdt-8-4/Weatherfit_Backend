@@ -2,6 +2,7 @@ package com.weatherfit.board.dto;
 
 import com.weatherfit.board.domain.LikeEntity;
 import lombok.*;
+
 import java.util.List;
 
 @Getter
@@ -21,7 +22,6 @@ public class BoardDetailResponseDTO {
     private List<ImageDTO> images;
     private List<CommentResponseDTO> comments;
     private List<LikeEntity> likelist;
-
 
 
 }

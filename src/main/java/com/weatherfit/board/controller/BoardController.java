@@ -1,6 +1,5 @@
 package com.weatherfit.board.controller;
 
-
 import com.amazonaws.services.kms.model.NotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -15,6 +14,10 @@ import com.weatherfit.board.service.ImageService;
 import com.weatherfit.board.service.LikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -165,4 +168,14 @@ public class BoardController {
                                        @RequestParam(required = false) List<String> hashtags) {
         return boardService.search(categories, hashtags);
     }
+
+    @GetMapping("/tops")
+    public Page<BoardListResponseDTO> getTop5BoardByAverageTemperatureAndLikes(
+            @RequestParam("temp_min") double minTemp,
+            @RequestParam("temp_max") double maxTemp,
+            @PageableDefault(size = 5, sort = "likeCount", direction = Sort.Direction.DESC) Pageable pageable) {
+        return boardService.getTop5Board(minTemp, maxTemp, pageable);
+    }
+
+
 }

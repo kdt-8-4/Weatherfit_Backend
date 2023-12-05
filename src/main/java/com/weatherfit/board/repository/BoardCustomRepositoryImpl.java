@@ -11,10 +11,11 @@ import jakarta.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BoardCustomRepositoryImpl implements BoardCustomRepository{
+public class BoardCustomRepositoryImpl implements BoardCustomRepository {
 
     @PersistenceContext
     private EntityManager em;
+
     @Override
     public List<BoardEntity> findBoardEntitiesWithCategoriesAndHashtags(List<String> categories, List<String> hashtags) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -43,7 +44,6 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository{
 
         return em.createQuery(cq).getResultList();
     }
-
 
 
 }

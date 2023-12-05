@@ -36,7 +36,6 @@ public class BoardEntity extends BaseEntity {
     @Column(name = "category", nullable = false)
     private List<String> category = new ArrayList<>();
 
-
     @ElementCollection
     @Builder.Default
     @Column(name = "hashTag")

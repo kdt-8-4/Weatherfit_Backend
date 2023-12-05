@@ -1,11 +1,6 @@
 package com.weatherfit.board.dto;
 
-import com.weatherfit.board.domain.BoardEntity;
-import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.List;
-
 
 @Getter
 @Builder

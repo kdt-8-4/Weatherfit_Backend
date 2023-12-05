@@ -1,4 +1,5 @@
 package com.weatherfit.board.domain;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.weatherfit.board.dto.ImageDTO;
 import jakarta.persistence.*;
@@ -36,6 +37,5 @@ public class ImageEntity {
                 .imageId(imageEntity.getImageId())
                 .imageUrl(imageEntity.getImageUrl())
                 .build();
-
     }
 }

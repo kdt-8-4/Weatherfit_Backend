@@ -16,7 +16,6 @@ public class CommentResponseDTO {
     private int boardId;
     private String nickname;
     private String content;
-
     private String createdDate;
     private String createdTime;
     private int status;

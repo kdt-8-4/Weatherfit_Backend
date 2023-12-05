@@ -7,11 +7,14 @@ import com.weatherfit.board.domain.ImageEntity;
 import com.weatherfit.board.dto.BoardListResponseDTO;
 import com.weatherfit.board.dto.BoardSearchDTO;
 import com.weatherfit.board.dto.BoardUpdateDTO;
+import com.weatherfit.board.dto.ImageDTO;
 import com.weatherfit.board.repository.BoardRepository;
 import com.weatherfit.board.repository.ImageRepository;
+import com.weatherfit.board.repository.LikeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +29,7 @@ public class BoardService {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final BoardRepository boardRepository;
+    private final LikeRepository likeRepository;
     private final ImageRepository imageRepository;
     private final ImageService imageService;
     @Autowired
@@ -248,6 +252,35 @@ public class BoardService {
         }
 
         return result;
+    }
+
+
+    // 온도 별 좋아요 Top 5 게시글
+    public Page<BoardListResponseDTO> getTop5Board(double minTemp, double maxTemp, Pageable pageable) {
+        List<BoardEntity> boards = boardRepository.findBoardsByTemperatureRange(minTemp, maxTemp);
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), boards.size());
+
+        List<BoardListResponseDTO> dtos = new ArrayList<>();
+
+        for (BoardEntity board : boards.subList(start, end)) {
+            BoardListResponseDTO dto = BoardListResponseDTO.builder()
+                    .boardId(board.getBoardId())
+                    .nickName(board.getNickName())
+                    .temperature(board.getTemperature())
+                    .likeCount(likeService.countLikes(board.getBoardId()))
+                    .images(board.entityToDTO(board.getImages().get(0)))
+                    .category(board.getCategory())
+                    .hashTag(board.getHashTag())
+                    .weatherIcon(board.getWeatherIcon())
+                    .likelist(board.getLikelist())
+                    .build();
+
+            dtos.add(dto);
+        }
+
+        return new PageImpl<BoardListResponseDTO>(dtos, pageable, boards.size());
     }
 
 }

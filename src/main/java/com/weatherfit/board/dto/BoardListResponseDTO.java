@@ -1,13 +1,10 @@
 package com.weatherfit.board.dto;
 
-
 import com.weatherfit.board.domain.LikeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.util.List;
-
 
 @Getter
 @Builder
