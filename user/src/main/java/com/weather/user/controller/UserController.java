@@ -22,12 +22,11 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/login/google")
-    public ResponseEntity<JSONObject> google(@RequestBody GoogleUserDTO googleUserDTO) throws Exception {
+    public ResponseEntity<UserDTO> google(@RequestBody GoogleUserDTO googleUserDTO) throws Exception {
         log.info(" ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ googleToken controller ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
         log.info("googleUserDTO: " + googleUserDTO);
 
-        JSONObject result = new JSONObject();
-        result.put("result", true);
+        UserDTO result = userService.profile(googleUserDTO.getEmail());
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -93,7 +92,8 @@ public class UserController {
     }
 
     @PatchMapping(value = "/api/profile/modify/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<UserDTO> modifyImage(@RequestPart(value = "image", required = false) MultipartFile image, @RequestPart("email") String email) {
+    public ResponseEntity<UserDTO> modifyImage(@RequestPart(value = "image", required = false) MultipartFile image,
+                                               @RequestPart("email") String email) {
         log.info(" ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ modifyImage controller ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
         log.info("email: " + email);
         log.info("image: " + image);
