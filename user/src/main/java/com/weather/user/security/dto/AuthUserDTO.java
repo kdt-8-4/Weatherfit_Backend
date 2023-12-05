@@ -23,7 +23,7 @@ public class AuthUserDTO extends User implements OAuth2User {
     Map<String, Object> attributes;
 
     // 시큐리티 커스텀 로그인 생성자
-    public AuthUserDTO(String username, String password, String name, String nickname,String image, boolean fromSocial, boolean status,
+    public AuthUserDTO(String username, String password, String name, String nickname, String image, boolean fromSocial, boolean status,
                        Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
         this.email = username;
@@ -41,8 +41,6 @@ public class AuthUserDTO extends User implements OAuth2User {
         super(username, password, authorities);
         this.email = username;
         this.password = password;
-        this.name = name;
-        this.nickname = nickname;
         this.image = image;
         this.fromSocial = fromSocial;
         this.status = status;

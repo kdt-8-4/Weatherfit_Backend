@@ -32,9 +32,12 @@ public class AuthUserDetailsService implements UserDetailsService {
         }
 
         User user = optionalUser.get();
+        if(!user.isStatus()) {
+            throw new UsernameNotFoundException("탈퇴 대기중인 회원입니다.");
+        }
 
         AuthUserDTO result = new AuthUserDTO(
-                user.getEmail(), user.getPassword(),user.getName(), user.getNickname(), user.getImage(),
+                user.getEmail(), user.getPassword(), user.getName(), user.getNickname(), user.getImage(),
                 user.isFromSocial(), user.isStatus(),
                 user.getRoleSet().stream().map((role) ->
                         new SimpleGrantedAuthority("Role_" + role.name())).collect(Collectors.toSet())

@@ -34,6 +34,7 @@ public class ApiLoginFilter extends AbstractAuthenticationProcessingFilter {
         log.info("email: " + email);
 
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(email, password);
+        log.info(token);
 
         return getAuthenticationManager().authenticate(token);
     }

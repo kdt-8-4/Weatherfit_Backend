@@ -35,11 +35,7 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
         Optional<User> user = userRepository.findByEmail(email, false);
 
         json.put("code", "401");
-        if(user.isEmpty()) {
-            json.put("message", "존재하지 않는 이메일입니다.");
-        } else  {
-            json.put("message", "비밀번호가 일치하지 않습니다.");
-        }
+        json.put("message", exception.getMessage());
 
         response.getWriter().write(String.valueOf(json));
     }
