@@ -44,9 +44,9 @@ public class ImageService {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            if (fileUrl != null) {
-                deleteImageByUrl(fileUrl);
-            }
+//            if (fileUrl != null) {
+//                deleteImageByUrl(fileUrl);
+//            }
             throw new RuntimeException("Failed to upload image to S3", e);
         }
 
