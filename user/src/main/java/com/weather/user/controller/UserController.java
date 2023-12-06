@@ -13,6 +13,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
+
 @Controller
 @Log4j2
 @RequiredArgsConstructor
@@ -101,17 +107,19 @@ public class UserController {
 
     @PatchMapping(value = "/api/profile/modify/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public ResponseEntity<UserDTO> modifyImage(@RequestPart(value = "image", required = false) MultipartFile image,
-                                               @RequestPart("email") String email) {
+    public ResponseEntity<JSONObject> modifyImage(@RequestPart(value = "image", required = false) MultipartFile image,
+                                               @RequestPart("email") String email,
+                                               @RequestPart("fromSocial") Boolean fromSocial) {
         log.info(" ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ modifyImage controller ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
         log.info("email: " + email);
         log.info("image: " + image);
 
-        //UserDTO result = userService.modify(userDTO);
+        userService.saveImage(email, image, fromSocial);
 
-        UserDTO temp = new UserDTO();
+        JSONObject result = new JSONObject();
+        result.put("result", true);
 
-        return new ResponseEntity<>(temp, HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @DeleteMapping("/api/profile/remove/{email}")

@@ -1,16 +1,22 @@
 package com.weather.user.service;
 
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.weather.user.dto.GoogleUserDTO;
 import com.weather.user.dto.UserDTO;
 import com.weather.user.entity.User;
 import com.weather.user.entity.UserRole;
 import com.weather.user.repository.UserRepository;
+import com.weather.user.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Service
@@ -19,6 +25,10 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JWTUtil jwtUtil;
+    private final AmazonS3Client s3Client;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
 
     @Override
     public boolean verifyEmail(String email) {
@@ -66,73 +76,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO profile(String email) {
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        log.info("optionalUser: " + optionalUser);
-
-        if(optionalUser.isEmpty()) {
-            throw new Error("존재하지 않는 유저입니다.");
-        }
-        User user = optionalUser.get();
-
-        if(!user.isStatus()) {
-            throw new Error("탈퇴 대기중인 유저입니다.");
-        }
-
-        UserDTO result = entityToDTO(user);
-        return result;
-    }
-
-    @Override
-    public UserDTO modify(UserDTO userDTO) {
-        Optional<User> optionalUser = userRepository.findByEmail(userDTO.getEmail());
-        log.info("optionalUser: " + optionalUser);
-
-        if(optionalUser.isEmpty()) {
-            throw new Error("존재하지 않는 유저입니다.");
-        }
-        User user = optionalUser.get();
-
-        if(user.isStatus()) {
-            if(userDTO.getNickname() != null) {
-                user.changeNickname(userDTO.getNickname());
-            }
-            if(userDTO.getImage() != null) {
-                user.changeImage(userDTO.getImage());
-            }
-            if(userDTO.getPassword() != null) {
-                user.changePassword(passwordEncoder.encode(userDTO.getPassword()));
-            }
-            userRepository.save(user);
-
-            UserDTO result = entityToDTO(user);
-            return result;
-        } else {
-            throw new Error("이미 탈퇴 처리중인 유저입니다.");
-        }
-    }
-
-    @Override
-    public void remove(String email) {
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        log.info("optionalUser: " + optionalUser);
-
-        if(optionalUser.isEmpty()) {
-            throw new Error("존재하지 않는 유저입니다.");
-        }
-        User user = optionalUser.get();
-
-        if(user.isStatus()) {
-            user.changeStatus();
-            userRepository.save(user);
-        } else {
-            throw new Error("이미 탈퇴 처리중인 유저입니다.");
-        }
-
-    }
-
-    @Override
-    public UserDTO googleUserCheck(GoogleUserDTO googleUserDTO) {
+    public UserDTO googleUserCheck(GoogleUserDTO googleUserDTO) throws Exception{
         log.info("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
         String email = googleUserDTO.getEmail();
         String image = googleUserDTO.getPicture();
@@ -141,6 +85,7 @@ public class UserServiceImpl implements UserService {
         if(optionalUser.isPresent()) {
             User user = optionalUser.get();
             UserDTO result = entityToDTO(user);
+            result.setToken(jwtUtil.generateToken(user.getNickname()));
             return result;
         } else {
             User user = User.builder()
@@ -170,9 +115,99 @@ public class UserServiceImpl implements UserService {
             user.changeName(userDTO.getName());
             userRepository.save(user);
             UserDTO result = entityToDTO(user);
+            result.setToken(jwtUtil.generateToken(user.getNickname()));
             return result;
         } else {
             throw new Exception("잘못 된 접근입니다.");
+        }
+    }
+
+    @Override
+    public UserDTO profile(String email) {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        log.info("optionalUser: " + optionalUser);
+
+        if(optionalUser.isEmpty()) {
+            throw new Error("존재하지 않는 유저입니다.");
+        }
+        User user = optionalUser.get();
+
+        if(!user.isStatus()) {
+            throw new Error("탈퇴 대기중인 유저입니다.");
+        }
+
+        UserDTO result = entityToDTO(user);
+        return result;
+    }
+
+    @Override
+    public UserDTO modify(UserDTO userDTO) {
+        Optional<User> optionalUser = userRepository.findByEmail(userDTO.getEmail());
+        log.info("optionalUser: " + optionalUser);
+
+        if(optionalUser.isEmpty()) {
+            throw new Error("존재하지 않는 유저입니다.");
+        }
+        User user = optionalUser.get();
+
+        if(user.isStatus()) {
+            if(userDTO.getPassword() != null) {
+                user.changePassword(passwordEncoder.encode(userDTO.getPassword()));
+            }
+            userRepository.save(user);
+
+            UserDTO result = entityToDTO(user);
+            return result;
+        } else {
+            throw new Error("이미 탈퇴 처리중인 유저입니다.");
+        }
+    }
+
+    @Override
+    public void saveImage(String email, MultipartFile image, boolean fromSocial) {
+        //실제 파일명에는 전체 경로가 들어오기 때문에 파일 이름만 추출
+        String originalName = image.getOriginalFilename();
+        log.info("originalName: " + image.getOriginalFilename());
+
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        String formattedNow = now.format(formatter);
+        String fileName = formattedNow + "_weatherfit_" + originalName;
+        String fileUrl = "https://" + bucket + ".s3.amazonaws.com/" + fileName;
+
+        try {
+            if (!s3Client.doesObjectExist(bucket, fileName)) {
+                ObjectMetadata metadata = new ObjectMetadata();
+                metadata.setContentType(image.getContentType());
+                metadata.setContentLength(image.getSize());
+                s3Client.putObject(bucket, fileName, image.getInputStream(), metadata);
+            }
+
+            Optional<User> optionalUser = userRepository.findByEmail(email, fromSocial);
+            User user = optionalUser.get();
+            user.changeImage(fileUrl);
+            userRepository.save(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to upload image to S3", e);
+        }
+    }
+
+    @Override
+    public void remove(String email) {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        log.info("optionalUser: " + optionalUser);
+
+        if(optionalUser.isEmpty()) {
+            throw new Error("존재하지 않는 유저입니다.");
+        }
+        User user = optionalUser.get();
+
+        if(user.isStatus()) {
+            user.changeStatus();
+            userRepository.save(user);
+        } else {
+            throw new Error("이미 탈퇴 처리중인 유저입니다.");
         }
     }
 }

@@ -4,6 +4,7 @@ package com.weather.user.service;
 import com.weather.user.dto.GoogleUserDTO;
 import com.weather.user.dto.UserDTO;
 import com.weather.user.entity.User;
+import org.springframework.web.multipart.MultipartFile;
 
 
 public interface UserService {
@@ -14,15 +15,17 @@ public interface UserService {
 
     void signup(UserDTO userDTO);
 
+    UserDTO googleUserCheck(GoogleUserDTO googleUserDTO) throws Exception;
+
+    UserDTO googleUserAdditional(UserDTO userDTO) throws Exception;
+
     UserDTO profile(String email);
 
     UserDTO modify(UserDTO userDTO);
 
+    void saveImage(String email, MultipartFile image, boolean fromSocial);
+
     void remove(String email);
-
-    UserDTO googleUserCheck(GoogleUserDTO googleUserDTO);
-
-    UserDTO googleUserAdditional(UserDTO userDTO) throws Exception;
 
     default User dtoToEntity(UserDTO userDTO) {
         User user = User.builder()

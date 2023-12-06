@@ -43,8 +43,8 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         try {
             String token = jwtUtil.generateToken(authUserDTO.getNickname());
+            authUserDTO.setToken(token);
             String result = objectMapper.writeValueAsString(authUserDTO);
-            result = result.replace("}", ", \"token\": \"" + token + "\"}");
 
             response.setContentType("application/json;charset=utf-8");
             response.getWriter().write(result);

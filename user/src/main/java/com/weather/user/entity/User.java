@@ -21,7 +21,7 @@ public class User extends BaseEntity{
     @Column(unique = true)
     String email, nickname;
 
-    String name, phone, image, password;
+    String name, image, password;
 
     boolean fromSocial, status;
 
