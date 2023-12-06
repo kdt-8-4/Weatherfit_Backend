@@ -257,8 +257,7 @@ public class BoardService {
 
     // 온도 별 좋아요 Top 5 게시글
     public Page<BoardListResponseDTO> getTop5Board(double minTemp, double maxTemp, Pageable pageable) {
-        double averageTemp = (minTemp + maxTemp) / 2;
-        List<BoardEntity> boards = boardRepository.findBoardsByTemperatureRange(averageTemp - 1, averageTemp + 1);
+        List<BoardEntity> boards = boardRepository.findBoardsByTemperatureRange(minTemp, maxTemp);
 
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), boards.size());
