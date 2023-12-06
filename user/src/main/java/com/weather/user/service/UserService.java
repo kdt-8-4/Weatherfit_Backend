@@ -25,6 +25,8 @@ public interface UserService {
 
     void saveImage(String email, MultipartFile image);
 
+    void resetImage(String email);
+
     void remove(String email);
 
     default User dtoToEntity(UserDTO userDTO) {

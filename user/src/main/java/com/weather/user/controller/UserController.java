@@ -113,7 +113,11 @@ public class UserController {
         log.info("email: " + email);
         log.info("image: " + image);
 
-        userService.saveImage(email, image);
+        if(image != null) {
+            userService.saveImage(email, image);
+        } else  {
+            userService.resetImage(email);
+        }
 
         JSONObject result = new JSONObject();
         result.put("result", true);

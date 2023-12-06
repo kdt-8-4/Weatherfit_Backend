@@ -196,6 +196,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void resetImage(String email) {
+        try {
+            Optional<User> optionalUser = userRepository.findByEmail(email);
+            User user = optionalUser.get();
+            user.changeImage(null);
+            userRepository.save(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public void remove(String email) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         log.info("optionalUser: " + optionalUser);
