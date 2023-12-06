@@ -38,7 +38,7 @@ exports.getTop5 = async (req, res)=> {
                 $match: { temperature: { $gte: temp_min, $lte: temp_max } }
             },
             {
-                $group: { categoryName : "$categoryName", count: { $sum: "$count" } }
+                $group: { _id: "$categoryName", count: { $sum: "$count" } }
             },
             {
                 $sort: { count: -1 }
