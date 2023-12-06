@@ -1,9 +1,7 @@
 package com.weather.user.controller;
 
 import com.weather.user.dto.GoogleUserDTO;
-import com.weather.user.dto.MailCodeDTO;
 import com.weather.user.dto.UserDTO;
-import com.weather.user.service.MailService;
 import com.weather.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -27,6 +25,16 @@ public class UserController {
         log.info("googleUserDTO: " + googleUserDTO);
 
         UserDTO result = userService.googleUserCheck(googleUserDTO);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PostMapping("/login/google/additional")
+    public ResponseEntity<UserDTO> googleAdditional(@RequestBody UserDTO userDTO) throws Exception {
+        log.info(" ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ google controller ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+        log.info("userDTO: " + userDTO);
+
+        UserDTO result = userService.googleUserAdditional(userDTO);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

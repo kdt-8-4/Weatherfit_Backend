@@ -22,13 +22,14 @@ public interface UserService {
 
     UserDTO googleUserCheck(GoogleUserDTO googleUserDTO);
 
+    UserDTO googleUserAdditional(UserDTO userDTO) throws Exception;
+
     default User dtoToEntity(UserDTO userDTO) {
         User user = User.builder()
                 .email(userDTO.getEmail())
                 .name(userDTO.getName())
                 .nickname(userDTO.getNickname())
                 .password(userDTO.getPassword())
-                .phone(userDTO.getPhone())
                 .image(userDTO.getImage())
                 .fromSocial(userDTO.isFromSocial())
                 .status(userDTO.isStatus()).build();
@@ -43,7 +44,6 @@ public interface UserService {
                 .name(user.getName())
                 .nickname(user.getNickname())
                 .password(user.getPassword())
-                .phone(user.getPhone())
                 .image(user.getImage())
                 .fromSocial(user.isFromSocial())
                 .status(user.isStatus()).build();

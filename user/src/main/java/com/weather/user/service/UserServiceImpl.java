@@ -139,23 +139,40 @@ public class UserServiceImpl implements UserService {
         Optional<User> optionalUser = userRepository.findByEmail(email, true);
 
         if(optionalUser.isPresent()) {
-            User socialUser = optionalUser.get();
-            UserDTO result = entityToDTO(socialUser);
+            User user = optionalUser.get();
+            UserDTO result = entityToDTO(user);
             return result;
         } else {
-            User socialUser = User.builder()
+            User user = User.builder()
                     .email(email)
                     .password(passwordEncoder.encode("1234"))
                     .image(image)
                     .fromSocial(true)
                     .status(true)
                     .build();
-            socialUser.addRole(UserRole.USER);
+            user.addRole(UserRole.USER);
 
-            userRepository.save(socialUser);
+            userRepository.save(user);
 
-            UserDTO result = entityToDTO(socialUser);
+            UserDTO result = entityToDTO(user);
             return result;
+        }
+    }
+
+    @Override
+    public UserDTO googleUserAdditional(UserDTO userDTO) throws Exception{
+        log.info("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+        Optional<User> optionalUser = userRepository.findByEmail(userDTO.getEmail(), true);
+
+        if(optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.changeNickname(userDTO.getNickname());
+            user.changeName(userDTO.getName());
+            userRepository.save(user);
+            UserDTO result = entityToDTO(user);
+            return result;
+        } else {
+            throw new Exception("잘못 된 접근입니다.");
         }
     }
 }

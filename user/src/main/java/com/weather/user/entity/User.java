@@ -33,9 +33,9 @@ public class User extends BaseEntity{
         roleSet.add(role);
     }
 
-    public void changeNickname(String nickname) {
-        this.nickname = nickname;
-    }
+    public void changeNickname(String nickname) { this.nickname = nickname; }
+
+    public void changeName(String name) { this.name = name; }
 
     public void changeImage(String image) {
         this.image = image;
