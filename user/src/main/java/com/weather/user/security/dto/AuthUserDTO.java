@@ -16,7 +16,7 @@ import java.util.Map;
 @Setter
 @ToString
 public class AuthUserDTO extends User implements OAuth2User {
-    private String email, password, name, nickname, image, token;
+    private String email, password, name, nickname, image, token, message;
 
     private boolean fromSocial, status;
 

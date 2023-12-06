@@ -24,7 +24,7 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
         JSONObject json = new JSONObject();
 
         json.put("code", "401");
-        json.put("message", exception.getMessage());
+        json.put("message", "이메일이나 비밀번호를 다시 확인해주세요.");
 
         response.getWriter().write(String.valueOf(json));
     }
