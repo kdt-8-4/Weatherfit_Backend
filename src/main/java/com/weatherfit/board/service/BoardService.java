@@ -269,6 +269,7 @@ public class BoardService {
             BoardListResponseDTO dto = BoardListResponseDTO.builder()
                     .boardId(board.getBoardId())
                     .temperature(board.getTemperature())
+                    .likeCount(likeService.countLikes(board.getBoardId()))
                     .images(board.entityToDTO(board.getImages().get(0)))
                     .build();
 

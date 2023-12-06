@@ -176,6 +176,4 @@ public class BoardController {
             @PageableDefault(size = 5, sort = "likeCount", direction = Sort.Direction.DESC) Pageable pageable) {
         return boardService.getTop5Board(minTemp, maxTemp, pageable);
     }
-
-
 }
