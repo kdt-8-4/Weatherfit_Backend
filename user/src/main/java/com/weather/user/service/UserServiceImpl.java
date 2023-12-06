@@ -164,7 +164,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void saveImage(String email, MultipartFile image, boolean fromSocial) {
+    public void saveImage(String email, MultipartFile image) {
         //실제 파일명에는 전체 경로가 들어오기 때문에 파일 이름만 추출
         String originalName = image.getOriginalFilename();
         log.info("originalName: " + image.getOriginalFilename());
@@ -183,7 +183,7 @@ public class UserServiceImpl implements UserService {
                 s3Client.putObject(bucket, fileName, image.getInputStream(), metadata);
             }
 
-            Optional<User> optionalUser = userRepository.findByEmail(email, fromSocial);
+            Optional<User> optionalUser = userRepository.findByEmail(email, false);
             User user = optionalUser.get();
             user.changeImage(fileUrl);
             userRepository.save(user);

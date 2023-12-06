@@ -108,13 +108,12 @@ public class UserController {
     @PatchMapping(value = "/api/profile/modify/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
     public ResponseEntity<JSONObject> modifyImage(@RequestPart(value = "image", required = false) MultipartFile image,
-                                               @RequestPart("email") String email,
-                                               @RequestPart("fromSocial") Boolean fromSocial) {
+                                               @RequestPart("email") String email) {
         log.info(" ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ modifyImage controller ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
         log.info("email: " + email);
         log.info("image: " + image);
 
-        userService.saveImage(email, image, fromSocial);
+        userService.saveImage(email, image);
 
         JSONObject result = new JSONObject();
         result.put("result", true);

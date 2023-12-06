@@ -23,7 +23,7 @@ public interface UserService {
 
     UserDTO modify(UserDTO userDTO);
 
-    void saveImage(String email, MultipartFile image, boolean fromSocial);
+    void saveImage(String email, MultipartFile image);
 
     void remove(String email);
 
