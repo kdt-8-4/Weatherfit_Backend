@@ -31,14 +31,11 @@ exports.getHashtagInfo = async (req, res) => {
 exports.getTop5 = async (req, res)=> {
     const temp_min = parseFloat(req.query.temp_min);
     const temp_max = parseFloat(req.query.temp_max);
-    const temp = Math.round((temp_min + temp_max) / 2);
-    const minus = temp - 1;
-    const plus = temp + 1;
 
     try {
         const result = await Category.aggregate([
             {
-                $match: { temperature: { $gte: minus, $lte: plus } }
+                $match: { temperature: { $gte: temp_min, $lte: temp_max } }
             },
             {
                 $group: { _id: "$categoryName", count: { $sum: "$count" } }
