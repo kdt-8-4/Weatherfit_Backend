@@ -173,7 +173,7 @@ public class UserServiceImpl implements UserService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         String formattedNow = now.format(formatter);
         String fileName = formattedNow + "_weatherfit_" + originalName;
-        String fileUrl = "https://" + bucket + ".s3.amazonaws.com/" + fileName;
+        String fileUrl = "https://" + bucket + ".s3.ap-northeast-2.amazonaws.com/" + fileName;
 
         try {
             if (!s3Client.doesObjectExist(bucket, fileName)) {
