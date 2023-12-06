@@ -257,7 +257,8 @@ public class BoardService {
 
     // 온도 별 좋아요 Top 5 게시글
     public Page<BoardListResponseDTO> getTop5Board(double minTemp, double maxTemp, Pageable pageable) {
-        List<BoardEntity> boards = boardRepository.findBoardsByTemperatureRange(minTemp, maxTemp);
+        double averageTemp = (minTemp + maxTemp) / 2;
+        List<BoardEntity> boards = boardRepository.findBoardsByTemperatureRange(averageTemp - 1, averageTemp + 1);
 
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), boards.size());
@@ -267,14 +268,8 @@ public class BoardService {
         for (BoardEntity board : boards.subList(start, end)) {
             BoardListResponseDTO dto = BoardListResponseDTO.builder()
                     .boardId(board.getBoardId())
-                    .nickName(board.getNickName())
                     .temperature(board.getTemperature())
-                    .likeCount(likeService.countLikes(board.getBoardId()))
                     .images(board.entityToDTO(board.getImages().get(0)))
-                    .category(board.getCategory())
-                    .hashTag(board.getHashTag())
-                    .weatherIcon(board.getWeatherIcon())
-                    .likelist(board.getLikelist())
                     .build();
 
             dtos.add(dto);

@@ -19,4 +19,6 @@ public class BoardListResponseDTO {
     private List<String> hashTag;
     private String weatherIcon;
     private List<LikeEntity> likelist;
+
+
 }
