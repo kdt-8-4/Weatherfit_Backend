@@ -183,7 +183,9 @@ public class UserServiceImpl implements UserService {
                 s3Client.putObject(bucket, fileName, image.getInputStream(), metadata);
             }
 
+            log.info("email: " + email);
             Optional<User> optionalUser = userRepository.findByEmail(email, false);
+            log.info("optionalUser: " + optionalUser);
             User user = optionalUser.get();
             user.changeImage(fileUrl);
             userRepository.save(user);
