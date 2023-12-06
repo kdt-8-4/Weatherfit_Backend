@@ -23,7 +23,7 @@ public class UserController {
 
     @PostMapping("/login/google")
     public ResponseEntity<UserDTO> google(@RequestBody GoogleUserDTO googleUserDTO) throws Exception {
-        log.info(" ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ googleToken controller ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+        log.info(" ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ google controller ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
         log.info("googleUserDTO: " + googleUserDTO);
 
         UserDTO result = userService.googleUserCheck(googleUserDTO);
@@ -92,6 +92,7 @@ public class UserController {
     }
 
     @PatchMapping(value = "/api/profile/modify/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ResponseBody
     public ResponseEntity<UserDTO> modifyImage(@RequestPart(value = "image", required = false) MultipartFile image,
                                                @RequestPart("email") String email) {
         log.info(" ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ modifyImage controller ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
