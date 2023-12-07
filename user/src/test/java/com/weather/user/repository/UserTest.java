@@ -39,4 +39,18 @@ public class UserTest {
             userRepository.save(user);
         });
     }
+
+    @Test
+    void insertTestUser() {
+        User user = User.builder()
+                .email("ryu@test.com")
+                .password(passwordEncoder.encode("1234"))
+                .name("류준열")
+                .nickname("류준열")
+                .fromSocial(false)
+                .status(true)
+                .build();
+
+        userRepository.save(user);
+    }
 }

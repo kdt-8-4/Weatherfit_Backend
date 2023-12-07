@@ -6,6 +6,8 @@ import com.weather.user.dto.UserDTO;
 import com.weather.user.entity.User;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Optional;
+
 
 public interface UserService {
 
@@ -28,6 +30,8 @@ public interface UserService {
     void resetImage(String email);
 
     void remove(String email);
+
+    public UserDTO userInfoByNickname(String nickname);
 
     default User dtoToEntity(UserDTO userDTO) {
         User user = User.builder()

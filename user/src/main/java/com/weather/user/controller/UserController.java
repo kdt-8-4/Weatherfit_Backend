@@ -137,4 +137,14 @@ public class UserController {
 
         return new ResponseEntity(result, HttpStatus.OK);
     }
+
+    @PostMapping("/api/userinfo")
+    public ResponseEntity<UserDTO> userInfoByNickname(@RequestBody UserDTO userDTO) {
+        log.info(" ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ userInfoByNickname controller ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+        log.info("nickname: " + userDTO.getNickname());
+
+        UserDTO result = userService.userInfoByNickname(userDTO.getNickname());
+
+        return new ResponseEntity(result, HttpStatus.OK);
+    }
 }

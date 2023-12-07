@@ -35,8 +35,6 @@ public class ApiCheckFilter extends OncePerRequestFilter {
 
         if(headerCheck) {
             log.info("ApiCheckFilter..............................................");
-            log.info("ApiCheckFilter..............................................");
-            log.info("ApiCheckFilter..............................................");
 
 //            boolean checkHeader = checkAuthHeader(request);
 //
@@ -57,7 +55,6 @@ public class ApiCheckFilter extends OncePerRequestFilter {
 //            return;
         }
 
-        log.info("?");
         filterChain.doFilter(request, response);
     }
 

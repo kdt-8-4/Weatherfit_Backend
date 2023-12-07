@@ -225,4 +225,22 @@ public class UserServiceImpl implements UserService {
             throw new Error("이미 탈퇴 처리중인 유저입니다.");
         }
     }
+
+    @Override
+    public UserDTO userInfoByNickname(String nickname) {
+        Optional<User> optionalUser = userRepository.findByNickname(nickname);
+        log.info("optionalUser: " + optionalUser);
+
+        if(optionalUser.isEmpty()) {
+            throw new Error("존재하지 않는 유저입니다.");
+        }
+        User user = optionalUser.get();
+
+        if(!user.isStatus()) {
+            throw new Error("탈퇴 대기중인 유저입니다.");
+        }
+
+        UserDTO result = entityToDTO(user);
+        return result;
+    }
 }
