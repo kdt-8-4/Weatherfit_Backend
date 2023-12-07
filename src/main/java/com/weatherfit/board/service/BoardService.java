@@ -48,6 +48,8 @@ public class BoardService {
                     .category(board.getCategory())
                     .temperature(board.getTemperature())
                     .likelist(board.getLikelist())
+                    .createDate(board.getCreateDate())
+                    .modifiedDate(board.getModifiedDate())
                     .weatherIcon(board.getWeatherIcon());
 
             if (!board.getImages().isEmpty()) {
@@ -73,6 +75,8 @@ public class BoardService {
                     .category(board.getCategory())
                     .temperature(board.getTemperature())
                     .likelist(board.getLikelist())
+                    .createDate(board.getCreateDate())
+                    .modifiedDate(board.getModifiedDate())
                     .weatherIcon(board.getWeatherIcon());
 
             if (!board.getImages().isEmpty()) {
@@ -98,6 +102,8 @@ public class BoardService {
                     .category(board.getCategory())
                     .temperature(board.getTemperature())
                     .likelist(board.getLikelist())
+                    .createDate(board.getCreateDate())
+                    .modifiedDate(board.getModifiedDate())
                     .weatherIcon(board.getWeatherIcon());
 
             if (!board.getImages().isEmpty()) {
