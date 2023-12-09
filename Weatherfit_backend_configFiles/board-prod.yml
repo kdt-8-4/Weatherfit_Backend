@@ -1,0 +1,55 @@
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
+  application:
+    name: board-service
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://weatherfit.cxqgttg1ggis.ap-northeast-2.rds.amazonaws.com:3306/board_service
+    username: admin
+    password: ekffld5465
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  kafka:
+    bootstrap-servers: 13.124.87.254:9092
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+      enabled: true
+
+cloud:
+  aws:
+    credentials:
+      access-key: AKIAU6QEN4K6BUQT5LEO
+      secret-key: 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
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: weatherfit-board-image
+    stack:
+      auto: false
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${server.port}}
+    prefer-ip-address: true
+    ip-address: 43.202.132.151
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://13.124.197.227:8761/eureka
+
+feignClient:
+  url: 13.124.197.227:8080
+
+
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
+server:
+  port: 8080
