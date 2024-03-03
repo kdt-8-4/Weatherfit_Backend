@@ -5,7 +5,7 @@ spring:
     include=oauth:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://hs-spring-db.cjhazvr1oeo5.ap-northeast-2.rds.amazonaws.com:3306/weatherfit
+    url: jdbc:mysql://weatherfit-user.cj2ysw4maina.ap-northeast-2.rds.amazonaws.com:3306/weatherfit
     username: wlfkrdl2
     password: gmltjd36!
   jpa:
